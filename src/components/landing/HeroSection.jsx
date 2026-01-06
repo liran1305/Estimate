@@ -40,7 +40,7 @@ export default function HeroSection() {
               <div className="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center mb-6 mx-auto group-hover:scale-110 transition-transform">
                 <Building2 className="w-7 h-7 text-gray-600" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Agencies</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Recruiters</h3>
               <p className="text-gray-500 mb-6 text-sm">HR & recruiting companies</p>
               <Button 
                 variant="outline" 

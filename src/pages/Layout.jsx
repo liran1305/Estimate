@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { mockAuth } from "@/lib/mockAuth";
 import { Button } from "@/components/ui/button";
+import Logo from "@/components/Logo";
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
@@ -50,8 +51,8 @@ export default function Layout({ children, currentPageName }) {
       <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
         <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
           <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-            <Link to={createPageUrl("Profile")} className="flex items-center gap-2">
-              <div className="text-2xl font-bold text-[#0A66C2]">Estimate</div>
+            <Link to={createPageUrl("Profile")}>
+              <Logo />
             </Link>
 
             <nav className="flex items-center gap-2">

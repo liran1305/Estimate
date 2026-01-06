@@ -7,9 +7,9 @@ export default function QuoteSection() {
         <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
           <div className="w-full md:w-1/4 flex justify-center">
             <img 
-              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop"
-              alt="Professional"
-              className="w-48 md:w-full max-w-xs rounded-2xl"
+              src="/images/Simon_Sinek.png"
+              alt="Simon Sinek"
+              className="w-48 md:w-full max-w-xs"
             />
           </div>
           

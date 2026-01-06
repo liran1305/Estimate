@@ -5,6 +5,7 @@ import { Linkedin, X, Check, Shield, Users, Mail } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { mockAuth } from "@/lib/mockAuth";
+import Logo from "@/components/Logo";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function LinkedInAuth() {
@@ -25,7 +26,7 @@ export default function LinkedInAuth() {
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center p-6">
       <div className="w-full max-w-md">
         <Link to={createPageUrl("Landing")} className="flex items-center justify-center mb-12">
-          <div className="text-3xl font-bold text-[#0A66C2]">Estimate</div>
+          <Logo className="h-10" />
         </Link>
 
         <AnimatePresence mode="wait">

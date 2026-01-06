@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from "react-router-dom";
+import Logo from "@/components/Logo";
 
 export default function Footer() {
   return (
@@ -7,7 +8,7 @@ export default function Footer() {
       <div className="max-w-5xl mx-auto">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
-            <div className="text-2xl font-bold text-[#0A66C2]">Estimate</div>
+            <Logo />
           </div>
           
           <div className="flex items-center gap-8 text-sm text-gray-500">
