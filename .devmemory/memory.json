@@ -98,7 +98,55 @@
       "tags": [],
       "commit_hash": "f7c983178a067ba1766db5b2f5a963aecfdc6e5e",
       "created_at": "2026-01-06T10:25:29.000Z"
+    },
+    {
+      "id": 2,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add Logo component with local images and update header spacing",
+      "files": [
+        "public/images/Estimate_logo.png",
+        "public/images/Simon_Sinek.png",
+        "src/components/Logo.jsx",
+        "src/components/landing/Footer.jsx",
+        "src/components/landing/Header.jsx",
+        "src/components/landing/HeroSection.jsx",
+        "src/components/landing/QuoteSection.jsx",
+        "src/pages/Layout.jsx",
+        "src/pages/LinkedInAuth.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "1d8041be532783b5aa794dd1664175701366af51",
+      "created_at": "2026-01-06T13:32:40.000Z"
+    },
+    {
+      "id": 3,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Update favicons and meta tags with Estimate branding",
+      "files": [
+        "index.html"
+      ],
+      "tags": [],
+      "commit_hash": "a29de5e37f28614e48ced5e35f15c78fddca64a0",
+      "created_at": "2026-01-06T13:40:15.000Z"
+    },
+    {
+      "id": 4,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add Estimate favicon files for all devices",
+      "files": [
+        "public/images/logos / favicons/estimate-favicon-180.png",
+        "public/images/logos / favicons/estimate-favicon-32.png",
+        "public/images/logos / favicons/estimate-favicon-512.png",
+        "public/images/logos / favicons/estimate-favicon.ico",
+        "public/images/logos / favicons/estimate-favicon.svg"
+      ],
+      "tags": [],
+      "commit_hash": "d06ae74346e04dbaf91975ad1f29e4c79e780880",
+      "created_at": "2026-01-06T13:43:22.000Z"
     }
   ],
-  "nextId": 2
+  "nextId": 5
 }
