@@ -146,7 +146,24 @@
       "tags": [],
       "commit_hash": "d06ae74346e04dbaf91975ad1f29e4c79e780880",
       "created_at": "2026-01-06T13:43:22.000Z"
+    },
+    {
+      "id": 5,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix favicon paths - remove spaces from folder names",
+      "files": [
+        "index.html",
+        "public/favicons/estimate-favicon-180.png",
+        "public/favicons/estimate-favicon-32.png",
+        "public/favicons/estimate-favicon-512.png",
+        "public/favicons/estimate-favicon.ico",
+        "public/favicons/estimate-favicon.svg"
+      ],
+      "tags": [],
+      "commit_hash": "0ce842c627b3b8389f46fb029bddb821a53380e2",
+      "created_at": "2026-01-07T13:07:56.000Z"
     }
   ],
-  "nextId": 5
+  "nextId": 6
 }

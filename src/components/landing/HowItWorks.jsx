@@ -1,5 +1,5 @@
 import React from 'react';
-import { Linkedin, Users, BarChart3 } from "lucide-react";
+import { Linkedin, Users, BarChart3, Share2 } from "lucide-react";
 
 const steps = [
   {
@@ -9,13 +9,18 @@ const steps = [
   },
   {
     icon: Users,
-    title: "Review 3 colleagues anonymously",
-    description: "Share honest feedback about people you've worked with"
+    title: "Help 3 colleagues grow",
+    description: "Give anonymous feedback to peers you've worked with — your reviews help them improve"
   },
   {
     icon: BarChart3,
-    title: "Get your professional score",
-    description: "Unlock insights from peers who know your work"
+    title: "Unlock your reputation score",
+    description: "See how colleagues perceive your skills, work style, and impact"
+  },
+  {
+    icon: Share2,
+    title: "Share with recruiters (optional)",
+    description: "Add your verified score to applications or let recruiters discover you"
   }
 ];
 
@@ -26,11 +31,14 @@ export default function HowItWorks() {
         <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4">
           How It Works
         </h2>
-        <p className="text-gray-500 text-center mb-16 max-w-xl mx-auto">
-          Three simple steps to discover your professional perception
+        <p className="text-gray-500 text-center mb-4 max-w-xl mx-auto">
+          Four simple steps to discover your professional perception
+        </p>
+        <p className="text-sm text-gray-400 text-center mb-16">
+          Join thousands of professionals getting honest feedback
         </p>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-4 gap-6">
           {steps.map((step, index) => (
             <div key={index} className="relative">
               <div className="bg-white rounded-2xl p-8 border border-gray-100 h-full hover:shadow-lg transition-shadow duration-300">
