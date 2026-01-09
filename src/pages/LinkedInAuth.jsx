@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Linkedin, X, Check, Shield, Users, Mail } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { mockAuth } from "@/lib/mockAuth";
+import { linkedinAuth } from "@/lib/linkedinAuth";
 import Logo from "@/components/Logo";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -12,14 +12,8 @@ export default function LinkedInAuth() {
   const [showOAuth, setShowOAuth] = useState(false);
   const navigate = useNavigate();
 
-  const handleAllow = async () => {
-    // Check if already authenticated
-    const isAuth = await mockAuth.isAuthenticated();
-    if (isAuth) {
-      navigate(createPageUrl("Review"));
-    } else {
-      mockAuth.redirectToLogin(window.location.origin + createPageUrl("Review"));
-    }
+  const handleAllow = () => {
+    linkedinAuth.initiateLogin();
   };
 
   return (

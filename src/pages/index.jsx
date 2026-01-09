@@ -16,6 +16,8 @@ import PrivacyPolicy from "./PrivacyPolicy";
 
 import Disclaimer from "./Disclaimer";
 
+import LinkedInCallback from "./LinkedInCallback";
+
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 
 const PAGES = {
@@ -35,6 +37,8 @@ const PAGES = {
     PrivacyPolicy: PrivacyPolicy,
     
     Disclaimer: Disclaimer,
+    
+    LinkedInCallback: LinkedInCallback,
     
 }
 
@@ -78,6 +82,8 @@ function PagesContent() {
                 <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
                 
                 <Route path="/Disclaimer" element={<Disclaimer />} />
+                
+                <Route path="/auth/linkedin/callback" element={<LinkedInCallback />} />
                 
             </Routes>
         </Layout>

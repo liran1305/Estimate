@@ -205,7 +205,36 @@
       "tags": [],
       "commit_hash": "3fc32e9d1718adb52155fbba94ce75e4e67fee58",
       "created_at": "2026-01-09T11:45:02.000Z"
+    },
+    {
+      "id": 9,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add comprehensive legal pages - TOS, Privacy Policy, and Disclaimer",
+      "files": [
+        "src/components/landing/Footer.jsx",
+        "src/pages/Disclaimer.jsx",
+        "src/pages/LinkedInAuth.jsx",
+        "src/pages/PrivacyPolicy.jsx",
+        "src/pages/TermsOfService.jsx",
+        "src/pages/index.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "0a65be018c0e762998363f6d8609375e3999a946",
+      "created_at": "2026-01-09T15:18:33.000Z"
+    },
+    {
+      "id": 10,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Update Privacy Policy with comprehensive GDPR-compliant content",
+      "files": [
+        "src/pages/PrivacyPolicy.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "403ffaa81218783d06a9522a1c831d86d1744440",
+      "created_at": "2026-01-09T15:23:16.000Z"
     }
   ],
-  "nextId": 9
+  "nextId": 11
 }
