@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from "react-router-dom";
+import { createPageUrl } from "@/utils";
 import Logo from "@/components/Logo";
 
 export default function Footer() {
@@ -11,9 +12,10 @@ export default function Footer() {
             <Logo />
           </div>
           
-          <div className="flex items-center gap-8 text-sm text-gray-500">
-            <a href="#" className="hover:text-gray-900 transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-gray-900 transition-colors">Terms of Use</a>
+          <div className="flex items-center gap-6 text-sm text-gray-500">
+            <Link to={createPageUrl("PrivacyPolicy")} className="hover:text-gray-900 transition-colors">Privacy Policy</Link>
+            <Link to={createPageUrl("TermsOfService")} className="hover:text-gray-900 transition-colors">Terms of Service</Link>
+            <Link to={createPageUrl("Disclaimer")} className="hover:text-gray-900 transition-colors">Disclaimer</Link>
           </div>
           
           <p className="text-sm text-gray-400">

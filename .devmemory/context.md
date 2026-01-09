@@ -1,16 +1,15 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-09T10:38:23.852Z
+> Last updated: 2026-01-09T15:09:39.833Z
 
 ## Project Stats
-- Total memories: 7
-- Commits tracked: 7
+- Total memories: 8
+- Commits tracked: 8
 - Decisions recorded: 0
 
-## Relevant to Current Work
-- **1/6/2026**: Initial commit: Estimate professional peer review platform (README.md, components.json, eslint.config.js)
-
 ## Recent Changes
+- `3fc32e9` 1/9/2026: Replace Stress Management with Creativity & Innovation in review questions
+  Files: src/components/profile/ScoreBreakdown.jsx, src/components/review/ReviewForm.jsx, src/pages/Profile.jsx
 - `e7f0243` 1/9/2026: Add _redirects file for SPA routing in production
   Files: public/_redirects
 - `f1a8e8e` 1/7/2026: Major UX improvements based on CPO/Senior UX analysis

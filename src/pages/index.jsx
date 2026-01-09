@@ -10,6 +10,12 @@ import Review from "./Review";
 
 import Profile from "./Profile";
 
+import TermsOfService from "./TermsOfService";
+
+import PrivacyPolicy from "./PrivacyPolicy";
+
+import Disclaimer from "./Disclaimer";
+
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 
 const PAGES = {
@@ -23,6 +29,12 @@ const PAGES = {
     Review: Review,
     
     Profile: Profile,
+    
+    TermsOfService: TermsOfService,
+    
+    PrivacyPolicy: PrivacyPolicy,
+    
+    Disclaimer: Disclaimer,
     
 }
 
@@ -60,6 +72,12 @@ function PagesContent() {
                 <Route path="/Review" element={<Review />} />
                 
                 <Route path="/Profile" element={<Profile />} />
+                
+                <Route path="/TermsOfService" element={<TermsOfService />} />
+                
+                <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
+                
+                <Route path="/Disclaimer" element={<Disclaimer />} />
                 
             </Routes>
         </Layout>

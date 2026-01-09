@@ -54,7 +54,14 @@ export default function LinkedInAuth() {
                 </Button>
 
                 <p className="text-xs text-gray-400 text-center mt-6">
-                  By continuing, you agree to our Terms of Service and Privacy Policy
+                  By continuing, you agree to our{' '}
+                  <Link to={createPageUrl("TermsOfService")} className="text-[#0A66C2] hover:underline">
+                    Terms of Service
+                  </Link>
+                  {' '}and{' '}
+                  <Link to={createPageUrl("PrivacyPolicy")} className="text-[#0A66C2] hover:underline">
+                    Privacy Policy
+                  </Link>
                 </p>
               </Card>
             </motion.div>
