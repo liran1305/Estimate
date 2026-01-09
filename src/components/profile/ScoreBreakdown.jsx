@@ -8,7 +8,7 @@ const categories = [
   { key: "adaptability", label: "Adaptability" },
   { key: "leadership_impact", label: "Leadership" },
   { key: "goal_achievement", label: "Goal Achievement" },
-  { key: "stress_management", label: "Stress Management" },
+  { key: "creativity", label: "Creativity & Innovation" },
   { key: "initiative", label: "Initiative" }
 ];
 

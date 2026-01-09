@@ -41,7 +41,7 @@ export default function Profile() {
     const categories = [
       'communication_skills', 'teamwork_skills', 'problem_solving', 
       'adaptability', 'leadership_impact', 'goal_achievement', 
-      'stress_management', 'initiative'
+      'creativity', 'initiative'
     ];
 
     const averages = {};

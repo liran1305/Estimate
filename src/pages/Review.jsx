@@ -71,7 +71,7 @@ export default function Review() {
       adaptability: 5,
       leadership_impact: 5,
       goal_achievement: 5,
-      stress_management: 5,
+      creativity: 5,
       initiative: 5
     });
     setNotRelevant({});

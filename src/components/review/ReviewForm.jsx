@@ -13,7 +13,7 @@ const categories = [
   { key: "adaptability", label: "Adaptability to Changes", description: "Flexibility and openness" },
   { key: "leadership_impact", label: "Leadership Impact on Team", description: "Influence and guidance", optional: true },
   { key: "goal_achievement", label: "Goal Achievement Consistency", description: "Meeting objectives reliably" },
-  { key: "stress_management", label: "Stress Management", description: "Productivity under pressure" },
+  { key: "creativity", label: "Creativity & Innovation", description: "Original ideas and solutions" },
   { key: "initiative", label: "Initiative Beyond Duties", description: "Proactive contributions" }
 ];
 
