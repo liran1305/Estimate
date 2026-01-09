@@ -234,7 +234,25 @@
       "tags": [],
       "commit_hash": "403ffaa81218783d06a9522a1c831d86d1744440",
       "created_at": "2026-01-09T15:23:16.000Z"
+    },
+    {
+      "id": 11,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Implement real LinkedIn OAuth authentication",
+      "files": [
+        ".env.example",
+        "src/lib/linkedinAuth.js",
+        "src/pages/LinkedInAuth.jsx",
+        "src/pages/LinkedInCallback.jsx",
+        "src/pages/index.jsx"
+      ],
+      "tags": [
+        "auth"
+      ],
+      "commit_hash": "f1b35f8be87f82e548bea73081b4b338d8663c80",
+      "created_at": "2026-01-09T15:52:03.000Z"
     }
   ],
-  "nextId": 11
+  "nextId": 12
 }

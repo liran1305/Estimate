@@ -1,6 +1,7 @@
 const LINKEDIN_CLIENT_ID = import.meta.env.VITE_LINKEDIN_CLIENT_ID;
 const LINKEDIN_REDIRECT_URI = import.meta.env.VITE_LINKEDIN_REDIRECT_URI;
 const LINKEDIN_SCOPE = 'openid profile email';
+const BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:3001';
 
 export const linkedinAuth = {
   initiateLogin() {
@@ -32,21 +33,21 @@ export const linkedinAuth = {
     sessionStorage.removeItem('linkedin_oauth_state');
     
     try {
-      const tokenResponse = await this.exchangeCodeForToken(code);
-      const userProfile = await this.getUserProfile(tokenResponse.access_token);
+      // Backend returns both token and profile in one response
+      const authData = await this.exchangeCodeForToken(code);
       
       const user = {
-        id: userProfile.sub,
-        name: userProfile.name,
-        email: userProfile.email,
-        picture: userProfile.picture,
-        linkedinId: userProfile.sub,
-        accessToken: tokenResponse.access_token,
+        id: authData.profile.id,
+        name: authData.profile.name,
+        email: authData.profile.email,
+        picture: authData.profile.picture,
+        linkedinId: authData.profile.id,
+        accessToken: authData.access_token,
         isOnboarded: false
       };
       
       localStorage.setItem('user', JSON.stringify(user));
-      localStorage.setItem('access_token', tokenResponse.access_token);
+      localStorage.setItem('access_token', authData.access_token);
       
       return user;
     } catch (error) {
@@ -56,38 +57,21 @@ export const linkedinAuth = {
   },
 
   async exchangeCodeForToken(code) {
-    const response = await fetch('https://www.linkedin.com/oauth/v2/accessToken', {
+    // Call secure backend API instead of exposing client secret
+    const response = await fetch(`${BACKEND_API_URL}/api/auth/linkedin/callback`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'application/json',
       },
-      body: new URLSearchParams({
-        grant_type: 'authorization_code',
+      body: JSON.stringify({
         code: code,
-        client_id: LINKEDIN_CLIENT_ID,
-        client_secret: import.meta.env.VITE_LINKEDIN_CLIENT_SECRET,
         redirect_uri: LINKEDIN_REDIRECT_URI,
       }),
     });
 
     if (!response.ok) {
-      const error = await response.text();
-      throw new Error(`Token exchange failed: ${error}`);
-    }
-
-    return response.json();
-  },
-
-  async getUserProfile(accessToken) {
-    const response = await fetch('https://api.linkedin.com/v2/userinfo', {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-      },
-    });
-
-    if (!response.ok) {
-      const error = await response.text();
-      throw new Error(`Failed to fetch user profile: ${error}`);
+      const error = await response.json().catch(() => ({ error: 'Unknown error' }));
+      throw new Error(error.error || 'Token exchange failed');
     }
 
     return response.json();

@@ -1,13 +1,18 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-09T15:51:26.383Z
+> Last updated: 2026-01-09T15:58:24.577Z
 
 ## Project Stats
-- Total memories: 10
-- Commits tracked: 10
+- Total memories: 11
+- Commits tracked: 11
 - Decisions recorded: 0
 
+## Relevant to Current Work
+- **1/9/2026**: Implement real LinkedIn OAuth authentication (.env.example, src/lib/linkedinAuth.js, src/pages/LinkedInAuth.jsx)
+
 ## Recent Changes
+- `f1b35f8` 1/9/2026: Implement real LinkedIn OAuth authentication
+  Files: .env.example, src/lib/linkedinAuth.js, src/pages/LinkedInAuth.jsx
 - `403ffaa` 1/9/2026: Update Privacy Policy with comprehensive GDPR-compliant content
   Files: src/pages/PrivacyPolicy.jsx
 - `0a65be0` 1/9/2026: Add comprehensive legal pages - TOS, Privacy Policy, and Disclaimer
