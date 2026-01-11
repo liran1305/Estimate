@@ -144,11 +144,14 @@ export default function Review() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-12 px-6">
       <div className="max-w-lg mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Review a Colleague</h1>
-          <p className="text-gray-500">Select someone you've worked with</p>
-          
-          <div className="flex items-center justify-center gap-2 mt-4">
+        <div className="flex items-center justify-between mb-8">
+          <button
+            onClick={() => navigate(createPageUrl("Profile"))}
+            className="text-gray-500 hover:text-gray-700 text-sm font-medium transition-colors"
+          >
+            ← Back to Profile
+          </button>
+          <div className="flex items-center gap-2">
             {[1, 2, 3].map((num) => (
               <div
                 key={num}
@@ -159,6 +162,11 @@ export default function Review() {
             ))}
             <span className="text-sm text-gray-500 ml-2">{reviewsGiven}/3 reviews</span>
           </div>
+        </div>
+
+        <div className="text-center mb-8">
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Review a Colleague</h1>
+          <p className="text-gray-500">Select someone you've worked with</p>
         </div>
 
         <AnimatePresence mode="wait">

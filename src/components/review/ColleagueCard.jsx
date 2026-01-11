@@ -9,17 +9,17 @@ const interactionTypes = [
   { 
     value: "direct", 
     label: "Direct Collaboration", 
-    description: "Worked closely together on projects" 
+    description: "Worked closely together at this or previous company" 
   },
   { 
     value: "departmental", 
     label: "Departmental Interaction", 
-    description: "Same department, some interaction" 
+    description: "Same department at this or previous company" 
   },
   { 
     value: "general", 
     label: "General Association", 
-    description: "Know of them, limited interaction" 
+    description: "Know of them from current or previous workplace" 
   }
 ];
 
@@ -42,7 +42,7 @@ export default function ColleagueCard({
           <div>
             <h2 className="text-xl font-bold text-gray-900">{colleague.name}</h2>
             <p className="text-gray-500">{colleague.job_title}</p>
-            <p className="text-gray-400 text-sm">{colleague.company}</p>
+            <p className="text-gray-400 text-sm">at {colleague.company}</p>
           </div>
         </div>
 

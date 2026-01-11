@@ -25,7 +25,7 @@ export const turnstile = {
           reject(new Error('Bot verification failed'));
         },
         theme: 'light',
-        size: 'invisible',
+        size: 'compact',
       });
     });
   },
