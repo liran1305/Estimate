@@ -1,19 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Linkedin, X, Check, Shield, Users, Mail } from "lucide-react";
+import { Linkedin, X, Check, Shield, Users, Mail, Loader2 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { linkedinAuth } from "@/lib/linkedinAuth";
+import { turnstile } from "@/lib/turnstile";
 import Logo from "@/components/Logo";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function LinkedInAuth() {
   const [showOAuth, setShowOAuth] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
   const navigate = useNavigate();
 
-  const handleAllow = () => {
-    linkedinAuth.initiateLogin();
+  useEffect(() => {
+    turnstile.loadScript().catch(console.error);
+  }, []);
+
+  const handleAllow = async () => {
+    setIsVerifying(true);
+    try {
+      const token = await turnstile.verify();
+      linkedinAuth.initiateLogin(token);
+    } catch (error) {
+      console.error('Bot verification failed:', error);
+      alert('Verification failed. Please try again.');
+      setIsVerifying(false);
+    }
   };
 
   return (
@@ -42,9 +56,19 @@ export default function LinkedInAuth() {
                 <Button 
                   className="w-full bg-[#0A66C2] hover:bg-[#004182] h-14 rounded-xl font-medium text-base"
                   onClick={() => setShowOAuth(true)}
+                  disabled={isVerifying}
                 >
-                  <Linkedin className="w-5 h-5 mr-3" />
-                  Continue with LinkedIn
+                  {isVerifying ? (
+                    <>
+                      <Loader2 className="w-5 h-5 mr-3 animate-spin" />
+                      Verifying...
+                    </>
+                  ) : (
+                    <>
+                      <Linkedin className="w-5 h-5 mr-3" />
+                      Continue with LinkedIn
+                    </>
+                  )}
                 </Button>
 
                 <p className="text-xs text-gray-400 text-center mt-6">

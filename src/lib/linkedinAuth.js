@@ -4,9 +4,13 @@ const LINKEDIN_SCOPE = 'openid profile email';
 const BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:3001';
 
 export const linkedinAuth = {
-  initiateLogin() {
+  initiateLogin(turnstileToken) {
     const state = this.generateState();
     sessionStorage.setItem('linkedin_oauth_state', state);
+    
+    if (turnstileToken) {
+      sessionStorage.setItem('turnstile_token', turnstileToken);
+    }
     
     const authUrl = new URL('https://www.linkedin.com/oauth/v2/authorization');
     authUrl.searchParams.append('response_type', 'code');
@@ -57,6 +61,9 @@ export const linkedinAuth = {
   },
 
   async exchangeCodeForToken(code) {
+    const turnstileToken = sessionStorage.getItem('turnstile_token');
+    sessionStorage.removeItem('turnstile_token');
+    
     // Call secure backend API instead of exposing client secret
     const response = await fetch(`${BACKEND_API_URL}/api/auth/linkedin/callback`, {
       method: 'POST',
@@ -66,6 +73,7 @@ export const linkedinAuth = {
       body: JSON.stringify({
         code: code,
         redirect_uri: LINKEDIN_REDIRECT_URI,
+        turnstile_token: turnstileToken,
       }),
     });
 

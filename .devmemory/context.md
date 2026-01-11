@@ -1,16 +1,22 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-09T15:58:24.577Z
+> Last updated: 2026-01-11T08:14:14.257Z
 
 ## Project Stats
-- Total memories: 11
-- Commits tracked: 11
+- Total memories: 13
+- Commits tracked: 13
 - Decisions recorded: 0
 
 ## Relevant to Current Work
+- **1/9/2026**: Add secure backend and remove client secret from frontend (.env.example, backend/.env.example, backend/README.md)
+- **1/9/2026**: Add secure backend and remove client secret from frontend (.env.example, backend/.env.example, backend/README.md)
 - **1/9/2026**: Implement real LinkedIn OAuth authentication (.env.example, src/lib/linkedinAuth.js, src/pages/LinkedInAuth.jsx)
 
 ## Recent Changes
+- `ba0dfcf` 1/9/2026: Add secure backend and remove client secret from frontend
+  Files: .env.example, backend/.env.example, backend/README.md
+- `f87b1b9` 1/9/2026: Add secure backend and remove client secret from frontend
+  Files: .env.example, backend/.env.example, backend/README.md
 - `f1b35f8` 1/9/2026: Implement real LinkedIn OAuth authentication
   Files: .env.example, src/lib/linkedinAuth.js, src/pages/LinkedInAuth.jsx
 - `403ffaa` 1/9/2026: Update Privacy Policy with comprehensive GDPR-compliant content

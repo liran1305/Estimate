@@ -18,13 +18,45 @@ app.get('/health', (req, res) => {
 });
 
 app.post('/api/auth/linkedin/callback', async (req, res) => {
-  const { code, redirect_uri } = req.body;
+  const { code, redirect_uri, turnstile_token } = req.body;
 
   if (!code || !redirect_uri) {
     return res.status(400).json({ 
       error: 'Missing required parameters',
       message: 'Both code and redirect_uri are required' 
     });
+  }
+
+  // Verify Turnstile token if provided
+  if (turnstile_token && process.env.TURNSTILE_SECRET_KEY) {
+    try {
+      const verifyResponse = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          secret: process.env.TURNSTILE_SECRET_KEY,
+          response: turnstile_token,
+        }),
+      });
+
+      const verifyData = await verifyResponse.json();
+      
+      if (!verifyData.success) {
+        console.error('Turnstile verification failed:', verifyData);
+        return res.status(403).json({ 
+          error: 'Bot verification failed',
+          message: 'Please try again' 
+        });
+      }
+    } catch (error) {
+      console.error('Turnstile verification error:', error);
+      return res.status(500).json({ 
+        error: 'Verification error',
+        message: 'Could not verify request' 
+      });
+    }
   }
 
   try {
