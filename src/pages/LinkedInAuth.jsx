@@ -71,7 +71,14 @@ export default function LinkedInAuth() {
                   )}
                 </Button>
 
-                <p className="text-xs text-gray-400 text-center mt-6">
+                <div className="flex items-center justify-center gap-2 mt-4 mb-2">
+                  <Shield className="w-4 h-4 text-orange-500" />
+                  <p className="text-xs text-gray-500">
+                    Protected by <span className="font-medium text-gray-700">Cloudflare</span>
+                  </p>
+                </div>
+
+                <p className="text-xs text-gray-400 text-center mt-4">
                   By continuing, you agree to our{' '}
                   <Link to={createPageUrl("TermsOfService")} className="text-[#0A66C2] hover:underline">
                     Terms of Service
