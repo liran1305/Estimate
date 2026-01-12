@@ -49,6 +49,32 @@ app.get('/api/server-ip', async (req, res) => {
 const colleaguesRouter = require('./routes/colleagues');
 app.use('/api/colleagues', colleaguesRouter);
 
+// Check table structure
+app.get('/api/table-info/:tableName', async (req, res) => {
+  try {
+    const mysql = require('mysql2/promise');
+    const connection = await mysql.createConnection({
+      host: process.env.CLOUD_SQL_HOST,
+      user: process.env.CLOUD_SQL_USER,
+      password: process.env.CLOUD_SQL_PASSWORD,
+      database: process.env.CLOUD_SQL_DATABASE,
+      port: process.env.CLOUD_SQL_PORT || 3306
+    });
+
+    const [columns] = await connection.query(`SHOW FULL COLUMNS FROM ${req.params.tableName}`);
+    const [createTable] = await connection.query(`SHOW CREATE TABLE ${req.params.tableName}`);
+    await connection.end();
+
+    res.json({
+      success: true,
+      columns,
+      createStatement: createTable[0]['Create Table']
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 // Migration endpoint
 app.post('/api/migrate', async (req, res) => {
   try {
