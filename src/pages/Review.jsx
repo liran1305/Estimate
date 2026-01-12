@@ -1,78 +1,120 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { mockAuth, mockEntities } from "@/lib/mockAuth";
+import { linkedinAuth } from "@/lib/linkedinAuth";
 import { Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ColleagueCard from "@/components/review/ColleagueCard";
 import ReviewForm from "@/components/review/ReviewForm";
 import ReviewSuccess from "@/components/review/ReviewSuccess";
 
-// Mocked colleagues data
-const mockColleagues = [
-  { id: "1", name: "Sarah Chen", job_title: "Senior Product Manager", company: "TechCorp", photo_url: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop" },
-  { id: "2", name: "Michael Rodriguez", job_title: "Software Engineer", company: "StartupXYZ", photo_url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop" },
-  { id: "3", name: "Emily Thompson", job_title: "UX Designer", company: "DesignHub", photo_url: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop" },
-  { id: "4", name: "David Kim", job_title: "Data Scientist", company: "AnalyticsPro", photo_url: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop" },
-  { id: "5", name: "Jessica Martinez", job_title: "Marketing Director", company: "BrandCo", photo_url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop" },
-  { id: "6", name: "James Wilson", job_title: "Engineering Manager", company: "TechCorp", photo_url: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop" },
-  { id: "7", name: "Amanda Foster", job_title: "HR Business Partner", company: "PeopleFirst", photo_url: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop" },
-  { id: "8", name: "Robert Chang", job_title: "CTO", company: "StartupXYZ", photo_url: "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=150&h=150&fit=crop" },
-  { id: "9", name: "Lisa Anderson", job_title: "Product Designer", company: "DesignHub", photo_url: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&h=150&fit=crop" },
-  { id: "10", name: "Chris Taylor", job_title: "Sales Executive", company: "SalesForce", photo_url: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&h=150&fit=crop" }
-];
+const BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:3001';
 
 export default function Review() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
+  const [session, setSession] = useState(null);
   const [step, setStep] = useState('select'); // select, review, success
   const [currentColleague, setCurrentColleague] = useState(null);
-  const [availableColleagues, setAvailableColleagues] = useState([]);
   const [interactionType, setInteractionType] = useState('');
   const [reviewsGiven, setReviewsGiven] = useState(0);
+  const [skipsRemaining, setSkipsRemaining] = useState(0);
   const [scores, setScores] = useState({});
   const [notRelevant, setNotRelevant] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const init = async () => {
-      const currentUser = await mockAuth.me();
-      setUser(currentUser);
-      setReviewsGiven(currentUser.reviews_given || 0);
-      
-      // Filter out reviewed colleagues (in real app, check against Review entity)
-      const reviews = await mockEntities.Review.filter({ reviewer_id: currentUser.id });
-      const reviewedIds = reviews.map(r => r.colleague_id);
-      const available = mockColleagues.filter(c => !reviewedIds.includes(c.id));
-      
-      setAvailableColleagues(available);
-      if (available.length > 0) {
-        setCurrentColleague(available[0]);
+      try {
+        // Get current user from localStorage
+        const currentUser = linkedinAuth.getCurrentUser();
+        if (!currentUser || !currentUser.canUsePlatform) {
+          navigate(createPageUrl("Login"));
+          return;
+        }
+        setUser(currentUser);
+
+        // Start review session
+        const sessionRes = await fetch(`${BACKEND_API_URL}/api/session/start?user_id=${currentUser.id}`);
+        const sessionData = await sessionRes.json();
+        
+        if (!sessionData.success) {
+          setError(sessionData.error || 'Failed to start session');
+          setIsLoading(false);
+          return;
+        }
+
+        setSession(sessionData.session);
+        setReviewsGiven(sessionData.session.reviews_completed || 0);
+        setSkipsRemaining(sessionData.session.skips_remaining || 0);
+
+        // Get first colleague
+        await fetchNextColleague(currentUser.id, sessionData.session.id);
+        setIsLoading(false);
+      } catch (err) {
+        console.error('Init error:', err);
+        setError(err.message);
+        setIsLoading(false);
       }
-      setIsLoading(false);
     };
     init();
-  }, []);
+  }, [navigate]);
 
-  const handleSkip = () => {
-    const currentIndex = availableColleagues.findIndex(c => c.id === currentColleague.id);
-    const nextIndex = (currentIndex + 1) % availableColleagues.length;
-    setCurrentColleague(availableColleagues[nextIndex]);
-    setInteractionType('');
+  const fetchNextColleague = async (userId, sessionId) => {
+    const res = await fetch(`${BACKEND_API_URL}/api/colleague/next?user_id=${userId}&session_id=${sessionId}`);
+    const data = await res.json();
+    
+    if (data.success && data.colleague) {
+      setCurrentColleague({
+        id: data.colleague.id,
+        name: data.colleague.name,
+        job_title: data.colleague.position,
+        company: data.colleague.shared_company,
+        photo_url: data.colleague.avatar,
+        overlap_months: data.colleague.overlap_months
+      });
+    } else {
+      setCurrentColleague(null);
+    }
+  };
+
+  const handleSkip = async () => {
+    if (skipsRemaining <= 0) {
+      alert('No skips remaining');
+      return;
+    }
+
+    try {
+      const res = await fetch(`${BACKEND_API_URL}/api/colleague/skip`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_id: user.id,
+          session_id: session.id,
+          colleague_id: currentColleague.id
+        })
+      });
+      const data = await res.json();
+      
+      if (data.success) {
+        setSkipsRemaining(data.skips_remaining);
+        await fetchNextColleague(user.id, session.id);
+        setInteractionType('');
+      }
+    } catch (err) {
+      console.error('Skip error:', err);
+    }
   };
 
   const handleContinue = () => {
     setStep('review');
     setScores({
-      communication_skills: 5,
-      teamwork_skills: 5,
-      problem_solving: 5,
-      adaptability: 5,
-      leadership_impact: 5,
-      goal_achievement: 5,
-      creativity: 5,
-      initiative: 5
+      technical_rating: 3,
+      communication_rating: 3,
+      teamwork_rating: 3,
+      leadership_rating: 3
     });
     setNotRelevant({});
   };
@@ -92,39 +134,41 @@ export default function Review() {
   const handleSubmit = async () => {
     setIsSubmitting(true);
     
-    const reviewData = {
-      reviewer_id: user.id,
-      colleague_id: currentColleague.id,
-      colleague_name: currentColleague.name,
-      interaction_type: interactionType,
-      ...scores
-    };
-
-    // Set null for not relevant categories
-    Object.keys(notRelevant).forEach(key => {
-      if (notRelevant[key]) {
-        reviewData[key] = null;
+    try {
+      const res = await fetch(`${BACKEND_API_URL}/api/review/submit`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_id: user.id,
+          session_id: session.id,
+          colleague_id: currentColleague.id,
+          company_name: currentColleague.company,
+          interaction_type: interactionType,
+          technical_rating: notRelevant.technical_rating ? null : scores.technical_rating,
+          communication_rating: notRelevant.communication_rating ? null : scores.communication_rating,
+          teamwork_rating: notRelevant.teamwork_rating ? null : scores.teamwork_rating,
+          leadership_rating: notRelevant.leadership_rating ? null : scores.leadership_rating
+        })
+      });
+      
+      const data = await res.json();
+      
+      if (data.success) {
+        setReviewsGiven(data.reviews_completed);
+        setIsSubmitting(false);
+        setStep('success');
+      } else {
+        alert(data.error || 'Failed to submit review');
+        setIsSubmitting(false);
       }
-    });
-
-    await mockEntities.Review.create(reviewData);
-    
-    const newReviewsGiven = reviewsGiven + 1;
-    await mockAuth.updateMe({ reviews_given: newReviewsGiven });
-    setReviewsGiven(newReviewsGiven);
-    
-    // Remove current colleague from available
-    const newAvailable = availableColleagues.filter(c => c.id !== currentColleague.id);
-    setAvailableColleagues(newAvailable);
-    
-    setIsSubmitting(false);
-    setStep('success');
+    } catch (err) {
+      console.error('Submit error:', err);
+      setIsSubmitting(false);
+    }
   };
 
-  const handleNextReview = () => {
-    if (availableColleagues.length > 0) {
-      setCurrentColleague(availableColleagues[0]);
-    }
+  const handleNextReview = async () => {
+    await fetchNextColleague(user.id, session.id);
     setInteractionType('');
     setStep('select');
   };
@@ -137,6 +181,36 @@ export default function Review() {
     return (
       <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center">
         <Loader2 className="w-8 h-8 text-[#0A66C2] animate-spin" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-500 mb-4">{error}</p>
+          <button onClick={() => navigate(createPageUrl("Profile"))} className="text-[#0A66C2]">
+            Go to Profile
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!currentColleague && step === 'select') {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-12 px-6">
+        <div className="max-w-lg mx-auto text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">No More Colleagues</h1>
+          <p className="text-gray-500 mb-6">You've reviewed all available colleagues with sufficient work overlap.</p>
+          <button 
+            onClick={() => navigate(createPageUrl("Profile"))}
+            className="bg-[#0A66C2] text-white px-6 py-2 rounded-lg"
+          >
+            Go to Profile
+          </button>
+        </div>
       </div>
     );
   }

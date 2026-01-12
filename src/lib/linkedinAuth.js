@@ -37,16 +37,19 @@ export const linkedinAuth = {
     sessionStorage.removeItem('linkedin_oauth_state');
     
     try {
-      // Backend returns both token and profile in one response
+      // Backend returns user object with matched LinkedIn profile
       const authData = await this.exchangeCodeForToken(code);
       
       const user = {
-        id: authData.profile.id,
-        name: authData.profile.name,
-        email: authData.profile.email,
-        picture: authData.profile.picture,
-        linkedinId: authData.profile.id,
+        id: authData.user.id, // User ID from our database
+        linkedinProfileId: authData.user.linkedin_profile_id, // Matched Bright Data profile
+        name: authData.user.name,
+        email: authData.user.email,
+        picture: authData.user.picture,
         accessToken: authData.access_token,
+        canUsePlatform: authData.user.can_use_platform,
+        matchMethod: authData.user.match_method,
+        matchConfidence: authData.user.match_confidence,
         isOnboarded: false
       };
       
