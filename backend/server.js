@@ -47,7 +47,9 @@ app.get('/api/server-ip', async (req, res) => {
 });
 
 const colleaguesRouter = require('./routes/colleagues');
+const reviewsRouter = require('./routes/reviews');
 app.use('/api/colleagues', colleaguesRouter);
+app.use('/api', reviewsRouter);
 
 // Check table structure
 app.get('/api/table-info/:tableName', async (req, res) => {
