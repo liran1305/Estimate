@@ -91,6 +91,9 @@ app.post('/api/migrate', async (req, res) => {
       multipleStatements: true
     });
 
+    // Drop users table if it exists (it may have been created with wrong constraints)
+    await connection.query('DROP TABLE IF EXISTS users');
+    
     const migrationPath = path.join(__dirname, 'database/migration-add-review-system.sql');
     const migrationSql = fs.readFileSync(migrationPath, 'utf8');
     
