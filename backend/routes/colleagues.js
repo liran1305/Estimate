@@ -1,21 +1,46 @@
 const express = require('express');
 const router = express.Router();
 const mysql = require('mysql2/promise');
+const { Connector } = require('@google-cloud/cloud-sql-connector');
 
 let pool;
+const connector = new Connector();
 
-function initializePool() {
+async function initializePool() {
   if (!pool) {
-    pool = mysql.createPool({
-      host: process.env.CLOUD_SQL_HOST,
-      user: process.env.CLOUD_SQL_USER,
-      password: process.env.CLOUD_SQL_PASSWORD,
-      database: process.env.CLOUD_SQL_DATABASE,
-      port: process.env.CLOUD_SQL_PORT || 3306,
-      waitForConnections: true,
-      connectionLimit: 10,
-      queueLimit: 0
-    });
+    // Check if we should use Cloud SQL Connector (production) or direct connection (local)
+    const useConnector = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON;
+    
+    if (useConnector) {
+      // Production: Use Cloud SQL Connector with service account
+      const clientOpts = await connector.getOptions({
+        instanceConnectionName: process.env.CLOUD_SQL_CONNECTION_NAME,
+        ipType: 'PUBLIC',
+        authType: 'IAM',
+      });
+      
+      pool = mysql.createPool({
+        ...clientOpts,
+        user: process.env.CLOUD_SQL_USER,
+        password: process.env.CLOUD_SQL_PASSWORD,
+        database: process.env.CLOUD_SQL_DATABASE,
+        waitForConnections: true,
+        connectionLimit: 10,
+        queueLimit: 0
+      });
+    } else {
+      // Local development: Direct connection
+      pool = mysql.createPool({
+        host: process.env.CLOUD_SQL_HOST,
+        user: process.env.CLOUD_SQL_USER,
+        password: process.env.CLOUD_SQL_PASSWORD,
+        database: process.env.CLOUD_SQL_DATABASE,
+        port: process.env.CLOUD_SQL_PORT || 3306,
+        waitForConnections: true,
+        connectionLimit: 10,
+        queueLimit: 0
+      });
+    }
   }
   return pool;
 }
