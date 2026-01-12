@@ -2,8 +2,6 @@ const express = require('express');
 const router = express.Router();
 const mysql = require('mysql2/promise');
 const { Connector } = require('@google-cloud/cloud-sql-connector');
-const fs = require('fs');
-const path = require('path');
 
 let pool;
 const connector = new Connector();
@@ -15,10 +13,9 @@ async function initializePool() {
     
     if (useConnector) {
       // Production: Use Cloud SQL Connector with service account
-      // Write credentials to temp file for the connector to use
-      const credPath = path.join('/tmp', 'gcloud-credentials.json');
-      fs.writeFileSync(credPath, process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
-      process.env.GOOGLE_APPLICATION_CREDENTIALS = credPath;
+      // Parse the service account JSON and set it as credentials
+      const credentials = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
+      process.env.GOOGLE_APPLICATION_CREDENTIALS = JSON.stringify(credentials);
       
       const clientOpts = await connector.getOptions({
         instanceConnectionName: process.env.CLOUD_SQL_CONNECTION_NAME,
