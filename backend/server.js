@@ -33,6 +33,19 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'Estimate Backend API is running' });
 });
 
+app.get('/api/server-ip', async (req, res) => {
+  try {
+    const response = await fetch('https://api.ipify.org?format=json');
+    const data = await response.json();
+    res.json({ 
+      outbound_ip: data.ip,
+      request_ip: req.ip || req.connection.remoteAddress
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 const colleaguesRouter = require('./routes/colleagues');
 app.use('/api/colleagues', colleaguesRouter);
 
