@@ -13,10 +13,13 @@ async function initializePool() {
     
     if (useConnector) {
       // Production: Use Cloud SQL Connector with service account
+      // Parse the service account JSON and set it as credentials
+      const credentials = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
+      process.env.GOOGLE_APPLICATION_CREDENTIALS = JSON.stringify(credentials);
+      
       const clientOpts = await connector.getOptions({
         instanceConnectionName: process.env.CLOUD_SQL_CONNECTION_NAME,
         ipType: 'PUBLIC',
-        authType: 'IAM',
       });
       
       pool = mysql.createPool({
