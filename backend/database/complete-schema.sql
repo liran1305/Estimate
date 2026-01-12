@@ -89,8 +89,8 @@ CREATE TABLE IF NOT EXISTS education (
   title VARCHAR(500),
   degree VARCHAR(255),
   field VARCHAR(255),
-  start_year INT,
-  end_year INT,
+  start_year VARCHAR(10),
+  end_year VARCHAR(10),
   description TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   INDEX idx_profile (profile_id),
@@ -107,6 +107,18 @@ CREATE TABLE IF NOT EXISTS certifications (
   credential_url VARCHAR(500),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   INDEX idx_profile (profile_id),
+  FOREIGN KEY (profile_id) REFERENCES linkedin_profiles(id) ON DELETE CASCADE
+);
+
+-- Skills (for future use)
+CREATE TABLE IF NOT EXISTS skills (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  profile_id VARCHAR(255) NOT NULL,
+  skill_name VARCHAR(255),
+  endorsements INT DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_profile (profile_id),
+  INDEX idx_skill (skill_name),
   FOREIGN KEY (profile_id) REFERENCES linkedin_profiles(id) ON DELETE CASCADE
 );
 
