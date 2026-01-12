@@ -33,6 +33,9 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'Estimate Backend API is running' });
 });
 
+const colleaguesRouter = require('./routes/colleagues');
+app.use('/api/colleagues', colleaguesRouter);
+
 app.post('/api/auth/linkedin/callback', async (req, res) => {
   const { code, redirect_uri, turnstile_token } = req.body;
 
