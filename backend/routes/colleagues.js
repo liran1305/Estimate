@@ -56,7 +56,7 @@ router.get('/search', async (req, res) => {
       });
     }
 
-    const pool = initializePool();
+    const pool = await initializePool();
     const connection = await pool.getConnection();
 
     let sql = `
@@ -166,7 +166,7 @@ router.get('/profile/:profileId', async (req, res) => {
   try {
     const { profileId } = req.params;
 
-    const pool = initializePool();
+    const pool = await initializePool();
     const connection = await pool.getConnection();
 
     const [profiles] = await connection.query(
