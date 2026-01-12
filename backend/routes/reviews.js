@@ -173,11 +173,13 @@ router.get('/colleague/next', async (req, res) => {
 
       const userProfileId = users[0].linkedin_profile_id;
 
-      // Get user's work history
+      // Get user's work history - ONLY current + 1 previous company
       const [userWorkHistory] = await connection.query(`
         SELECT company_name, worked_from, worked_to, is_current
         FROM company_connections 
         WHERE profile_id = ?
+        ORDER BY is_current DESC, worked_to DESC
+        LIMIT 2
       `, [userProfileId]);
 
       if (userWorkHistory.length === 0) {

@@ -37,12 +37,13 @@ router.get('/profile/:profileId/colleagues', async (req, res) => {
         return res.status(404).json({ success: false, error: 'Profile not found' });
       }
 
-      // Get work history
+      // Get work history - ONLY current + 1 previous company
       const [workHistory] = await connection.query(`
         SELECT company_name, worked_from, worked_to, is_current
         FROM company_connections 
         WHERE profile_id = ?
-        ORDER BY is_current DESC
+        ORDER BY is_current DESC, worked_to DESC
+        LIMIT 2
       `, [profileId]);
 
       // Get colleagues from each company
