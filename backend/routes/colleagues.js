@@ -121,7 +121,7 @@ router.get('/by-company/:companyName', async (req, res) => {
     const { companyName } = req.params;
     const { limit = 20 } = req.query;
 
-    const pool = initializePool();
+    const pool = await initializePool();
     const connection = await pool.getConnection();
 
     const sql = `
@@ -229,7 +229,7 @@ router.get('/common-companies', async (req, res) => {
       });
     }
 
-    const pool = initializePool();
+    const pool = await initializePool();
     const connection = await pool.getConnection();
 
     const sql = `
