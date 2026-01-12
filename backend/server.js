@@ -77,6 +77,43 @@ app.get('/api/table-info/:tableName', async (req, res) => {
   }
 });
 
+// Add indexes for performance
+app.post('/api/add-indexes', async (req, res) => {
+  try {
+    const mysql = require('mysql2/promise');
+    const connection = await mysql.createConnection({
+      host: process.env.CLOUD_SQL_HOST,
+      user: process.env.CLOUD_SQL_USER,
+      password: process.env.CLOUD_SQL_PASSWORD,
+      database: process.env.CLOUD_SQL_DATABASE,
+      port: process.env.CLOUD_SQL_PORT || 3306
+    });
+
+    // Add composite index for colleague lookup by company
+    await connection.query(`
+      CREATE INDEX idx_cc_company_profile 
+      ON company_connections(company_name, profile_id, is_current)
+    `).catch(() => {}); // Ignore if exists
+
+    // Add index for profile lookup with ordering
+    await connection.query(`
+      CREATE INDEX idx_cc_profile_order 
+      ON company_connections(profile_id, is_current, worked_to)
+    `).catch(() => {}); // Ignore if exists
+
+    const [indexes] = await connection.query('SHOW INDEX FROM company_connections');
+    await connection.end();
+
+    res.json({
+      success: true,
+      message: 'Indexes added',
+      indexes: indexes.map(i => ({ name: i.Key_name, column: i.Column_name }))
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 // Migration endpoint
 app.post('/api/migrate', async (req, res) => {
   try {
