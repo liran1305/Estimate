@@ -47,9 +47,45 @@ app.get('/api/server-ip', async (req, res) => {
 });
 
 const colleaguesRouter = require('./routes/colleagues');
-const adminRouter = require('./routes/admin');
 app.use('/api/colleagues', colleaguesRouter);
-app.use('/api/admin', adminRouter);
+
+// Migration endpoint
+app.post('/api/migrate', async (req, res) => {
+  try {
+    const mysql = require('mysql2/promise');
+    const fs = require('fs');
+    const path = require('path');
+    
+    const connection = await mysql.createConnection({
+      host: process.env.CLOUD_SQL_HOST,
+      user: process.env.CLOUD_SQL_USER,
+      password: process.env.CLOUD_SQL_PASSWORD,
+      database: process.env.CLOUD_SQL_DATABASE,
+      port: process.env.CLOUD_SQL_PORT || 3306,
+      multipleStatements: true
+    });
+
+    const migrationPath = path.join(__dirname, 'database/migration-add-review-system.sql');
+    const migrationSql = fs.readFileSync(migrationPath, 'utf8');
+    
+    await connection.query(migrationSql);
+    
+    const [tables] = await connection.query('SHOW TABLES');
+    await connection.end();
+
+    res.json({
+      success: true,
+      message: 'Migration completed',
+      tablesCount: tables.length,
+      tables: tables.map(row => Object.values(row)[0])
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
 
 app.post('/api/auth/linkedin/callback', async (req, res) => {
   const { code, redirect_uri, turnstile_token } = req.body;
