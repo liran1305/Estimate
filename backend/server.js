@@ -242,14 +242,106 @@ app.post('/api/auth/linkedin/callback', async (req, res) => {
 
     const profile = await profileResponse.json();
 
+    // Match user to Bright Data LinkedIn profile and create user
+    const mysql = require('mysql2/promise');
+    const { v4: uuidv4 } = require('uuid');
+    
+    const connection = await mysql.createConnection({
+      host: process.env.CLOUD_SQL_HOST,
+      user: process.env.CLOUD_SQL_USER,
+      password: process.env.CLOUD_SQL_PASSWORD,
+      database: process.env.CLOUD_SQL_DATABASE,
+      port: process.env.CLOUD_SQL_PORT || 3306
+    });
+
+    // Try to match by email first, then by name
+    let linkedinProfileId = null;
+    let matchMethod = 'not_found';
+    let matchConfidence = 0;
+
+    // Try email match
+    if (profile.email) {
+      const [emailMatches] = await connection.query(
+        'SELECT id FROM linkedin_profiles WHERE email = ? LIMIT 1',
+        [profile.email]
+      );
+      if (emailMatches.length > 0) {
+        linkedinProfileId = emailMatches[0].id;
+        matchMethod = 'email';
+        matchConfidence = 0.9;
+      }
+    }
+
+    // Try name match if email didn't work
+    if (!linkedinProfileId && profile.name) {
+      const [nameMatches] = await connection.query(
+        'SELECT id, name FROM linkedin_profiles WHERE name = ? LIMIT 5',
+        [profile.name]
+      );
+      if (nameMatches.length === 1) {
+        linkedinProfileId = nameMatches[0].id;
+        matchMethod = 'name';
+        matchConfidence = 0.7;
+      }
+    }
+
+    // Check if user already exists
+    const [existingUsers] = await connection.query(
+      'SELECT id, linkedin_profile_id FROM users WHERE email = ?',
+      [profile.email]
+    );
+
+    let userId;
+    if (existingUsers.length > 0) {
+      userId = existingUsers[0].id;
+      // Update linkedin_profile_id if we found a match and it wasn't set
+      if (linkedinProfileId && !existingUsers[0].linkedin_profile_id) {
+        await connection.query(
+          'UPDATE users SET linkedin_profile_id = ?, profile_match_method = ?, profile_match_confidence = ?, can_use_platform = TRUE WHERE id = ?',
+          [linkedinProfileId, matchMethod, matchConfidence, userId]
+        );
+      }
+    } else {
+      // Create new user
+      userId = uuidv4();
+      await connection.query(`
+        INSERT INTO users (id, linkedin_profile_id, email, name, avatar, profile_match_method, profile_match_confidence, can_use_platform)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      `, [
+        userId,
+        linkedinProfileId,
+        profile.email,
+        profile.name,
+        profile.picture,
+        matchMethod,
+        matchConfidence,
+        linkedinProfileId ? true : false
+      ]);
+    }
+
+    // Store OAuth token
+    if (linkedinProfileId) {
+      await connection.query(`
+        INSERT INTO oauth_tokens (user_id, provider, access_token, expires_at)
+        VALUES (?, 'linkedin', ?, DATE_ADD(NOW(), INTERVAL ? SECOND))
+        ON DUPLICATE KEY UPDATE access_token = VALUES(access_token), expires_at = VALUES(expires_at)
+      `, [userId, tokenData.access_token, tokenData.expires_in]);
+    }
+
+    await connection.end();
+
     return res.status(200).json({
       access_token: tokenData.access_token,
       expires_in: tokenData.expires_in,
-      profile: {
-        id: profile.sub,
+      user: {
+        id: userId,
+        linkedin_profile_id: linkedinProfileId,
         name: profile.name,
         email: profile.email,
         picture: profile.picture,
+        can_use_platform: !!linkedinProfileId,
+        match_method: matchMethod,
+        match_confidence: matchConfidence
       }
     });
 
