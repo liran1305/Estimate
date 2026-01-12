@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS companies (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   INDEX idx_name (name),
   INDEX idx_size (employee_count)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================================
 -- SECTION 2: USER AUTHENTICATION & APP USERS
@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS users (
   INDEX idx_linkedin_profile (linkedin_profile_id),
   INDEX idx_can_use (can_use_platform),
   FOREIGN KEY (linkedin_profile_id) REFERENCES linkedin_profiles(id) ON DELETE SET NULL
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS oauth_tokens (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS oauth_tokens (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   INDEX idx_user (user_id),
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================================
 -- SECTION 3: REVIEW SYSTEM
@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS review_sessions (
   INDEX idx_user (user_id),
   INDEX idx_status (status),
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS review_assignments (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -105,7 +105,7 @@ CREATE TABLE IF NOT EXISTS review_assignments (
   FOREIGN KEY (session_id) REFERENCES review_sessions(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (colleague_id) REFERENCES linkedin_profiles(id) ON DELETE CASCADE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS reviews (
   id VARCHAR(255) PRIMARY KEY,
@@ -131,7 +131,7 @@ CREATE TABLE IF NOT EXISTS reviews (
   FOREIGN KEY (reviewer_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (reviewee_id) REFERENCES linkedin_profiles(id) ON DELETE CASCADE,
   FOREIGN KEY (assignment_id) REFERENCES review_assignments(id) ON DELETE SET NULL
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================================
 -- SECTION 4: SCORING & ANALYTICS
@@ -159,7 +159,7 @@ CREATE TABLE IF NOT EXISTS user_scores (
   INDEX idx_unlocked (score_unlocked),
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (linkedin_profile_id) REFERENCES linkedin_profiles(id) ON DELETE SET NULL
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS analytics_events (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -174,7 +174,7 @@ CREATE TABLE IF NOT EXISTS analytics_events (
   INDEX idx_event_type (event_type),
   INDEX idx_created (created_at),
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================================
 -- SECTION 5: FRAUD DETECTION & MODERATION
@@ -199,7 +199,7 @@ CREATE TABLE IF NOT EXISTS fraud_flags (
   INDEX idx_severity (severity),
   FOREIGN KEY (review_id) REFERENCES reviews(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS admin_actions (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -213,7 +213,7 @@ CREATE TABLE IF NOT EXISTS admin_actions (
   INDEX idx_admin (admin_user_id),
   INDEX idx_action_type (action_type),
   INDEX idx_created (created_at)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================================
 -- SECTION 6: NOTIFICATIONS
@@ -239,7 +239,7 @@ CREATE TABLE IF NOT EXISTS notification_queue (
   INDEX idx_scheduled (scheduled_for),
   INDEX idx_type (notification_type),
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS notification_log (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -255,7 +255,7 @@ CREATE TABLE IF NOT EXISTS notification_log (
   INDEX idx_type (notification_type),
   FOREIGN KEY (queue_id) REFERENCES notification_queue(id) ON DELETE SET NULL,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================================
 -- SECTION 7: SYSTEM METADATA
@@ -266,7 +266,7 @@ CREATE TABLE IF NOT EXISTS schema_versions (
   version VARCHAR(50) NOT NULL,
   description TEXT,
   applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Record this migration
 INSERT INTO schema_versions (version, description) 
