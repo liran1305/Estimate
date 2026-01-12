@@ -20,6 +20,67 @@ function initializePool() {
   return pool;
 }
 
+router.get('/profile/:profileId/colleagues', async (req, res) => {
+  try {
+    const { profileId } = req.params;
+    const pool = initializePool();
+    const connection = await pool.getConnection();
+
+    try {
+      // Get profile
+      const [profiles] = await connection.query(
+        'SELECT id, name, position, current_company_name FROM linkedin_profiles WHERE id = ?',
+        [profileId]
+      );
+
+      if (profiles.length === 0) {
+        return res.status(404).json({ success: false, error: 'Profile not found' });
+      }
+
+      // Get work history
+      const [workHistory] = await connection.query(`
+        SELECT company_name, worked_from, worked_to, is_current
+        FROM company_connections 
+        WHERE profile_id = ?
+        ORDER BY is_current DESC
+      `, [profileId]);
+
+      // Get colleagues from each company
+      const colleaguesByCompany = {};
+      for (const company of workHistory) {
+        const [colleagues] = await connection.query(`
+          SELECT 
+            lp.id, lp.name, lp.position, lp.avatar, lp.current_company_name, lp.connections,
+            cc.worked_from, cc.worked_to, cc.is_current
+          FROM linkedin_profiles lp
+          JOIN company_connections cc ON cc.profile_id = lp.id
+          WHERE cc.company_name = ? AND lp.id != ?
+          ORDER BY cc.is_current DESC, lp.connections DESC
+          LIMIT 5
+        `, [company.company_name, profileId]);
+
+        colleaguesByCompany[company.company_name] = {
+          user_period: { from: company.worked_from, to: company.worked_to, is_current: company.is_current },
+          colleagues: colleagues
+        };
+      }
+
+      res.json({
+        success: true,
+        profile: profiles[0],
+        work_history: workHistory,
+        skip_budget: Math.max(workHistory.length * 3, 3),
+        colleagues_by_company: colleaguesByCompany
+      });
+
+    } finally {
+      connection.release();
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 router.get('/search', async (req, res) => {
   try {
     const { company, name, location, limit = 10 } = req.query;
