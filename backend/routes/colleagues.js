@@ -82,7 +82,7 @@ router.get('/profile/:profileId/colleagues', async (req, res) => {
     try {
       // Get profile
       const [profiles] = await connection.query(
-        'SELECT id, name, position, current_company_name FROM linkedin_profiles WHERE id = ?',
+        'SELECT id, linkedin_num_id, name, position, current_company_name FROM linkedin_profiles WHERE id = ?',
         [profileId]
       );
 

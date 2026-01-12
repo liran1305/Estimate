@@ -254,25 +254,52 @@ app.post('/api/auth/linkedin/callback', async (req, res) => {
       port: process.env.CLOUD_SQL_PORT || 3306
     });
 
-    // Try to match by email first, then by name
+    // Try to match by LinkedIn profile URL/ID first, then by numeric ID, then by name
     let linkedinProfileId = null;
     let matchMethod = 'not_found';
     let matchConfidence = 0;
 
-    // Try email match
-    if (profile.email) {
-      const [emailMatches] = await connection.query(
-        'SELECT id FROM linkedin_profiles WHERE email = ? LIMIT 1',
-        [profile.email]
-      );
-      if (emailMatches.length > 0) {
-        linkedinProfileId = emailMatches[0].id;
-        matchMethod = 'email';
-        matchConfidence = 0.9;
+    // Extract profile ID from LinkedIn profile URL if available
+    // LinkedIn OAuth may return profile URL in different fields
+    const profileUrl = profile.profile_url || profile.vanity_name || profile.public_profile_url;
+    let extractedProfileId = null;
+    
+    if (profileUrl) {
+      // Extract ID from URL like "https://www.linkedin.com/in/liran-naim/"
+      const match = profileUrl.match(/linkedin\.com\/in\/([^\/\?]+)/);
+      if (match) {
+        extractedProfileId = match[1];
       }
     }
 
-    // Try name match if email didn't work
+    // Try profile ID match (from URL - most reliable)
+    if (extractedProfileId) {
+      const [profileMatches] = await connection.query(
+        'SELECT id FROM linkedin_profiles WHERE id = ? OR linkedin_id = ? LIMIT 1',
+        [extractedProfileId, extractedProfileId]
+      );
+      if (profileMatches.length > 0) {
+        linkedinProfileId = profileMatches[0].id;
+        matchMethod = 'linkedin_id';
+        matchConfidence = 1.0;
+      }
+    }
+
+    // Try linkedin_num_id match if URL didn't work
+    const linkedinNumId = profile.sub;
+    if (!linkedinProfileId && linkedinNumId) {
+      const [numIdMatches] = await connection.query(
+        'SELECT id FROM linkedin_profiles WHERE linkedin_num_id = ? LIMIT 1',
+        [linkedinNumId]
+      );
+      if (numIdMatches.length > 0) {
+        linkedinProfileId = numIdMatches[0].id;
+        matchMethod = 'linkedin_num_id';
+        matchConfidence = 0.95;
+      }
+    }
+
+    // Try name match as last resort
     if (!linkedinProfileId && profile.name) {
       const [nameMatches] = await connection.query(
         'SELECT id, name FROM linkedin_profiles WHERE name = ? LIMIT 5',
@@ -284,6 +311,17 @@ app.post('/api/auth/linkedin/callback', async (req, res) => {
         matchConfidence = 0.7;
       }
     }
+    
+    // Log for debugging
+    console.log('OAuth Profile Match:', {
+      profileUrl,
+      extractedProfileId,
+      linkedinNumId,
+      name: profile.name,
+      matchedId: linkedinProfileId,
+      matchMethod,
+      matchConfidence
+    });
 
     // Check if user already exists
     const [existingUsers] = await connection.query(
