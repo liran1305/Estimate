@@ -5,6 +5,52 @@ const { v4: uuidv4 } = require('uuid');
 
 let pool;
 
+// Calculate time overlap in months between two work periods
+function calculateTimeOverlap(userFrom, userTo, userIsCurrent, colleagueFrom, colleagueTo, colleagueIsCurrent) {
+  const parseDate = (dateStr, isCurrent, isEnd = false) => {
+    if (isCurrent && isEnd) return new Date();
+    if (!dateStr || dateStr === 'Present') return isEnd ? new Date() : null;
+    
+    const monthNames = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+    const parts = dateStr.toLowerCase().split(' ');
+    
+    let year, month;
+    if (parts.length === 2) {
+      const monthIndex = monthNames.findIndex(m => parts[0].startsWith(m));
+      month = monthIndex >= 0 ? monthIndex : 0;
+      year = parseInt(parts[1]);
+    } else if (parts.length === 1) {
+      year = parseInt(parts[0]);
+      month = isEnd ? 11 : 0;
+    } else {
+      return null;
+    }
+    
+    if (isNaN(year)) return null;
+    return new Date(year, month, isEnd ? 28 : 1);
+  };
+
+  const userStart = parseDate(userFrom, false, false);
+  const userEnd = parseDate(userTo, userIsCurrent, true);
+  const colleagueStart = parseDate(colleagueFrom, false, false);
+  const colleagueEnd = parseDate(colleagueTo, colleagueIsCurrent, true);
+
+  if (!userStart || !userEnd || !colleagueStart || !colleagueEnd) {
+    if (userIsCurrent && colleagueIsCurrent) return 12;
+    return 6;
+  }
+
+  const overlapStart = new Date(Math.max(userStart.getTime(), colleagueStart.getTime()));
+  const overlapEnd = new Date(Math.min(userEnd.getTime(), colleagueEnd.getTime()));
+
+  if (overlapStart >= overlapEnd) return 0;
+
+  const months = (overlapEnd.getFullYear() - overlapStart.getFullYear()) * 12 
+                 + (overlapEnd.getMonth() - overlapStart.getMonth());
+  
+  return Math.max(0, months);
+}
+
 async function getPool() {
   if (!pool) {
     pool = mysql.createPool({
@@ -221,52 +267,44 @@ router.get('/colleague/next', async (req, res) => {
         queryParams.push(excludeIds);
       }
 
-      colleagueQuery += `
-        ORDER BY 
-          cc.is_current DESC,
-          lp.connections DESC
-        LIMIT 10
-      `;
+      colleagueQuery += ` LIMIT 50`; // Get more to filter by overlap
 
       const [potentialColleagues] = await connection.query(colleagueQuery, queryParams);
 
-      if (potentialColleagues.length === 0) {
+      // Filter by 3+ months time overlap
+      const colleaguesWithOverlap = potentialColleagues.filter(colleague => {
+        const userCompany = userWorkHistory.find(w => w.company_name === colleague.company_name);
+        if (!userCompany) return false;
+        
+        const overlapMonths = calculateTimeOverlap(
+          userCompany.worked_from, userCompany.worked_to, userCompany.is_current,
+          colleague.worked_from, colleague.worked_to, colleague.is_current
+        );
+        colleague.overlap_months = overlapMonths;
+        return overlapMonths >= 3;
+      });
+
+      if (colleaguesWithOverlap.length === 0) {
         return res.json({
           success: true,
           colleague: null,
-          message: 'No more colleagues to review'
+          message: 'No more colleagues to review with sufficient time overlap'
         });
       }
 
-      // Score and rank colleagues
-      const scoredColleagues = potentialColleagues.map(colleague => {
-        let score = 0;
-        
-        // Find matching company in user's work history
+      // Score and rank colleagues by overlap months (most overlap first)
+      const scoredColleagues = colleaguesWithOverlap.map(colleague => {
         const userCompany = userWorkHistory.find(w => w.company_name === colleague.company_name);
+        const companyContext = (colleague.is_current && userCompany?.is_current) ? 'current' : 'previous';
         
-        // Current company bonus
-        if (colleague.is_current && userCompany?.is_current) {
-          score += 50; // Both currently work there
-        } else if (colleague.is_current || userCompany?.is_current) {
-          score += 30; // One currently works there
-        }
-
-        // Time overlap calculation (simplified)
-        // In production, parse dates properly
-        score += 20; // Base score for same company
-
-        // Connection count as tiebreaker
-        score += Math.min(colleague.connections / 100, 10);
-
         return {
           ...colleague,
-          match_score: score,
-          company_context: (colleague.is_current && userCompany?.is_current) ? 'current' : 'previous'
+          match_score: colleague.overlap_months, // Score = overlap months
+          company_context: companyContext
         };
       });
 
-      // Sort by score and pick top one
+      // Sort by overlap months (most overlap first)
       scoredColleagues.sort((a, b) => b.match_score - a.match_score);
       const selectedColleague = scoredColleagues[0];
 

@@ -4,6 +4,59 @@ const mysql = require('mysql2/promise');
 
 let pool;
 
+// Calculate time overlap in months between two work periods
+function calculateTimeOverlap(userFrom, userTo, userIsCurrent, colleagueFrom, colleagueTo, colleagueIsCurrent) {
+  // Parse date strings like "Jan 2020", "2020", "Present", null
+  const parseDate = (dateStr, isCurrent, isEnd = false) => {
+    if (isCurrent && isEnd) return new Date(); // Current = now
+    if (!dateStr || dateStr === 'Present') return isEnd ? new Date() : null;
+    
+    // Try to parse "Jan 2020" or "2020"
+    const monthNames = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+    const parts = dateStr.toLowerCase().split(' ');
+    
+    let year, month;
+    if (parts.length === 2) {
+      // "Jan 2020"
+      const monthIndex = monthNames.findIndex(m => parts[0].startsWith(m));
+      month = monthIndex >= 0 ? monthIndex : 0;
+      year = parseInt(parts[1]);
+    } else if (parts.length === 1) {
+      // "2020"
+      year = parseInt(parts[0]);
+      month = isEnd ? 11 : 0; // End of year or start of year
+    } else {
+      return null;
+    }
+    
+    if (isNaN(year)) return null;
+    return new Date(year, month, isEnd ? 28 : 1);
+  };
+
+  const userStart = parseDate(userFrom, false, false);
+  const userEnd = parseDate(userTo, userIsCurrent, true);
+  const colleagueStart = parseDate(colleagueFrom, false, false);
+  const colleagueEnd = parseDate(colleagueTo, colleagueIsCurrent, true);
+
+  // If we can't parse dates, assume overlap if both are current
+  if (!userStart || !userEnd || !colleagueStart || !colleagueEnd) {
+    if (userIsCurrent && colleagueIsCurrent) return 12; // Assume 12 months if both current
+    return 6; // Default to 6 months if dates unknown
+  }
+
+  // Calculate overlap
+  const overlapStart = new Date(Math.max(userStart.getTime(), colleagueStart.getTime()));
+  const overlapEnd = new Date(Math.min(userEnd.getTime(), colleagueEnd.getTime()));
+
+  if (overlapStart >= overlapEnd) return 0; // No overlap
+
+  // Calculate months
+  const months = (overlapEnd.getFullYear() - overlapStart.getFullYear()) * 12 
+                 + (overlapEnd.getMonth() - overlapStart.getMonth());
+  
+  return Math.max(0, months);
+}
+
 function initializePool() {
   if (!pool) {
     pool = mysql.createPool({
@@ -46,23 +99,37 @@ router.get('/profile/:profileId/colleagues', async (req, res) => {
         LIMIT 2
       `, [profileId]);
 
-      // Get colleagues from each company
+      // Get colleagues from each company - must have 3+ months overlap
       const colleaguesByCompany = {};
       for (const company of workHistory) {
-        const [colleagues] = await connection.query(`
+        // Get all potential colleagues at this company
+        const [potentialColleagues] = await connection.query(`
           SELECT 
-            lp.id, lp.name, lp.position, lp.avatar, lp.current_company_name, lp.connections,
+            lp.id, lp.name, lp.position, lp.avatar, lp.current_company_name,
             cc.worked_from, cc.worked_to, cc.is_current
           FROM linkedin_profiles lp
           JOIN company_connections cc ON cc.profile_id = lp.id
           WHERE cc.company_name = ? AND lp.id != ?
-          ORDER BY cc.is_current DESC, lp.connections DESC
-          LIMIT 5
         `, [company.company_name, profileId]);
+
+        // Filter colleagues with 3+ months overlap
+        const colleaguesWithOverlap = potentialColleagues.filter(colleague => {
+          const overlapMonths = calculateTimeOverlap(
+            company.worked_from, company.worked_to, company.is_current,
+            colleague.worked_from, colleague.worked_to, colleague.is_current
+          );
+          colleague.overlap_months = overlapMonths;
+          return overlapMonths >= 3;
+        });
+
+        // Sort by overlap months (most overlap first)
+        colleaguesWithOverlap.sort((a, b) => b.overlap_months - a.overlap_months);
 
         colleaguesByCompany[company.company_name] = {
           user_period: { from: company.worked_from, to: company.worked_to, is_current: company.is_current },
-          colleagues: colleagues
+          colleagues: colleaguesWithOverlap.slice(0, 10), // Limit to 10
+          total_potential: potentialColleagues.length,
+          filtered_by_overlap: potentialColleagues.length - colleaguesWithOverlap.length
         };
       }
 
