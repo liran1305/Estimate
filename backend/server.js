@@ -47,7 +47,9 @@ app.get('/api/server-ip', async (req, res) => {
 });
 
 const colleaguesRouter = require('./routes/colleagues');
+const adminRouter = require('./routes/admin');
 app.use('/api/colleagues', colleaguesRouter);
+app.use('/api/admin', adminRouter);
 
 app.post('/api/auth/linkedin/callback', async (req, res) => {
   const { code, redirect_uri, turnstile_token } = req.body;
