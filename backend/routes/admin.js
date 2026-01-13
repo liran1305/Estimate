@@ -85,7 +85,7 @@ router.get('/tables', async (req, res) => {
 // Fix profile_match_method ENUM
 router.post('/fix-enum', async (req, res) => {
   try {
-    const pool = await getPool();
+    const pool = await initializePool();
     const connection = await pool.getConnection();
 
     try {
