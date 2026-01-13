@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, RefreshCw } from "lucide-react";
+import { ArrowRight, RefreshCw, Loader2 } from "lucide-react";
 
 const interactionTypes = [
   { 
@@ -30,7 +30,8 @@ export default function ColleagueCard({
   onContinue, 
   onSkip,
   skipsRemaining,
-  totalSkips
+  totalSkips,
+  isSkipping
 }) {
   return (
     <div className="space-y-6">
@@ -76,14 +77,18 @@ export default function ColleagueCard({
         <div className="flex items-center justify-between pt-4 border-t border-gray-100">
           <button 
             onClick={onSkip}
-            className="flex items-center gap-2 text-gray-500 hover:text-gray-700 text-sm font-medium transition-colors"
-            disabled={skipsRemaining <= 0}
+            className="flex items-center gap-2 text-gray-500 hover:text-gray-700 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={skipsRemaining <= 0 || isSkipping}
           >
-            <RefreshCw className="w-4 h-4" />
+            {isSkipping ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <RefreshCw className="w-4 h-4" />
+            )}
             Insufficient interaction
             {totalSkips > 0 && (
               <span className="ml-1 text-xs bg-gray-100 px-2 py-0.5 rounded-full">
-                {skipsRemaining}/{totalSkips}
+                {totalSkips - skipsRemaining}/{totalSkips}
               </span>
             )}
           </button>

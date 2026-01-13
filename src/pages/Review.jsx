@@ -13,6 +13,7 @@ const BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhos
 export default function Review() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
+  const [isSkipping, setIsSkipping] = useState(false);
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
   const [session, setSession] = useState(null);
@@ -86,6 +87,9 @@ export default function Review() {
       return;
     }
 
+    if (isSkipping) return; // Prevent double-clicks
+
+    setIsSkipping(true);
     try {
       const res = await fetch(`${BACKEND_API_URL}/api/colleague/skip`, {
         method: 'POST',
@@ -100,11 +104,13 @@ export default function Review() {
       
       if (data.success) {
         setSkipsRemaining(data.skips_remaining);
-        await fetchNextColleague(user.id, session.id);
         setInteractionType('');
+        await fetchNextColleague(user.id, session.id);
       }
     } catch (err) {
       console.error('Skip error:', err);
+    } finally {
+      setIsSkipping(false);
     }
   };
 
@@ -259,6 +265,7 @@ export default function Review() {
                 onSkip={handleSkip}
                 skipsRemaining={skipsRemaining}
                 totalSkips={session?.skip_budget || 0}
+                isSkipping={isSkipping}
               />
             </motion.div>
           )}
