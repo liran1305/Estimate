@@ -33,19 +33,30 @@ export default function Profile() {
         return;
       }
       
+      console.log('Current user from localStorage:', currentUser);
       setUser(currentUser);
       
       // If user has a matched LinkedIn profile, fetch their full profile data
       if (currentUser.linkedinProfileId) {
+        console.log('Fetching profile data for:', currentUser.linkedinProfileId);
         try {
           const res = await fetch(`${BACKEND_API_URL}/api/colleagues/profile/${currentUser.linkedinProfileId}/colleagues`);
           const data = await res.json();
+          console.log('Profile API response:', data);
           if (data.success && data.profile) {
+            console.log('✅ Profile data loaded:', data.profile);
+            console.log('Position from profile:', data.profile.position);
             setProfileData(data.profile);
+          } else {
+            console.error('❌ Profile API returned no data');
           }
         } catch (err) {
-          console.error('Failed to fetch profile data:', err);
+          console.error('❌ Failed to fetch profile data:', err);
         }
+      } else {
+        console.warn('⚠️ No linkedinProfileId found for user:', currentUser);
+        console.log('User object keys:', Object.keys(currentUser));
+        console.log('Full user object:', JSON.stringify(currentUser, null, 2));
       }
       
       setReviews([]);
@@ -123,16 +134,18 @@ export default function Profile() {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <img 
-            src={user.picture || profileData?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'User')}&background=0A66C2&color=fff&size=120`}
-            alt={user.name}
-            className="w-24 h-24 rounded-2xl object-cover mx-auto mb-4 shadow-lg"
-          />
-          <h1 className="text-2xl font-bold text-gray-900">{profileData?.name || user.name || 'Professional'}</h1>
-          <p className="text-gray-500">{profileData?.position || 'Professional'}</p>
-          {profileData?.current_company_name && (
-            <p className="text-gray-400 text-sm">at {profileData.current_company_name}</p>
-          )}
+          <div className="w-28 h-28 mx-auto mb-4">
+            <img 
+              src={user.picture || profileData?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'User')}&background=0A66C2&color=fff&size=200`}
+              alt={user.name}
+              className="w-full h-full rounded-full object-cover shadow-lg ring-4 ring-white"
+              style={{ objectPosition: 'center' }}
+            />
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">{profileData?.name || user.name || 'Professional'}</h1>
+          <p className="text-gray-600 text-base max-w-2xl mx-auto px-4">
+            {profileData?.position || user.position || 'Professional'}
+          </p>
         </motion.div>
 
         {hasEnoughReviews ? (

@@ -241,6 +241,11 @@ app.post('/api/auth/linkedin/callback', async (req, res) => {
     }
 
     const profile = await profileResponse.json();
+    
+    // Log the full LinkedIn profile response for debugging
+    console.log('=== LinkedIn OAuth Profile Response ===');
+    console.log(JSON.stringify(profile, null, 2));
+    console.log('======================================');
 
     // Match user to Bright Data LinkedIn profile and create user
     const mysql = require('mysql2/promise');
