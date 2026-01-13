@@ -361,7 +361,7 @@ app.post('/api/auth/linkedin/callback', async (req, res) => {
 
     // Check if user already exists
     const [existingUsers] = await connection.query(
-      'SELECT id, linkedin_profile_id FROM users WHERE email = ?',
+      'SELECT id, linkedin_profile_id, is_blocked FROM users WHERE email = ?',
       [profile.email]
     );
 
@@ -402,6 +402,13 @@ app.post('/api/auth/linkedin/callback', async (req, res) => {
       `, [userId, tokenData.access_token, tokenData.expires_in]);
     }
 
+    // Get is_blocked status before closing connection
+    const [userStatus] = await connection.query(
+      'SELECT is_blocked FROM users WHERE id = ?',
+      [userId]
+    );
+    const isBlocked = userStatus.length > 0 ? userStatus[0].is_blocked : false;
+
     await connection.end();
 
     return res.status(200).json({
@@ -415,7 +422,8 @@ app.post('/api/auth/linkedin/callback', async (req, res) => {
         picture: profile.picture,
         can_use_platform: !!linkedinProfileId,
         match_method: matchMethod,
-        match_confidence: matchConfidence
+        match_confidence: matchConfidence,
+        is_blocked: isBlocked
       }
     });
 

@@ -13,7 +13,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Users, User, LogOut, ChevronDown } from "lucide-react";
 
-const publicPages = ['Landing', 'LinkedInAuth'];
+const publicPages = ['Landing', 'LinkedInAuth', 'LinkedInCallback'];
+const blockedOnlyPage = 'Blocked';
 
 export default function Layout({ children, currentPageName }) {
   const [user, setUser] = useState(null);
@@ -24,11 +25,23 @@ export default function Layout({ children, currentPageName }) {
       const currentUser = linkedinAuth.getCurrentUser();
       if (currentUser) {
         setUser(currentUser);
+        
+        // Check if user is blocked and redirect to Blocked page
+        if (currentUser.is_blocked && currentPageName !== blockedOnlyPage) {
+          window.location.href = createPageUrl(blockedOnlyPage);
+          return;
+        }
+        
+        // If user is NOT blocked but on Blocked page, redirect to Profile
+        if (!currentUser.is_blocked && currentPageName === blockedOnlyPage) {
+          window.location.href = createPageUrl("Profile");
+          return;
+        }
       }
       setIsLoading(false);
     };
     checkAuth();
-  }, []);
+  }, [currentPageName]);
 
   const handleLogout = () => {
     linkedinAuth.logout();
@@ -36,7 +49,7 @@ export default function Layout({ children, currentPageName }) {
   };
 
   // Show public pages without nav
-  if (publicPages.includes(currentPageName)) {
+  if (publicPages.includes(currentPageName) || currentPageName === blockedOnlyPage) {
     return <>{children}</>;
   }
 
