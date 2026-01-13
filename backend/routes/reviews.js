@@ -310,7 +310,7 @@ router.get('/colleague/next', async (req, res) => {
         queryParams.push(excludeIds);
       }
 
-      colleagueQuery += ` LIMIT 50`; // Get more to filter by overlap
+      colleagueQuery += ` ORDER BY cc.is_current DESC, cc.worked_to DESC LIMIT 50`; // Prioritize current and most recent shared companies
 
       const [potentialColleagues] = await connection.query(colleagueQuery, queryParams);
 
