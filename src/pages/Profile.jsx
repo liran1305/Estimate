@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { mockAuth, mockEntities } from "@/lib/mockAuth";
+import { linkedinAuth } from "@/lib/linkedinAuth";
 import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -12,28 +12,47 @@ import ScoreBreakdown from "@/components/profile/ScoreBreakdown";
 import WaitingState from "@/components/profile/WaitingState";
 import ConsentModal from "@/components/profile/ConsentModal";
 
+const BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:3001';
+
 export default function Profile() {
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState(null);
+  const [profileData, setProfileData] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [showConsent, setShowConsent] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     const init = async () => {
-      const currentUser = await mockAuth.me();
+      // Get real user from localStorage (set by LinkedIn OAuth)
+      const currentUser = linkedinAuth.getCurrentUser();
+      
+      if (!currentUser) {
+        navigate(createPageUrl("Login"));
+        return;
+      }
+      
       setUser(currentUser);
       
-      // In real app, fetch reviews where the user is the subject
-      // For now, we'll simulate with mock data based on user's colleague_id
-      const allReviews = await mockEntities.Review.list();
-      // Filter reviews that are about this user (in real app, would filter by user's colleague_id)
-      setReviews(allReviews);
+      // If user has a matched LinkedIn profile, fetch their full profile data
+      if (currentUser.linkedinProfileId) {
+        try {
+          const res = await fetch(`${BACKEND_API_URL}/api/colleagues/profile/${currentUser.linkedinProfileId}/colleagues`);
+          const data = await res.json();
+          if (data.success && data.profile) {
+            setProfileData(data.profile);
+          }
+        } catch (err) {
+          console.error('Failed to fetch profile data:', err);
+        }
+      }
       
+      setReviews([]);
       setIsLoading(false);
     };
     init();
-  }, []);
+  }, [navigate]);
 
   const calculateAverageScores = () => {
     if (reviews.length === 0) return null;
@@ -75,8 +94,10 @@ export default function Profile() {
 
   const updateConsent = async (value) => {
     setIsUpdating(true);
-    await mockAuth.updateMe({ recruitment_consent: value });
-    setUser(prev => ({ ...prev, recruitment_consent: value }));
+    // Update user in localStorage
+    const updatedUser = { ...user, recruitment_consent: value };
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+    setUser(updatedUser);
     setIsUpdating(false);
     setShowConsent(false);
   };
@@ -103,12 +124,15 @@ export default function Profile() {
           animate={{ opacity: 1, y: 0 }}
         >
           <img 
-            src={user.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.full_name || 'User')}&background=0A66C2&color=fff&size=120`}
-            alt={user.full_name}
+            src={user.picture || profileData?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'User')}&background=0A66C2&color=fff&size=120`}
+            alt={user.name}
             className="w-24 h-24 rounded-2xl object-cover mx-auto mb-4 shadow-lg"
           />
-          <h1 className="text-2xl font-bold text-gray-900">{user.full_name || 'Professional'}</h1>
-          <p className="text-gray-500">{user.job_title || 'Job Title'} at {user.company || 'Company'}</p>
+          <h1 className="text-2xl font-bold text-gray-900">{profileData?.name || user.name || 'Professional'}</h1>
+          <p className="text-gray-500">{profileData?.position || 'Professional'}</p>
+          {profileData?.current_company_name && (
+            <p className="text-gray-400 text-sm">at {profileData.current_company_name}</p>
+          )}
         </motion.div>
 
         {hasEnoughReviews ? (
@@ -155,7 +179,7 @@ export default function Profile() {
         )}
 
         {/* Review CTA */}
-        {(user.reviews_given || 0) < 3 && (
+        {(user.reviewsGiven || 0) < 3 && (
           <motion.div 
             className="mt-8 text-center"
             initial={{ opacity: 0 }}

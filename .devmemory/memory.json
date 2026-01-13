@@ -286,7 +286,431 @@
       "tags": [],
       "commit_hash": "f87b1b94c36fd4d3b2ee0f5e2000431d1aeb9b26",
       "created_at": "2026-01-09T15:59:20.000Z"
+    },
+    {
+      "id": 14,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add Cloudflare Turnstile invisible bot protection",
+      "files": [
+        ".env.example",
+        "backend/.env.example",
+        "backend/server.js",
+        "src/lib/linkedinAuth.js",
+        "src/lib/turnstile.js",
+        "src/pages/LinkedInAuth.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "55fe4b67d10c39004e2e195c927e7536b8c61041",
+      "created_at": "2026-01-11T08:17:24.000Z"
+    },
+    {
+      "id": 15,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add vercel.json for SPA routing - Fix 404 on OAuth callback",
+      "files": [
+        "vercel.json"
+      ],
+      "tags": [
+        "auth"
+      ],
+      "commit_hash": "ea6b1defb169da28405c34f290e0feadab986cd6",
+      "created_at": "2026-01-11T08:30:55.000Z"
+    },
+    {
+      "id": 16,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add Cloudflare protection badge to login page",
+      "files": [
+        "src/pages/LinkedInAuth.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "4d2fb111b032cdb11a16295299073c15ef7396eb",
+      "created_at": "2026-01-11T08:33:37.000Z"
+    },
+    {
+      "id": 17,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix CORS to allow both www and non-www domains",
+      "files": [
+        "backend/server.js"
+      ],
+      "tags": [],
+      "commit_hash": "527716b9a64aadc06698e24826214f69c6267233",
+      "created_at": "2026-01-11T08:36:28.000Z"
+    },
+    {
+      "id": 18,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Security fix and UX improvements",
+      "files": [
+        "src/components/review/ColleagueCard.jsx",
+        "src/lib/turnstile.js",
+        "src/pages/Review.jsx"
+      ],
+      "tags": [
+        "security"
+      ],
+      "commit_hash": "ec255e8b9376f14a6116607fa17183f5727fed82",
+      "created_at": "2026-01-11T08:52:47.000Z"
+    },
+    {
+      "id": 19,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add Cloud SQL integration and colleague search API",
+      "files": [
+        "backend/.env.example",
+        "backend/database/schema.sql",
+        "backend/package.json",
+        "backend/routes/colleagues.js",
+        "backend/scripts/importLargeFile.js",
+        "backend/scripts/importLinkedInData.js",
+        "backend/server.js"
+      ],
+      "tags": [
+        "api"
+      ],
+      "commit_hash": "5ed561a471d690c43aae83041ad9146686a38cd8",
+      "created_at": "2026-01-12T06:17:27.000Z"
+    },
+    {
+      "id": 20,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add endpoint to detect server outbound IP",
+      "files": [
+        "backend/server.js"
+      ],
+      "tags": [],
+      "commit_hash": "c153ff58be3af17ace20667f665ba6cca012edf3",
+      "created_at": "2026-01-12T06:32:22.000Z"
+    },
+    {
+      "id": 21,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add Cloud SQL Connector for secure private connection",
+      "files": [
+        "backend/.env.example",
+        "backend/package.json",
+        "backend/routes/colleagues.js"
+      ],
+      "tags": [],
+      "commit_hash": "5e7543cff6f5303163bbae7198e0ded29603b686",
+      "created_at": "2026-01-12T06:47:06.000Z"
+    },
+    {
+      "id": 22,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix async pool initialization - await initializePool() calls",
+      "files": [
+        "backend/routes/colleagues.js"
+      ],
+      "tags": [],
+      "commit_hash": "4a494f024229d1c271467a91d915d7b98c133a96",
+      "created_at": "2026-01-12T06:53:28.000Z"
+    },
+    {
+      "id": 23,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix remaining async pool initialization calls",
+      "files": [
+        "backend/routes/colleagues.js"
+      ],
+      "tags": [],
+      "commit_hash": "45ab2f25187a28988f3c95034808f84531991771",
+      "created_at": "2026-01-12T06:53:53.000Z"
+    },
+    {
+      "id": 24,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Parse service account JSON from env var for Cloud SQL Connector",
+      "files": [
+        "backend/routes/colleagues.js"
+      ],
+      "tags": [],
+      "commit_hash": "1236718b5949faa47ec9ee6e4869c734f7b0326f",
+      "created_at": "2026-01-12T06:57:46.000Z"
+    },
+    {
+      "id": 25,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Write service account to temp file for Cloud SQL Connector",
+      "files": [
+        "backend/routes/colleagues.js"
+      ],
+      "tags": [],
+      "commit_hash": "e837d8a4714892838cd1f6ef7b31e2d164a0ab34",
+      "created_at": "2026-01-12T07:05:02.000Z"
+    },
+    {
+      "id": 26,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Revert \"Add Cloud SQL Connector for secure private connection\"",
+      "files": [
+        "backend/.env.example",
+        "backend/package.json",
+        "backend/routes/colleagues.js"
+      ],
+      "tags": [],
+      "commit_hash": "d80e12731c59e5ba6819e33439b09665c548283a",
+      "created_at": "2026-01-12T07:16:27.000Z"
+    },
+    {
+      "id": 27,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Revert \"Fix async pool initialization - await initializePool() calls\"",
+      "files": [
+        "backend/routes/colleagues.js"
+      ],
+      "tags": [],
+      "commit_hash": "754f2f5f30ac602bdc3aa15db84a0bccb544c783",
+      "created_at": "2026-01-12T07:16:27.000Z"
+    },
+    {
+      "id": 28,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Revert \"Fix remaining async pool initialization calls\"",
+      "files": [
+        "backend/routes/colleagues.js"
+      ],
+      "tags": [],
+      "commit_hash": "4026caf11bc443169d1a72449a7987d744f91284",
+      "created_at": "2026-01-12T07:16:27.000Z"
+    },
+    {
+      "id": 29,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Revert \"Parse service account JSON from env var for Cloud SQL Connector\"",
+      "files": [
+        "backend/routes/colleagues.js"
+      ],
+      "tags": [],
+      "commit_hash": "134abfb44dd07c3e4c0c9098b4f6e95c7d55a6b5",
+      "created_at": "2026-01-12T07:16:27.000Z"
+    },
+    {
+      "id": 30,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Revert \"Write service account to temp file for Cloud SQL Connector\"",
+      "files": [
+        "backend/routes/colleagues.js"
+      ],
+      "tags": [],
+      "commit_hash": "8bdc9f1ba86667a5fa1ecb5cd8f9bb86db100922",
+      "created_at": "2026-01-12T07:16:27.000Z"
+    },
+    {
+      "id": 31,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add profile matching fields to users table",
+      "files": [
+        "backend/database/complete-schema.sql"
+      ],
+      "tags": [],
+      "commit_hash": "d73c01cbc70fef1ee3121090bd966fbc3038f32a",
+      "created_at": "2026-01-12T12:25:03.000Z"
+    },
+    {
+      "id": 32,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix schema alignment with Bright Data: VARCHAR years, add skills table",
+      "files": [
+        "backend/database/complete-schema.sql"
+      ],
+      "tags": [],
+      "commit_hash": "a4d82cc0a4e7823f84465f976ea6d0ea568d9035",
+      "created_at": "2026-01-12T12:34:04.000Z"
+    },
+    {
+      "id": 33,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add migration script and admin endpoint to run migration",
+      "files": [
+        "backend/database/migration-add-review-system.sql",
+        "backend/routes/admin.js",
+        "backend/scripts/runMigration.js",
+        "backend/server.js"
+      ],
+      "tags": [],
+      "commit_hash": "c0d9cd6c9b3f765ae3fc9596506e83adf4837607",
+      "created_at": "2026-01-12T12:41:03.000Z"
+    },
+    {
+      "id": 34,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add migration endpoint directly to server.js",
+      "files": [
+        "backend/server.js"
+      ],
+      "tags": [],
+      "commit_hash": "39687d152d742bb9e204840aea8dafbdb34474fb",
+      "created_at": "2026-01-12T12:46:26.000Z"
+    },
+    {
+      "id": 35,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add table info endpoint",
+      "files": [
+        "backend/server.js"
+      ],
+      "tags": [],
+      "commit_hash": "4d0cb5da9d1abbf75be45b7b3502e135e044067a",
+      "created_at": "2026-01-12T13:00:28.000Z"
+    },
+    {
+      "id": 36,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix migration: add ENGINE and CHARSET to match existing tables",
+      "files": [
+        "backend/database/migration-add-review-system.sql"
+      ],
+      "tags": [],
+      "commit_hash": "ceff973d19d3f633f3370788e1454345484ff46d",
+      "created_at": "2026-01-12T13:05:48.000Z"
+    },
+    {
+      "id": 37,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add table-info endpoint and fix migration",
+      "files": [
+        "backend/server.js"
+      ],
+      "tags": [],
+      "commit_hash": "73cbdb00c51a70ee8e8f0a04fd49a689a521aeac",
+      "created_at": "2026-01-12T13:10:19.000Z"
+    },
+    {
+      "id": 38,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add Core APIs: session/start, colleague/next, colleague/skip, review/submit, score/me",
+      "files": [
+        "backend/routes/reviews.js",
+        "backend/server.js"
+      ],
+      "tags": [
+        "api"
+      ],
+      "commit_hash": "71b2826c124a5ddee790249dd08d8e930f91569b",
+      "created_at": "2026-01-12T13:18:13.000Z"
+    },
+    {
+      "id": 39,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add endpoint to get profile work history and colleagues from all companies",
+      "files": [
+        "backend/routes/colleagues.js"
+      ],
+      "tags": [],
+      "commit_hash": "4e39393ab20606dd4c2d8a212104101aeed4e05f",
+      "created_at": "2026-01-12T13:29:38.000Z"
+    },
+    {
+      "id": 40,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Limit colleague matching to current + 1 previous company only",
+      "files": [
+        "backend/routes/colleagues.js",
+        "backend/routes/reviews.js"
+      ],
+      "tags": [],
+      "commit_hash": "2cf3e17c356e077ff006d9662fd0cc3bdf83fb6f",
+      "created_at": "2026-01-12T13:30:46.000Z"
+    },
+    {
+      "id": 41,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add 3+ months time overlap filter for colleague matching, remove connections-based sorting",
+      "files": [
+        "backend/routes/colleagues.js",
+        "backend/routes/reviews.js"
+      ],
+      "tags": [],
+      "commit_hash": "e683385270e864f9c250718b857c5d7a8a0cd793",
+      "created_at": "2026-01-12T13:40:18.000Z"
+    },
+    {
+      "id": 42,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add performance indexes for colleague matching queries",
+      "files": [
+        "backend/database/add-indexes.sql",
+        "backend/server.js"
+      ],
+      "tags": [],
+      "commit_hash": "13c59099c534158d1477d9e6c94b23ff1c54d2bb",
+      "created_at": "2026-01-12T13:47:31.000Z"
+    },
+    {
+      "id": 43,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Update OAuth callback to create user, match to Bright Data profile, and enable review flow",
+      "files": [
+        "backend/server.js"
+      ],
+      "tags": [
+        "auth"
+      ],
+      "commit_hash": "f2600c218e2a683b4ac7b701e6bdfaf1931d7877",
+      "created_at": "2026-01-12T13:55:33.000Z"
+    },
+    {
+      "id": 44,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Update frontend to use real APIs for review flow",
+      "files": [
+        "src/lib/linkedinAuth.js",
+        "src/pages/Review.jsx"
+      ],
+      "tags": [
+        "api"
+      ],
+      "commit_hash": "b1271ecf586728e612ef3de3bf7e9aff13d6c799",
+      "created_at": "2026-01-12T13:58:05.000Z"
+    },
+    {
+      "id": 45,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix OAuth matching: extract profile_id from LinkedIn URL, fallback to linkedin_num_id and name",
+      "files": [
+        "backend/routes/colleagues.js",
+        "backend/server.js"
+      ],
+      "tags": [
+        "auth"
+      ],
+      "commit_hash": "3155f79591b673b03c05d25aadb33a3b3cf2e079",
+      "created_at": "2026-01-12T14:09:47.000Z"
     }
   ],
-  "nextId": 14
+  "nextId": 46
 }
