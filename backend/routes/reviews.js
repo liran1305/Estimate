@@ -137,8 +137,42 @@ router.get('/session/start', async (req, res) => {
         }
       }
 
-      // Minimum skip budget of 3
-      skipBudget = Math.max(skipBudget, 3);
+      // Skip budget: minimum 3, maximum 3 (always 3 per day)
+      skipBudget = 3;
+
+      // Check for abuse: users who exhaust all skips 3 days in a row
+      const [recentSessions] = await connection.query(`
+        SELECT created_at, skip_budget, skips_used 
+        FROM review_sessions 
+        WHERE user_id = ? AND status IN ('expired', 'completed')
+        ORDER BY created_at DESC 
+        LIMIT 3
+      `, [user_id]);
+
+      // Check if last 3 sessions all had exhausted skips
+      if (recentSessions.length >= 3) {
+        const allExhausted = recentSessions.every(s => s.skips_used >= s.skip_budget);
+        const allConsecutiveDays = recentSessions.every((s, i) => {
+          if (i === 0) return true;
+          const prevDate = new Date(recentSessions[i-1].created_at);
+          const currDate = new Date(s.created_at);
+          const daysDiff = Math.floor((prevDate - currDate) / (24 * 60 * 60 * 1000));
+          return daysDiff <= 2; // Allow up to 2 days gap
+        });
+
+        if (allExhausted && allConsecutiveDays) {
+          // Block user for abuse
+          await connection.query(
+            'UPDATE users SET is_blocked = TRUE, blocked_reason = "Excessive skip usage" WHERE id = ?',
+            [user_id]
+          );
+          return res.status(403).json({
+            success: false,
+            error: 'account_blocked',
+            message: 'Your account has been temporarily blocked due to excessive skip usage. Please contact support@estimatenow.io to resolve this.'
+          });
+        }
+      }
 
       // Check for existing active session
       const [existingSessions] = await connection.query(
@@ -154,11 +188,20 @@ router.get('/session/start', async (req, res) => {
         const twentyFourHours = 24 * 60 * 60 * 1000;
         
         if (sessionAge > twentyFourHours) {
-          // Expire old session and create new one
-          await connection.query(
-            'UPDATE review_sessions SET status = "expired" WHERE id = ?',
-            [session.id]
-          );
+          // Check if user exhausted all skips before expiring
+          if (session.skips_used >= session.skip_budget) {
+            // Mark as completed (exhausted skips)
+            await connection.query(
+              'UPDATE review_sessions SET status = "completed" WHERE id = ?',
+              [session.id]
+            );
+          } else {
+            // Mark as expired (didn't use all skips)
+            await connection.query(
+              'UPDATE review_sessions SET status = "expired" WHERE id = ?',
+              [session.id]
+            );
+          }
           // Continue to create new session below
         } else {
           // Return existing session (less than 24 hours old)

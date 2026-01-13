@@ -42,6 +42,11 @@ export default function Review() {
         const sessionData = await sessionRes.json();
         
         if (!sessionData.success) {
+          // Check if account is blocked
+          if (sessionData.error === 'account_blocked') {
+            navigate(createPageUrl("Blocked"));
+            return;
+          }
           setError(sessionData.error || 'Failed to start session');
           setIsLoading(false);
           return;
@@ -266,6 +271,7 @@ export default function Review() {
                 skipsRemaining={skipsRemaining}
                 totalSkips={session?.skip_budget || 0}
                 isSkipping={isSkipping}
+                onBackToProfile={() => navigate(createPageUrl("Profile"))}
               />
             </motion.div>
           )}

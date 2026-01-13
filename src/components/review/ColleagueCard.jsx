@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { RefreshCw, Loader2 } from "lucide-react";
 
 const interactionTypes = [
@@ -31,7 +32,8 @@ export default function ColleagueCard({
   onSkip,
   skipsRemaining,
   totalSkips,
-  isSkipping
+  isSkipping,
+  onBackToProfile
 }) {
   return (
     <div className="space-y-6">
@@ -75,24 +77,36 @@ export default function ColleagueCard({
         </div>
 
         <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-          <button 
-            onClick={onSkip}
-            className="flex items-center gap-2 text-gray-500 hover:text-gray-700 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={skipsRemaining <= 0 || isSkipping}
-            title={skipsRemaining <= 0 ? "You've reached your maximum daily skips. Try again tomorrow for a fresh skip budget." : ""}
-          >
-            {isSkipping ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <RefreshCw className="w-4 h-4" />
-            )}
-            {skipsRemaining <= 0 ? 'Try again tomorrow' : 'Insufficient interaction'}
-            {totalSkips > 0 && (
-              <span className="ml-1 text-xs bg-gray-100 px-2 py-0.5 rounded-full">
-                {totalSkips - skipsRemaining}/{totalSkips}
-              </span>
-            )}
-          </button>
+          <TooltipProvider delayDuration={0}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button 
+                  onClick={skipsRemaining <= 0 ? onBackToProfile : onSkip}
+                  className="flex items-center gap-2 text-gray-500 hover:text-gray-700 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={isSkipping}
+                >
+                  {isSkipping ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : skipsRemaining > 0 ? (
+                    <RefreshCw className="w-4 h-4" />
+                  ) : null}
+                  {skipsRemaining <= 0 ? 'Try again tomorrow' : 'Insufficient interaction'}
+                  {totalSkips > 0 && (
+                    <span className="ml-1 text-xs bg-gray-100 px-2 py-0.5 rounded-full">
+                      {totalSkips - skipsRemaining}/{totalSkips}
+                    </span>
+                  )}
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-xs bg-gray-900 text-white">
+                <p className="text-sm">
+                  {skipsRemaining <= 0 
+                    ? "You've used all your daily skips. Click to return to your profile and come back tomorrow for fresh skips." 
+                    : "Skip this colleague if you don't have sufficient interaction"}
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           
           <Button 
             className="bg-[#0A66C2] hover:bg-[#004182] h-12 px-6 rounded-xl font-medium"

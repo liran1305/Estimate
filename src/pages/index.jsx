@@ -18,6 +18,8 @@ import Disclaimer from "./Disclaimer";
 
 import LinkedInCallback from "./LinkedInCallback";
 
+import Blocked from "./Blocked";
+
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 
 const PAGES = {
@@ -39,6 +41,8 @@ const PAGES = {
     Disclaimer: Disclaimer,
     
     LinkedInCallback: LinkedInCallback,
+    
+    Blocked: Blocked,
     
 }
 
@@ -84,6 +88,8 @@ function PagesContent() {
                 <Route path="/Disclaimer" element={<Disclaimer />} />
                 
                 <Route path="/auth/linkedin/callback" element={<LinkedInCallback />} />
+                
+                <Route path="/Blocked" element={<Blocked />} />
                 
             </Routes>
         </Layout>
