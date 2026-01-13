@@ -82,4 +82,36 @@ router.get('/tables', async (req, res) => {
   }
 });
 
+// Fix profile_match_method ENUM
+router.post('/fix-enum', async (req, res) => {
+  try {
+    const pool = await getPool();
+    const connection = await pool.getConnection();
+
+    try {
+      await connection.query(`
+        ALTER TABLE users 
+        MODIFY COLUMN profile_match_method ENUM(
+          'linkedin_id',
+          'linkedin_num_id',
+          'image',
+          'image_multiple',
+          'name',
+          'email',
+          'not_found'
+        ) DEFAULT NULL
+      `);
+
+      connection.release();
+      res.json({ success: true, message: 'ENUM updated successfully' });
+    } catch (error) {
+      connection.release();
+      throw error;
+    }
+  } catch (error) {
+    console.error('Fix ENUM error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 module.exports = router;
