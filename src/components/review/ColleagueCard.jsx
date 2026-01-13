@@ -79,13 +79,14 @@ export default function ColleagueCard({
             onClick={onSkip}
             className="flex items-center gap-2 text-gray-500 hover:text-gray-700 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={skipsRemaining <= 0 || isSkipping}
+            title={skipsRemaining <= 0 ? "You've reached your maximum daily skips. Try again tomorrow for a fresh skip budget." : ""}
           >
             {isSkipping ? (
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
               <RefreshCw className="w-4 h-4" />
             )}
-            Insufficient interaction
+            {skipsRemaining <= 0 ? 'Try again tomorrow' : 'Insufficient interaction'}
             {totalSkips > 0 && (
               <span className="ml-1 text-xs bg-gray-100 px-2 py-0.5 rounded-full">
                 {totalSkips - skipsRemaining}/{totalSkips}

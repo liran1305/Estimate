@@ -142,24 +142,38 @@ router.get('/session/start', async (req, res) => {
 
       // Check for existing active session
       const [existingSessions] = await connection.query(
-        'SELECT id, skip_budget, skips_used, reviews_completed FROM review_sessions WHERE user_id = ? AND status = "active"',
+        'SELECT id, skip_budget, skips_used, reviews_completed, created_at FROM review_sessions WHERE user_id = ? AND status = "active"',
         [user_id]
       );
 
       if (existingSessions.length > 0) {
-        // Return existing session
         const session = existingSessions[0];
-        return res.json({
-          success: true,
-          session: {
-            id: session.id,
-            skip_budget: session.skip_budget,
-            skips_used: session.skips_used,
-            skips_remaining: session.skip_budget - session.skips_used,
-            reviews_completed: session.reviews_completed
-          },
-          message: 'Existing active session found'
-        });
+        
+        // Check if session is older than 24 hours
+        const sessionAge = Date.now() - new Date(session.created_at).getTime();
+        const twentyFourHours = 24 * 60 * 60 * 1000;
+        
+        if (sessionAge > twentyFourHours) {
+          // Expire old session and create new one
+          await connection.query(
+            'UPDATE review_sessions SET status = "expired" WHERE id = ?',
+            [session.id]
+          );
+          // Continue to create new session below
+        } else {
+          // Return existing session (less than 24 hours old)
+          return res.json({
+            success: true,
+            session: {
+              id: session.id,
+              skip_budget: session.skip_budget,
+              skips_used: session.skips_used,
+              skips_remaining: session.skip_budget - session.skips_used,
+              reviews_completed: session.reviews_completed
+            },
+            message: 'Existing active session found'
+          });
+        }
       }
 
       // Create new session
