@@ -2,6 +2,12 @@ const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY;
 
 export const turnstile = {
   async verify() {
+    // Skip Turnstile in local development
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      console.log('Turnstile verification skipped in local development');
+      return null;
+    }
+
     return new Promise((resolve, reject) => {
       if (!window.turnstile) {
         console.error('Turnstile not loaded');

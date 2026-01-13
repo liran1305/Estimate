@@ -232,14 +232,14 @@ router.get('/colleague/next', async (req, res) => {
         return res.status(400).json({ success: false, error: 'No work history found for user' });
       }
 
-      // Check if there's already a pending assignment (prevents refresh bypass)
+      // Check if there's already a pending assignment for THIS session (keeps same colleague on refresh)
       const [pendingAssignments] = await connection.query(`
         SELECT colleague_id FROM review_assignments 
         WHERE user_id = ? AND session_id = ? AND status = 'pending'
         LIMIT 1
       `, [user_id, session_id]);
 
-      // If there's a pending assignment, return that colleague instead of creating a new one
+      // If there's a pending assignment, return that colleague
       if (pendingAssignments.length > 0) {
         const pendingColleagueId = pendingAssignments[0].colleague_id;
         const [colleagueData] = await connection.query(`
@@ -267,16 +267,17 @@ router.get('/colleague/next', async (req, res) => {
               position: colleague.position,
               current_company: colleague.current_company_name,
               shared_company: colleague.company_name,
-              company_context: 'Previously shown',
+              company_context: 'Same company',
               match_score: 1.0
             }
           });
         }
       }
 
-      // Get already assigned/reviewed/skipped colleagues
+      // Get already skipped/reviewed colleagues (exclude those user took action on)
       const [existingAssignments] = await connection.query(`
-        SELECT colleague_id FROM review_assignments WHERE user_id = ?
+        SELECT colleague_id FROM review_assignments 
+        WHERE user_id = ? AND status IN ('skipped', 'reviewed')
       `, [user_id]);
 
       const excludeIds = existingAssignments.map(a => a.colleague_id);
@@ -431,12 +432,15 @@ router.post('/colleague/skip', async (req, res) => {
         });
       }
 
-      // Update assignment status to skipped
+      // Create or update assignment status to skipped
       await connection.query(`
-        UPDATE review_assignments 
-        SET status = 'skipped', actioned_at = CURRENT_TIMESTAMP
-        WHERE user_id = ? AND colleague_id = ?
-      `, [user_id, colleague_id]);
+        INSERT INTO review_assignments 
+        (session_id, user_id, colleague_id, status, actioned_at)
+        VALUES (?, ?, ?, 'skipped', CURRENT_TIMESTAMP)
+        ON DUPLICATE KEY UPDATE 
+          status = 'skipped',
+          actioned_at = CURRENT_TIMESTAMP
+      `, [session_id, user_id, colleague_id]);
 
       // Increment skips used
       await connection.query(`
