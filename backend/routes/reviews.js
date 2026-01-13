@@ -350,14 +350,14 @@ router.get('/colleague/next', async (req, res) => {
       scoredColleagues.sort((a, b) => b.match_score - a.match_score);
       const selectedColleague = scoredColleagues[0];
 
-      // Create assignment record
+      // Create assignment record with 'pending' status (so refresh returns same colleague)
       await connection.query(`
         INSERT INTO review_assignments 
         (session_id, user_id, colleague_id, company_name, company_context, match_score, status)
-        VALUES (?, ?, ?, ?, ?, ?, 'assigned')
+        VALUES (?, ?, ?, ?, ?, ?, 'pending')
         ON DUPLICATE KEY UPDATE 
           session_id = VALUES(session_id),
-          status = 'assigned',
+          status = 'pending',
           assigned_at = CURRENT_TIMESTAMP
       `, [
         session_id,
