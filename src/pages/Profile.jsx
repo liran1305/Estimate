@@ -53,13 +53,30 @@ export default function Profile() {
         } catch (err) {
           console.error('❌ Failed to fetch profile data:', err);
         }
+
+        // Fetch user's score and reviews
+        try {
+          const scoreRes = await fetch(`${BACKEND_API_URL}/api/score/me?user_id=${currentUser.id}`);
+          const scoreData = await scoreRes.json();
+          console.log('Score API response:', scoreData);
+          if (scoreData.success && scoreData.reviews) {
+            console.log('✅ Score data loaded:', scoreData);
+            setReviews(scoreData.reviews);
+          } else {
+            console.log('⚠️ No reviews found yet');
+            setReviews([]);
+          }
+        } catch (err) {
+          console.error('❌ Failed to fetch score data:', err);
+          setReviews([]);
+        }
       } else {
         console.warn('⚠️ No linkedinProfileId found for user:', currentUser);
         console.log('User object keys:', Object.keys(currentUser));
         console.log('Full user object:', JSON.stringify(currentUser, null, 2));
+        setReviews([]);
       }
       
-      setReviews([]);
       setIsLoading(false);
     };
     init();
