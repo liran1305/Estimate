@@ -132,7 +132,7 @@ router.get('/session/start', async (req, res) => {
         SELECT skip_budget, skips_used 
         FROM review_sessions 
         WHERE user_id = ? AND status IN ('expired', 'completed')
-        ORDER BY created_at DESC 
+        ORDER BY started_at DESC 
         LIMIT 1
       `, [user_id]);
 
@@ -146,10 +146,10 @@ router.get('/session/start', async (req, res) => {
 
       // Check for abuse: users who exhaust all skips 3 days in a row
       const [recentSessions] = await connection.query(`
-        SELECT created_at, skip_budget, skips_used 
+        SELECT started_at, skip_budget, skips_used 
         FROM review_sessions 
         WHERE user_id = ? AND status IN ('expired', 'completed')
-        ORDER BY created_at DESC 
+        ORDER BY started_at DESC 
         LIMIT 3
       `, [user_id]);
 
@@ -158,8 +158,8 @@ router.get('/session/start', async (req, res) => {
         const allExhausted = recentSessions.every(s => s.skips_used >= s.skip_budget);
         const allConsecutiveDays = recentSessions.every((s, i) => {
           if (i === 0) return true;
-          const prevDate = new Date(recentSessions[i-1].created_at);
-          const currDate = new Date(s.created_at);
+          const prevDate = new Date(recentSessions[i-1].started_at);
+          const currDate = new Date(s.started_at);
           const daysDiff = Math.floor((prevDate - currDate) / (24 * 60 * 60 * 1000));
           return daysDiff <= 2; // Allow up to 2 days gap
         });
@@ -180,7 +180,7 @@ router.get('/session/start', async (req, res) => {
 
       // Check for existing active session
       const [existingSessions] = await connection.query(
-        'SELECT id, skip_budget, skips_used, reviews_completed, created_at FROM review_sessions WHERE user_id = ? AND status = "active"',
+        'SELECT id, skip_budget, skips_used, reviews_completed, started_at FROM review_sessions WHERE user_id = ? AND status = "active"',
         [user_id]
       );
 
@@ -188,7 +188,7 @@ router.get('/session/start', async (req, res) => {
         const session = existingSessions[0];
         
         // Check if session is older than 24 hours
-        const sessionAge = Date.now() - new Date(session.created_at).getTime();
+        const sessionAge = Date.now() - new Date(session.started_at).getTime();
         const twentyFourHours = 24 * 60 * 60 * 1000;
         
         if (sessionAge > twentyFourHours) {
