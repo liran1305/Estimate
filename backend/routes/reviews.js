@@ -108,9 +108,9 @@ router.get('/session/start', async (req, res) => {
         WHERE profile_id = ?
       `, [linkedinProfileId]);
 
-      // Calculate skip budget based on company sizes
-      // Formula: 3 skips per company (simplified - can enhance with actual company sizes)
-      let skipBudget = 0;
+      // Calculate base skip budget based on largest company size
+      // Formula: 3 base + 1 per 100 employees (max 13)
+      let baseSkipBudget = 3; // Minimum
       
       for (const company of workHistory) {
         // Try to get company size from companies table
@@ -121,24 +121,28 @@ router.get('/session/start', async (req, res) => {
 
         if (companyData.length > 0 && companyData[0].employee_count) {
           const employeeCount = companyData[0].employee_count;
-          // Skip budget based on company size
-          if (employeeCount > 10000) {
-            skipBudget += 5;
-          } else if (employeeCount > 1000) {
-            skipBudget += 4;
-          } else if (employeeCount > 100) {
-            skipBudget += 3;
-          } else {
-            skipBudget += 2;
-          }
-        } else {
-          // Default: 3 skips per company if size unknown
-          skipBudget += 3;
+          // Calculate skips: 3 base + 1 per 100 employees, max 13
+          const companySkips = Math.min(3 + Math.floor(employeeCount / 100), 13);
+          baseSkipBudget = Math.max(baseSkipBudget, companySkips);
         }
       }
 
-      // Skip budget: minimum 3, maximum 3 (always 3 per day)
-      skipBudget = 3;
+      // Check if user exhausted all skips in last session
+      const [lastSession] = await connection.query(`
+        SELECT skip_budget, skips_used 
+        FROM review_sessions 
+        WHERE user_id = ? AND status IN ('expired', 'completed')
+        ORDER BY created_at DESC 
+        LIMIT 1
+      `, [user_id]);
+
+      let skipBudget = baseSkipBudget;
+      
+      // If last session exhausted all skips, add +3 refresh
+      if (lastSession.length > 0 && lastSession[0].skips_used >= lastSession[0].skip_budget) {
+        skipBudget = 3; // Daily refresh: always 3 skips
+      }
+      // Otherwise, user keeps their base skip budget (didn't exhaust last session)
 
       // Check for abuse: users who exhaust all skips 3 days in a row
       const [recentSessions] = await connection.query(`
