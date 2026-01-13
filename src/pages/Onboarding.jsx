@@ -50,7 +50,7 @@ export default function Onboarding() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center p-6">
       <motion.div 
-        className="w-full max-w-lg"
+        className="w-full max-w-2xl"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -62,6 +62,9 @@ export default function Onboarding() {
               alt={user?.name}
               className="w-24 h-24 rounded-full object-cover mx-auto shadow-lg ring-4 ring-white"
             />
+            <h2 className="text-xl font-semibold text-gray-700 mt-4">
+              {user?.name}
+            </h2>
           </div>
 
           <h1 className="text-3xl font-bold text-gray-900 mb-4">
@@ -73,7 +76,7 @@ export default function Onboarding() {
           </p>
 
           <div className="flex items-center justify-center gap-3 py-4 px-6 bg-gray-50 rounded-xl mb-8">
-            <Shield className="w-5 h-5 text-[#0A66C2]" />
+            <img src="/images/anonimous.png" alt="Anonymous" className="w-8 h-8" />
             <span className="text-gray-700 font-medium">Your reviews are 100% anonymous. Be honest.</span>
           </div>
 
@@ -82,7 +85,7 @@ export default function Onboarding() {
             onClick={handleStart}
           >
             Start Reviewing
-            <ArrowRight className="w-5 h-5 ml-2" />
+            <img src="/images/right-arrow.png" alt="Arrow" className="w-5 h-5 ml-2 brightness-0 invert" />
           </Button>
         </Card>
       </motion.div>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Linkedin, Building2, ArrowRight, Shield, Lock, Eye } from "lucide-react";
+import { Linkedin, Building2, Shield, Lock, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import WaitlistModal from "@/components/landing/WaitlistModal";
@@ -46,7 +46,7 @@ export default function HeroSection() {
               <Link to={createPageUrl("LinkedInAuth")}>
                 <Button className="w-full bg-[#0A66C2] hover:bg-[#004182] text-white font-medium h-12 rounded-xl">
                   Continue with LinkedIn
-                  <ArrowRight className="w-4 h-4 ml-2" />
+                  <img src="/images/right-arrow.png" alt="Arrow" className="w-4 h-4 ml-2 brightness-0 invert" />
                 </Button>
               </Link>
             </Card>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, ArrowRight, User } from "lucide-react";
+import { CheckCircle2, User } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function ReviewSuccess({ completedCount, onNextReview, onGoToProfile }) {
@@ -54,7 +54,7 @@ export default function ReviewSuccess({ completedCount, onNextReview, onGoToProf
             onClick={onNextReview}
           >
             Next Review
-            <ArrowRight className="w-5 h-5 ml-2" />
+            <img src="/images/right-arrow.png" alt="Arrow" className="w-5 h-5 ml-2 brightness-0 invert" />
           </Button>
         )}
       </Card>

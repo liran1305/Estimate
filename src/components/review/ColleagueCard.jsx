@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, RefreshCw, Loader2 } from "lucide-react";
+import { RefreshCw, Loader2 } from "lucide-react";
 
 const interactionTypes = [
   { 
@@ -99,7 +99,7 @@ export default function ColleagueCard({
             onClick={onContinue}
           >
             Continue
-            <ArrowRight className="w-4 h-4 ml-2" />
+            <img src="/images/right-arrow.png" alt="Arrow" className="w-4 h-4 ml-2 brightness-0 invert" />
           </Button>
         </div>
       </Card>
