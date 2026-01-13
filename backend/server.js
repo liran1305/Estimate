@@ -259,26 +259,55 @@ app.post('/api/auth/linkedin/callback', async (req, res) => {
       port: process.env.CLOUD_SQL_PORT || 3306
     });
 
-    // Try to match by LinkedIn profile URL/ID first, then by numeric ID, then by name
+    // Try to match by image, LinkedIn profile URL/ID, numeric ID, then by name
     let linkedinProfileId = null;
     let matchMethod = 'not_found';
     let matchConfidence = 0;
 
+    // Extract image ID from LinkedIn OAuth picture URL
+    let linkedinImageId = null;
+    if (profile.picture) {
+      // Extract the unique image ID from URL like:
+      // https://media.licdn.com/dms/image/v2/D4D03AQG46nGu8wMmOw/profile-displayphoto-shrink_100_100/...
+      const imageMatch = profile.picture.match(/\/([A-Za-z0-9_-]+)\/profile-displayphoto/);
+      if (imageMatch) {
+        linkedinImageId = imageMatch[1];
+      }
+    }
+
+    // Try image matching first (most reliable since images are unique)
+    if (linkedinImageId) {
+      const [imageMatches] = await connection.query(
+        'SELECT id, name, avatar FROM linkedin_profiles WHERE avatar LIKE ? LIMIT 10',
+        [`%${linkedinImageId}%`]
+      );
+      if (imageMatches.length === 1) {
+        linkedinProfileId = imageMatches[0].id;
+        matchMethod = 'image';
+        matchConfidence = 0.95;
+        console.log(`✅ Image match found: ${linkedinProfileId} (${imageMatches[0].name})`);
+      } else if (imageMatches.length > 1) {
+        console.warn(`⚠️ Multiple image matches found for ${linkedinImageId}: ${imageMatches.length} profiles`);
+        // Use the first one but with lower confidence
+        linkedinProfileId = imageMatches[0].id;
+        matchMethod = 'image_multiple';
+        matchConfidence = 0.7;
+      }
+    }
+
     // Extract profile ID from LinkedIn profile URL if available
-    // LinkedIn OAuth may return profile URL in different fields
     const profileUrl = profile.profile_url || profile.vanity_name || profile.public_profile_url;
     let extractedProfileId = null;
     
     if (profileUrl) {
-      // Extract ID from URL like "https://www.linkedin.com/in/liran-naim/"
       const match = profileUrl.match(/linkedin\.com\/in\/([^\/\?]+)/);
       if (match) {
         extractedProfileId = match[1];
       }
     }
 
-    // Try profile ID match (from URL - most reliable)
-    if (extractedProfileId) {
+    // Try profile ID match (from URL)
+    if (!linkedinProfileId && extractedProfileId) {
       const [profileMatches] = await connection.query(
         'SELECT id FROM linkedin_profiles WHERE id = ? OR linkedin_id = ? LIMIT 1',
         [extractedProfileId, extractedProfileId]
