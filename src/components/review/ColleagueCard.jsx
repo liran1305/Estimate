@@ -28,7 +28,9 @@ export default function ColleagueCard({
   interactionType, 
   onInteractionChange, 
   onContinue, 
-  onSkip 
+  onSkip,
+  skipsRemaining,
+  totalSkips
 }) {
   return (
     <div className="space-y-6">
@@ -75,9 +77,15 @@ export default function ColleagueCard({
           <button 
             onClick={onSkip}
             className="flex items-center gap-2 text-gray-500 hover:text-gray-700 text-sm font-medium transition-colors"
+            disabled={skipsRemaining <= 0}
           >
             <RefreshCw className="w-4 h-4" />
             Insufficient interaction
+            {totalSkips > 0 && (
+              <span className="ml-1 text-xs bg-gray-100 px-2 py-0.5 rounded-full">
+                {skipsRemaining}/{totalSkips}
+              </span>
+            )}
           </button>
           
           <Button 

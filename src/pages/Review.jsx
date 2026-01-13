@@ -257,6 +257,8 @@ export default function Review() {
                 onInteractionChange={setInteractionType}
                 onContinue={handleContinue}
                 onSkip={handleSkip}
+                skipsRemaining={skipsRemaining}
+                totalSkips={session?.skip_budget || 0}
               />
             </motion.div>
           )}

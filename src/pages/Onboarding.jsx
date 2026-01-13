@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Sparkles, Shield, ArrowRight, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { mockAuth } from "@/lib/mockAuth";
+import { linkedinAuth } from "@/lib/linkedinAuth";
 import { motion } from "framer-motion";
 
 export default function Onboarding() {
@@ -13,11 +13,17 @@ export default function Onboarding() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const checkUser = async () => {
-      const currentUser = await mockAuth.me();
+    const checkUser = () => {
+      const currentUser = linkedinAuth.getCurrentUser();
+      
+      if (!currentUser) {
+        navigate(createPageUrl("Login"));
+        return;
+      }
+      
       setUser(currentUser);
       
-      if (currentUser.onboarding_complete) {
+      if (currentUser.isOnboarded) {
         navigate(createPageUrl("Profile"));
         return;
       }
@@ -27,8 +33,9 @@ export default function Onboarding() {
     checkUser();
   }, [navigate]);
 
-  const handleStart = async () => {
-    await mockAuth.updateMe({ onboarding_complete: true });
+  const handleStart = () => {
+    const updatedUser = { ...user, isOnboarded: true };
+    localStorage.setItem('user', JSON.stringify(updatedUser));
     navigate(createPageUrl("Review"));
   };
 
@@ -49,8 +56,12 @@ export default function Onboarding() {
         transition={{ duration: 0.5 }}
       >
         <Card className="p-10 border-0 shadow-xl shadow-gray-200/50 text-center">
-          <div className="w-20 h-20 bg-[#0A66C2]/10 rounded-2xl flex items-center justify-center mx-auto mb-8">
-            <Sparkles className="w-10 h-10 text-[#0A66C2]" />
+          <div className="mb-6">
+            <img 
+              src={user?.picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=0A66C2&color=fff&size=120`}
+              alt={user?.name}
+              className="w-24 h-24 rounded-full object-cover mx-auto shadow-lg ring-4 ring-white"
+            />
           </div>
 
           <h1 className="text-3xl font-bold text-gray-900 mb-4">
