@@ -219,23 +219,18 @@ export default function Review() {
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-12 px-6">
       <div className="max-w-lg mx-auto">
         <div className="flex items-center justify-between mb-8">
-          <button
-            onClick={() => navigate(createPageUrl("Profile"))}
-            className="text-gray-500 hover:text-gray-700 text-sm font-medium transition-colors"
-          >
-            ← Back to Profile
-          </button>
-          <div className="flex items-center gap-2">
-            {[1, 2, 3].map((num) => (
-              <div
-                key={num}
-                className={`w-2.5 h-2.5 rounded-full transition-colors ${
-                  num <= reviewsGiven ? 'bg-[#0A66C2]' : 'bg-gray-200'
-                }`}
-              />
-            ))}
-            <span className="text-sm text-gray-500 ml-2">{reviewsGiven}/3 reviews</span>
+          <div className="flex items-center gap-6">
+            <button
+              onClick={() => navigate(createPageUrl("Profile"))}
+              className="text-gray-500 hover:text-gray-700 text-sm font-medium transition-colors"
+            >
+              ← Back to Profile
+            </button>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-500">{reviewsGiven}/3 reviews</span>
+            </div>
           </div>
+          <div className="w-10"></div>
         </div>
 
         <div className="text-center mb-8">

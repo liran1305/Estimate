@@ -232,6 +232,48 @@ router.get('/colleague/next', async (req, res) => {
         return res.status(400).json({ success: false, error: 'No work history found for user' });
       }
 
+      // Check if there's already a pending assignment (prevents refresh bypass)
+      const [pendingAssignments] = await connection.query(`
+        SELECT colleague_id FROM review_assignments 
+        WHERE user_id = ? AND session_id = ? AND status = 'pending'
+        LIMIT 1
+      `, [user_id, session_id]);
+
+      // If there's a pending assignment, return that colleague instead of creating a new one
+      if (pendingAssignments.length > 0) {
+        const pendingColleagueId = pendingAssignments[0].colleague_id;
+        const [colleagueData] = await connection.query(`
+          SELECT 
+            lp.id,
+            lp.name,
+            lp.avatar,
+            lp.position,
+            lp.current_company_name,
+            cc.company_name
+          FROM linkedin_profiles lp
+          JOIN company_connections cc ON cc.profile_id = lp.id
+          WHERE lp.id = ?
+          LIMIT 1
+        `, [pendingColleagueId]);
+
+        if (colleagueData.length > 0) {
+          const colleague = colleagueData[0];
+          return res.json({
+            success: true,
+            colleague: {
+              id: colleague.id,
+              name: colleague.name,
+              avatar: colleague.avatar,
+              position: colleague.position,
+              current_company: colleague.current_company_name,
+              shared_company: colleague.company_name,
+              company_context: 'Previously shown',
+              match_score: 1.0
+            }
+          });
+        }
+      }
+
       // Get already assigned/reviewed/skipped colleagues
       const [existingAssignments] = await connection.query(`
         SELECT colleague_id FROM review_assignments WHERE user_id = ?

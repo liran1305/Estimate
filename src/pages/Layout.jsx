@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { mockAuth } from "@/lib/mockAuth";
+import { linkedinAuth } from "@/lib/linkedinAuth";
 import { Button } from "@/components/ui/button";
 import Logo from "@/components/Logo";
 import { 
@@ -20,10 +20,9 @@ export default function Layout({ children, currentPageName }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const isAuthenticated = await mockAuth.isAuthenticated();
-      if (isAuthenticated) {
-        const currentUser = await mockAuth.me();
+    const checkAuth = () => {
+      const currentUser = linkedinAuth.getCurrentUser();
+      if (currentUser) {
         setUser(currentUser);
       }
       setIsLoading(false);
@@ -32,7 +31,8 @@ export default function Layout({ children, currentPageName }) {
   }, []);
 
   const handleLogout = () => {
-    mockAuth.logout(createPageUrl("Landing"));
+    linkedinAuth.logout();
+    window.location.href = createPageUrl("Landing");
   };
 
   // Show public pages without nav
@@ -79,9 +79,9 @@ export default function Layout({ children, currentPageName }) {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="ml-2 p-2">
                     <img 
-                      src={user.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.full_name || 'U')}&background=0A66C2&color=fff&size=32`}
-                      alt={user.full_name}
-                      className="w-8 h-8 rounded-lg object-cover"
+                      src={user.picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'U')}&background=0A66C2&color=fff&size=32`}
+                      alt={user.name}
+                      className="w-8 h-8 rounded-full object-cover ring-2 ring-gray-100"
                     />
                     <ChevronDown className="w-4 h-4 ml-1 text-gray-400" />
                   </Button>
