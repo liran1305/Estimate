@@ -20,6 +20,7 @@ export default function Profile() {
   const [user, setUser] = useState(null);
   const [profileData, setProfileData] = useState(null);
   const [reviews, setReviews] = useState([]);
+  const [scoreData, setScoreData] = useState(null);
   const [showConsent, setShowConsent] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -57,11 +58,12 @@ export default function Profile() {
         // Fetch user's score and reviews
         try {
           const scoreRes = await fetch(`${BACKEND_API_URL}/api/score/me?user_id=${currentUser.id}`);
-          const scoreData = await scoreRes.json();
-          console.log('Score API response:', scoreData);
-          if (scoreData.success && scoreData.reviews) {
-            console.log('✅ Score data loaded:', scoreData);
-            setReviews(scoreData.reviews);
+          const scoreApiData = await scoreRes.json();
+          console.log('Score API response:', scoreApiData);
+          setScoreData(scoreApiData);
+          if (scoreApiData.success && scoreApiData.reviews) {
+            console.log('✅ Score data loaded:', scoreApiData);
+            setReviews(scoreApiData.reviews);
           } else {
             console.log('⚠️ No reviews found yet');
             setReviews([]);
@@ -69,6 +71,7 @@ export default function Profile() {
         } catch (err) {
           console.error('❌ Failed to fetch score data:', err);
           setReviews([]);
+          setScoreData(null);
         }
       } else {
         console.warn('⚠️ No linkedinProfileId found for user:', currentUser);
@@ -205,7 +208,11 @@ export default function Profile() {
             </Card>
           </motion.div>
         ) : (
-          <WaitingState />
+          <WaitingState 
+            reviewsReceived={scoreData?.reviews_received || 0}
+            reviewsGiven={scoreData?.reviews_given || 0}
+            reviewsNeeded={3}
+          />
         )}
 
         {/* Review CTA */}

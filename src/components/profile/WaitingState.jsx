@@ -1,44 +1,50 @@
 import React from 'react';
 import { Card } from "@/components/ui/card";
-import { Clock, Users, RefreshCw } from "lucide-react";
+import { Users, Star } from "lucide-react";
 import { motion } from "framer-motion";
 
-export default function WaitingState() {
+export default function WaitingState({ reviewsReceived = 0, reviewsGiven = 0, reviewsNeeded = 3 }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
     >
       <Card className="p-8 border-0 shadow-xl shadow-gray-200/50 text-center">
-        <div className="w-20 h-20 bg-[#0A66C2]/10 rounded-full flex items-center justify-center mx-auto mb-6">
-          <Clock className="w-10 h-10 text-[#0A66C2]" />
-        </div>
-
         <h2 className="text-2xl font-bold text-gray-900 mb-2">
-          Welcome to Your Feedback Hub! 👋
+          {reviewsReceived > 0 ? `You have ${reviewsReceived} review${reviewsReceived > 1 ? 's' : ''} waiting! 🎉` : 'Welcome to Your Feedback Hub! 👋'}
         </h2>
         <p className="text-gray-500 mb-8">
-          Your insights haven't arrived yet, but don't worry! This is just the beginning.
+          {reviewsReceived > 0 
+            ? `Complete ${reviewsNeeded - reviewsGiven} more review${reviewsNeeded - reviewsGiven > 1 ? 's' : ''} to unlock your score and see your feedback!`
+            : 'Start reviewing colleagues to unlock your professional score and receive feedback.'}
         </p>
 
-        <div className="space-y-4 text-left">
+        <div className="space-y-4 text-left mb-6">
+          {reviewsReceived > 0 && (
+            <div className="flex items-start gap-4 p-4 bg-[#0A66C2]/5 rounded-xl border-2 border-[#0A66C2]/20">
+              <div className="w-10 h-10 bg-[#0A66C2]/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                <Star className="w-5 h-5 text-[#0A66C2]" />
+              </div>
+              <div className="flex-1">
+                <p className="font-semibold text-gray-900 mb-1">Reviews Received</p>
+                <p className="text-2xl font-bold text-[#0A66C2]">{reviewsReceived}</p>
+                <p className="text-sm text-gray-500 mt-1">Waiting to be unlocked!</p>
+              </div>
+            </div>
+          )}
+          
           <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
             <div className="w-10 h-10 bg-[#0A66C2]/10 rounded-lg flex items-center justify-center flex-shrink-0">
               <Users className="w-5 h-5 text-[#0A66C2]" />
             </div>
-            <div>
-              <p className="font-medium text-gray-900">Stay Engaged</p>
-              <p className="text-sm text-gray-500">Keep reviewing colleagues. The more you give, the more you're likely to receive.</p>
-            </div>
-          </div>
-          
-          <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
-            <div className="w-10 h-10 bg-[#0A66C2]/10 rounded-lg flex items-center justify-center flex-shrink-0">
-              <RefreshCw className="w-5 h-5 text-[#0A66C2]" />
-            </div>
-            <div>
-              <p className="font-medium text-gray-900">Check Back Soon</p>
-              <p className="text-sm text-gray-500">Your colleagues' perspectives are on their way.</p>
+            <div className="flex-1">
+              <p className="font-semibold text-gray-900 mb-1">Reviews Given</p>
+              <p className="text-2xl font-bold text-gray-900">{reviewsGiven} / {reviewsNeeded}</p>
+              <p className="text-sm text-gray-500 mt-1">
+                {reviewsGiven >= reviewsNeeded 
+                  ? 'Score unlocked! 🎉' 
+                  : `${reviewsNeeded - reviewsGiven} more to unlock your score`}
+              </p>
             </div>
           </div>
         </div>
