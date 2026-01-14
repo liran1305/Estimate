@@ -673,12 +673,19 @@ router.post('/review/submit', async (req, res) => {
         ON DUPLICATE KEY UPDATE reviews_given = reviews_given + 1
       `, [user_id]);
 
-      // Update user_scores for reviewee (reviews_received)
-      await connection.query(`
-        INSERT INTO user_scores (user_id, linkedin_profile_id, reviews_received)
-        VALUES ((SELECT id FROM users WHERE linkedin_profile_id = ? LIMIT 1), ?, 1)
-        ON DUPLICATE KEY UPDATE reviews_received = reviews_received + 1
-      `, [colleague_id, colleague_id]);
+      // Update user_scores for reviewee (reviews_received) - only if they have a user account
+      const [revieweeUser] = await connection.query(
+        'SELECT id FROM users WHERE linkedin_profile_id = ? LIMIT 1',
+        [colleague_id]
+      );
+      
+      if (revieweeUser.length > 0) {
+        await connection.query(`
+          INSERT INTO user_scores (user_id, linkedin_profile_id, reviews_received)
+          VALUES (?, ?, 1)
+          ON DUPLICATE KEY UPDATE reviews_received = reviews_received + 1
+        `, [revieweeUser[0].id, colleague_id]);
+      }
 
       // Check if reviewer has unlocked their score (3 reviews given)
       const [reviewerScore] = await connection.query(

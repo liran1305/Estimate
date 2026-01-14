@@ -1,10 +1,10 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-14T11:56:56.036Z
+> Last updated: 2026-01-14T11:58:05.557Z
 
 ## Project Stats
-- Total memories: 75
-- Commits tracked: 75
+- Total memories: 76
+- Commits tracked: 76
 - Decisions recorded: 0
 
 ## Relevant to Current Work
@@ -15,6 +15,8 @@
 - **1/13/2026**: Implement image matching: extract image ID from LinkedIn OAuth picture and match to Bright Data avat (backend/server.js)
 
 ## Recent Changes
+- `4e0a7b3` 1/14/2026: Add backend mapping for old frontend values + Fix user_id null error
+  Files: backend/routes/reviews.js
 - `e2e37ec` 1/14/2026: Fix: Match interaction types to database ENUM values
   Files: src/components/review/ColleagueCard.jsx
 - `0331516` 1/14/2026: Optimize mobile OAuth + Add user-facing message
@@ -43,8 +45,6 @@
   Files: backend/routes/reviews.js
 - `65befa0` 1/13/2026: Add abuse detection: block users who exhaust skips 3 days in a row, cap max skips at 3/day, add Blocked page with contact form
   Files: backend/routes/reviews.js, src/components/review/ColleagueCard.jsx, src/pages/Blocked.jsx
-- `2f665e6` 1/13/2026: Add daily skip budget refresh: sessions expire after 24 hours, button shows 'Try again tomorrow' when skips exhausted
-  Files: backend/routes/reviews.js, src/components/review/ColleagueCard.jsx
 
 ## Do Not Repeat
 These issues have already been solved:
