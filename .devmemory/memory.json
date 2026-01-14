@@ -710,7 +710,327 @@
       ],
       "commit_hash": "3155f79591b673b03c05d25aadb33a3b3cf2e079",
       "created_at": "2026-01-12T14:09:47.000Z"
+    },
+    {
+      "id": 46,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix Profile page to use real LinkedIn OAuth user data instead of mock data",
+      "files": [
+        "backend/database/DATA_FLOWS.md",
+        "src/pages/Profile.jsx"
+      ],
+      "tags": [
+        "auth"
+      ],
+      "commit_hash": "c2204aa5ed112172379c05748a28f367dd3b99d9",
+      "created_at": "2026-01-13T07:47:14.000Z"
+    },
+    {
+      "id": 47,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add detailed OAuth logging to debug profile matching",
+      "files": [
+        "backend/server.js",
+        "src/pages/Profile.jsx"
+      ],
+      "tags": [
+        "auth"
+      ],
+      "commit_hash": "8138e82a419047f6e0e1518982663df78faf17ee",
+      "created_at": "2026-01-13T08:20:39.000Z"
+    },
+    {
+      "id": 48,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Implement image matching: extract image ID from LinkedIn OAuth picture and match to Bright Data avatar URLs",
+      "files": [
+        "backend/server.js"
+      ],
+      "tags": [
+        "auth"
+      ],
+      "commit_hash": "79acd88cb2d55cb762f5c1484e2c24f764420aab",
+      "created_at": "2026-01-13T08:43:01.000Z"
+    },
+    {
+      "id": 49,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add endpoint to fix profile_match_method ENUM to support image matching",
+      "files": [
+        "backend/database/fix-profile-match-enum.sql",
+        "backend/routes/admin.js"
+      ],
+      "tags": [],
+      "commit_hash": "521888580a4af9fa0df2359d480c23646e89ebf1",
+      "created_at": "2026-01-13T08:47:31.000Z"
+    },
+    {
+      "id": 50,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Register admin routes in server.js",
+      "files": [
+        "backend/server.js"
+      ],
+      "tags": [],
+      "commit_hash": "c10ea9c89a0be0ee52d88bd83551c102e52e2b7a",
+      "created_at": "2026-01-13T08:56:29.000Z"
+    },
+    {
+      "id": 51,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix getPool reference in admin routes",
+      "files": [
+        "backend/routes/admin.js"
+      ],
+      "tags": [],
+      "commit_hash": "9f7038e280818f40396811fa4876c5bdd013ac6f",
+      "created_at": "2026-01-13T09:15:58.000Z"
+    },
+    {
+      "id": 52,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add profile picture to Onboarding page and skip counter to Insufficient Interaction button",
+      "files": [
+        "src/components/review/ColleagueCard.jsx",
+        "src/pages/Onboarding.jsx",
+        "src/pages/Review.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "43623876fb9f61c7ee59552803461f2ba1c6ee92",
+      "created_at": "2026-01-13T09:23:14.000Z"
+    },
+    {
+      "id": 53,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix refresh bypass: return pending assignment if exists, move review counter to side, add profile pictures",
+      "files": [
+        "backend/routes/reviews.js",
+        "src/pages/Layout.jsx",
+        "src/pages/Review.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "80e27e366743b40e9d0c206dfe333421b499fdf3",
+      "created_at": "2026-01-13T10:03:46.000Z"
+    },
+    {
+      "id": 54,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Revert review counter to original position with dots on right side",
+      "files": [
+        "src/pages/Review.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "477040a6967609ee05e913b6dbc31b2e03c97cdc",
+      "created_at": "2026-01-13T11:09:56.000Z"
+    },
+    {
+      "id": 55,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix refresh bypass: create assignment with 'pending' status immediately when colleague is shown",
+      "files": [
+        "backend/routes/reviews.js"
+      ],
+      "tags": [],
+      "commit_hash": "202fc1bb8a5e6b1163857d410240a29fff6bdf11",
+      "created_at": "2026-01-13T11:31:41.000Z"
+    },
+    {
+      "id": 56,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix refresh bypass: add pending status to assignments and skip Turnstile in local dev",
+      "files": [
+        "backend/routes/reviews.js",
+        "src/lib/turnstile.js"
+      ],
+      "tags": [],
+      "commit_hash": "a51e49d3028dfb8df6c171cbee8c961b7301b4e6",
+      "created_at": "2026-01-13T11:55:30.000Z"
+    },
+    {
+      "id": 57,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add loading state to skip button and fix counter jumping issue",
+      "files": [
+        "src/components/review/ColleagueCard.jsx",
+        "src/pages/Review.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "74aa496c12eb6526f6cc636dc544610a5ee4453f",
+      "created_at": "2026-01-13T11:58:55.000Z"
+    },
+    {
+      "id": 58,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Update Onboarding: wider card, user name greeting, bigger anonymous icon, replace all arrows with new design",
+      "files": [
+        "src/components/landing/HeroSection.jsx",
+        "src/components/review/ColleagueCard.jsx",
+        "src/components/review/ReviewSuccess.jsx",
+        "src/pages/Onboarding.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "e76c64de1e0b191848106fddd246d13353dac1cd",
+      "created_at": "2026-01-13T13:01:28.000Z"
+    },
+    {
+      "id": 59,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add new images: anonymous icon and right arrow",
+      "files": [
+        "public/images/anonimous.png",
+        "public/images/right-arrow.png"
+      ],
+      "tags": [],
+      "commit_hash": "90a8942d4e3edaf93fd22e30f11b4c72a825ec26",
+      "created_at": "2026-01-13T13:02:39.000Z"
+    },
+    {
+      "id": 60,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix colleague query to prioritize current and most recent shared companies",
+      "files": [
+        "backend/routes/reviews.js"
+      ],
+      "tags": [],
+      "commit_hash": "27e3e87dbab2b40dd7b4f1c0da49d0ed4dc3ec7f",
+      "created_at": "2026-01-13T13:08:24.000Z"
+    },
+    {
+      "id": 61,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add daily skip budget refresh: sessions expire after 24 hours, button shows 'Try again tomorrow' when skips exhausted",
+      "files": [
+        "backend/routes/reviews.js",
+        "src/components/review/ColleagueCard.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "2f665e6d774fa346d6705deb28d64a11746ac179",
+      "created_at": "2026-01-13T13:23:54.000Z"
+    },
+    {
+      "id": 62,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add abuse detection: block users who exhaust skips 3 days in a row, cap max skips at 3/day, add Blocked page with contact form",
+      "files": [
+        "backend/routes/reviews.js",
+        "src/components/review/ColleagueCard.jsx",
+        "src/pages/Blocked.jsx",
+        "src/pages/Review.jsx",
+        "src/pages/index.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "65befa0de435cd2a2111d3330fff8e661229b555",
+      "created_at": "2026-01-13T13:39:59.000Z"
+    },
+    {
+      "id": 63,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix skip budget: company-size-based (3-13 max), +3 daily refresh only when exhausted",
+      "files": [
+        "backend/routes/reviews.js"
+      ],
+      "tags": [],
+      "commit_hash": "241ff10dc0f1b58a1e600b92a745bebcedef03fa",
+      "created_at": "2026-01-13T13:52:30.000Z"
+    },
+    {
+      "id": 64,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix database column name: use started_at instead of created_at for review_sessions",
+      "files": [
+        "backend/routes/reviews.js"
+      ],
+      "tags": [
+        "database"
+      ],
+      "commit_hash": "1f3af0e7ed5c8ac0a7478248ca12783d04701e86",
+      "created_at": "2026-01-13T13:56:29.000Z"
+    },
+    {
+      "id": 65,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Enforce blocking: redirect blocked users to Blocked page immediately, prevent access to other pages",
+      "files": [
+        "backend/server.js",
+        "src/pages/Layout.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "4ae7afd9e38e317795e9852e9a3be3326412ae64",
+      "created_at": "2026-01-13T14:02:40.000Z"
+    },
+    {
+      "id": 66,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add score fetching from backend API to display user reviews and scores on Profile page",
+      "files": [
+        "src/pages/Profile.jsx"
+      ],
+      "tags": [
+        "api"
+      ],
+      "commit_hash": "af39ba3f94ba340b04c0db5772e7eb084d92b628",
+      "created_at": "2026-01-13T14:08:17.000Z"
+    },
+    {
+      "id": 67,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Clean up Profile page: remove clock icon, hide Reviews Received when 0, remove duplicate button",
+      "files": [
+        "src/components/profile/WaitingState.jsx",
+        "src/pages/Profile.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "6cb04e8254367b54b11ace6727ebf38743bf7229",
+      "created_at": "2026-01-13T14:24:46.000Z"
+    },
+    {
+      "id": 68,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix mobile OAuth CSRF error: switch from sessionStorage to localStorage with 10min expiration",
+      "files": [
+        "src/lib/linkedinAuth.js"
+      ],
+      "tags": [
+        "auth"
+      ],
+      "commit_hash": "ecc3faa3b3f45e765f03207f051be870bbf5c11e",
+      "created_at": "2026-01-14T09:49:59.000Z"
+    },
+    {
+      "id": 69,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Improve colleague matching: better handling for duration-only profiles (assume 24mo overlap for current employees)",
+      "files": [
+        "backend/routes/reviews.js"
+      ],
+      "tags": [],
+      "commit_hash": "78b4333d748a683a37dfbc496cfc6ab8889056f6",
+      "created_at": "2026-01-14T10:20:21.000Z"
     }
   ],
-  "nextId": 46
+  "nextId": 70
 }

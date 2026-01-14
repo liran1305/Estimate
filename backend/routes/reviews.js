@@ -340,14 +340,28 @@ router.get('/colleague/next', async (req, res) => {
         }
       }
 
-      // Get already skipped/reviewed colleagues (exclude those user took action on)
+      // Get skip counts for each colleague
+      // Exclude: reviewed colleagues and colleagues skipped 2+ times
+      // Include: never-skipped and once-skipped colleagues
       const [existingAssignments] = await connection.query(`
-        SELECT colleague_id FROM review_assignments 
-        WHERE user_id = ? AND status IN ('skipped', 'reviewed')
+        SELECT 
+          colleague_id,
+          status,
+          COALESCE(skip_count, 0) as skip_count
+        FROM review_assignments 
+        WHERE user_id = ?
       `, [user_id]);
 
-      const excludeIds = existingAssignments.map(a => a.colleague_id);
+      // Exclude reviewed colleagues and colleagues skipped 2+ times
+      const excludeIds = existingAssignments
+        .filter(a => a.status === 'reviewed' || a.skip_count >= 2)
+        .map(a => a.colleague_id);
       excludeIds.push(userProfileId); // Exclude self
+      
+      // Track once-skipped colleagues for deprioritization
+      const onceSkippedIds = existingAssignments
+        .filter(a => a.status === 'skipped' && a.skip_count === 1)
+        .map(a => a.colleague_id);
 
       // Find colleagues who worked at the same companies
       const companyNames = userWorkHistory.map(w => w.company_name);
@@ -413,9 +427,19 @@ router.get('/colleague/next', async (req, res) => {
         };
       });
 
-      // Sort by overlap months (most overlap first)
-      scoredColleagues.sort((a, b) => b.match_score - a.match_score);
-      const selectedColleague = scoredColleagues[0];
+      // Sort by priority:
+      // 1. Never-skipped colleagues (highest priority)
+      // 2. Once-skipped colleagues (lower priority, get second chance)
+      // Sort each group by overlap months
+      const neverSkipped = scoredColleagues.filter(c => !onceSkippedIds.includes(c.id));
+      const onceSkipped = scoredColleagues.filter(c => onceSkippedIds.includes(c.id));
+      
+      neverSkipped.sort((a, b) => b.match_score - a.match_score);
+      onceSkipped.sort((a, b) => b.match_score - a.match_score);
+      
+      // Prioritize never-skipped, then once-skipped
+      const prioritizedColleagues = [...neverSkipped, ...onceSkipped];
+      const selectedColleague = prioritizedColleagues[0];
 
       // Create assignment record with 'pending' status (so refresh returns same colleague)
       await connection.query(`
@@ -498,13 +522,14 @@ router.post('/colleague/skip', async (req, res) => {
         });
       }
 
-      // Create or update assignment status to skipped
+      // Create or update assignment status to skipped and increment skip_count
       await connection.query(`
         INSERT INTO review_assignments 
-        (session_id, user_id, colleague_id, status, actioned_at)
-        VALUES (?, ?, ?, 'skipped', CURRENT_TIMESTAMP)
+        (session_id, user_id, colleague_id, status, skip_count, actioned_at)
+        VALUES (?, ?, ?, 'skipped', 1, CURRENT_TIMESTAMP)
         ON DUPLICATE KEY UPDATE 
           status = 'skipped',
+          skip_count = skip_count + 1,
           actioned_at = CURRENT_TIMESTAMP
       `, [session_id, user_id, colleague_id]);
 
