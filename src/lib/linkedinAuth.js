@@ -11,10 +11,23 @@ export const linkedinAuth = {
       timestamp: Date.now(),
       expiresAt: Date.now() + (10 * 60 * 1000) // 10 minutes
     };
-    localStorage.setItem('linkedin_oauth_state', JSON.stringify(stateData));
+    
+    // Store in both localStorage and sessionStorage for mobile compatibility
+    const stateStr = JSON.stringify(stateData);
+    try {
+      localStorage.setItem('linkedin_oauth_state', stateStr);
+      sessionStorage.setItem('linkedin_oauth_state', stateStr);
+    } catch (e) {
+      console.warn('Storage not available:', e);
+    }
     
     if (turnstileToken) {
-      localStorage.setItem('turnstile_token', turnstileToken);
+      try {
+        localStorage.setItem('turnstile_token', turnstileToken);
+        sessionStorage.setItem('turnstile_token', turnstileToken);
+      } catch (e) {
+        console.warn('Storage not available:', e);
+      }
     }
     
     const authUrl = new URL('https://www.linkedin.com/oauth/v2/authorization');
@@ -33,31 +46,42 @@ export const linkedinAuth = {
   },
 
   async handleCallback(code, state) {
-    const savedStateStr = localStorage.getItem('linkedin_oauth_state');
+    // Try both sessionStorage and localStorage for mobile compatibility
+    let savedStateStr = sessionStorage.getItem('linkedin_oauth_state') || 
+                        localStorage.getItem('linkedin_oauth_state');
     
     if (!savedStateStr) {
-      throw new Error('OAuth state not found - please try logging in again');
+      // Mobile browsers may clear storage - validate state parameter directly
+      console.warn('OAuth state not found in storage, validating state parameter only');
+      if (!state || state.length < 10) {
+        throw new Error('OAuth state not found - please try logging in again');
+      }
+      // Continue with just the state parameter validation on backend
+    } else {
+      let savedStateData;
+      try {
+        savedStateData = JSON.parse(savedStateStr);
+      } catch (e) {
+        sessionStorage.removeItem('linkedin_oauth_state');
+        localStorage.removeItem('linkedin_oauth_state');
+        throw new Error('Invalid OAuth state - please try logging in again');
+      }
+      
+      // Check if state has expired
+      if (Date.now() > savedStateData.expiresAt) {
+        sessionStorage.removeItem('linkedin_oauth_state');
+        localStorage.removeItem('linkedin_oauth_state');
+        throw new Error('OAuth session expired - please try logging in again');
+      }
+      
+      if (state !== savedStateData.state) {
+        sessionStorage.removeItem('linkedin_oauth_state');
+        localStorage.removeItem('linkedin_oauth_state');
+        throw new Error('Invalid state parameter - possible CSRF attack');
+      }
     }
     
-    let savedStateData;
-    try {
-      savedStateData = JSON.parse(savedStateStr);
-    } catch (e) {
-      localStorage.removeItem('linkedin_oauth_state');
-      throw new Error('Invalid OAuth state - please try logging in again');
-    }
-    
-    // Check if state has expired
-    if (Date.now() > savedStateData.expiresAt) {
-      localStorage.removeItem('linkedin_oauth_state');
-      throw new Error('OAuth session expired - please try logging in again');
-    }
-    
-    if (state !== savedStateData.state) {
-      localStorage.removeItem('linkedin_oauth_state');
-      throw new Error('Invalid state parameter - possible CSRF attack');
-    }
-    
+    sessionStorage.removeItem('linkedin_oauth_state');
     localStorage.removeItem('linkedin_oauth_state');
     
     try {

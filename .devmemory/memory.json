@@ -1057,7 +1057,21 @@
       ],
       "commit_hash": "67196c69ac7291c7f6dc79291556d8ae2d622cc0",
       "created_at": "2026-01-14T11:29:41.000Z"
+    },
+    {
+      "id": 72,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Restore is_blocked abuse detection + Add migration",
+      "files": [
+        "DATA_STRUCTURES.md",
+        "backend/database/migration-add-abuse-detection.sql",
+        "backend/routes/reviews.js"
+      ],
+      "tags": [],
+      "commit_hash": "3d9c8ecbdbd515a4e6a3d1194fdb174a48a95ed3",
+      "created_at": "2026-01-14T11:37:15.000Z"
     }
   ],
-  "nextId": 72
+  "nextId": 73
 }

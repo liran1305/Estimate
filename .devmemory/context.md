@@ -1,10 +1,10 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-14T11:37:02.839Z
+> Last updated: 2026-01-14T11:43:03.552Z
 
 ## Project Stats
-- Total memories: 71
-- Commits tracked: 71
+- Total memories: 72
+- Commits tracked: 72
 - Decisions recorded: 0
 
 ## Relevant to Current Work
@@ -15,6 +15,8 @@
 - **1/13/2026**: Add detailed OAuth logging to debug profile matching (backend/server.js, src/pages/Profile.jsx)
 
 ## Recent Changes
+- `3d9c8ec` 1/14/2026: Restore is_blocked abuse detection + Add migration
+  Files: DATA_STRUCTURES.md, backend/database/migration-add-abuse-detection.sql, backend/routes/reviews.js
 - `67196c6` 1/14/2026: Fix: Remove is_blocked column reference (not in schema yet)
   Files: backend/server.js
 - `b6663ce` 1/14/2026: Add skip tracking: profiles get 2nd chance after 1st skip, excluded after 2nd skip (per user)
@@ -43,8 +45,6 @@
   Files: public/images/anonimous.png, public/images/right-arrow.png
 - `e76c64d` 1/13/2026: Update Onboarding: wider card, user name greeting, bigger anonymous icon, replace all arrows with new design
   Files: src/components/landing/HeroSection.jsx, src/components/review/ColleagueCard.jsx, src/components/review/ReviewSuccess.jsx
-- `74aa496` 1/13/2026: Add loading state to skip button and fix counter jumping issue
-  Files: src/components/review/ColleagueCard.jsx, src/pages/Review.jsx
 
 ## Do Not Repeat
 These issues have already been solved:
