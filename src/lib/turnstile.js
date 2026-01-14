@@ -1,6 +1,42 @@
 const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY;
 
 export const turnstile = {
+  // Render visible Turnstile widget in a container element
+  renderVisible(containerId, onSuccess, onError) {
+    // Skip Turnstile in local development
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      console.log('Turnstile verification skipped in local development');
+      setTimeout(() => onSuccess(null), 100);
+      return;
+    }
+
+    if (!window.turnstile) {
+      console.error('Turnstile not loaded');
+      onError(new Error('Bot protection not loaded'));
+      return;
+    }
+
+    const container = document.getElementById(containerId);
+    if (!container) {
+      console.error('Turnstile container not found:', containerId);
+      onError(new Error('Turnstile container not found'));
+      return;
+    }
+
+    window.turnstile.render(container, {
+      sitekey: TURNSTILE_SITE_KEY,
+      callback: (token) => {
+        onSuccess(token);
+      },
+      'error-callback': () => {
+        onError(new Error('Bot verification failed'));
+      },
+      theme: 'light',
+      size: 'normal', // Use normal size for visibility
+    });
+  },
+
+  // Legacy invisible verify (kept for backward compatibility)
   async verify() {
     // Skip Turnstile in local development
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {

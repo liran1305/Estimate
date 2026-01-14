@@ -16,7 +16,7 @@ export default function HeroSection() {
         <div className="max-w-4xl mx-auto text-center">
           <TypewriterTitle />
           <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-8 mt-6">
-            A peer-verified reputation layer for hiring — helping great talent get discovered and helping recruiters hire with confidence.
+            A peer-verified reputation layer for hiring - helping great talent get discovered and helping recruiters hire with confidence.
           </p>
           
           <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6 text-sm text-gray-500 mb-12">

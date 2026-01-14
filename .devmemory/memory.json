@@ -1182,7 +1182,22 @@
       ],
       "commit_hash": "6f63a512d3d037a9ca5f933fccf6d3243f2a79ae",
       "created_at": "2026-01-14T12:15:55.000Z"
+    },
+    {
+      "id": 81,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix mobile OAuth slowness: Implement lazy loading for all pages",
+      "files": [
+        "backend/server.js",
+        "src/pages/index.jsx"
+      ],
+      "tags": [
+        "auth"
+      ],
+      "commit_hash": "aaf6db534122dfb00866bb77f10914f6286c112e",
+      "created_at": "2026-01-14T12:22:31.000Z"
     }
   ],
-  "nextId": 81
+  "nextId": 82
 }

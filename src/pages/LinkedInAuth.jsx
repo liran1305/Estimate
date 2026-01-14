@@ -11,23 +11,33 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export default function LinkedInAuth() {
   const [showOAuth, setShowOAuth] = useState(false);
-  const [isVerifying, setIsVerifying] = useState(false);
+  const [showVerification, setShowVerification] = useState(false);
+  const [verificationError, setVerificationError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     turnstile.loadScript().catch(console.error);
   }, []);
 
-  const handleAllow = async () => {
-    setIsVerifying(true);
-    try {
-      const token = await turnstile.verify();
-      linkedinAuth.initiateLogin(token);
-    } catch (error) {
-      console.error('Bot verification failed:', error);
-      alert('Verification failed. Please try again.');
-      setIsVerifying(false);
-    }
+  // Show verification step
+  const handleAllow = () => {
+    setShowVerification(true);
+    setVerificationError(null);
+    
+    // Render Turnstile widget after state update
+    setTimeout(() => {
+      turnstile.renderVisible(
+        'turnstile-container',
+        (token) => {
+          // Success - proceed to LinkedIn
+          linkedinAuth.initiateLogin(token);
+        },
+        (error) => {
+          console.error('Bot verification failed:', error);
+          setVerificationError('Verification failed. Please try again.');
+        }
+      );
+    }, 100);
   };
 
   return (
@@ -56,19 +66,9 @@ export default function LinkedInAuth() {
                 <Button 
                   className="w-full bg-[#0A66C2] hover:bg-[#004182] h-14 rounded-xl font-medium text-base"
                   onClick={() => setShowOAuth(true)}
-                  disabled={isVerifying}
                 >
-                  {isVerifying ? (
-                    <>
-                      <Loader2 className="w-5 h-5 mr-3 animate-spin" />
-                      Verifying...
-                    </>
-                  ) : (
-                    <>
-                      <Linkedin className="w-5 h-5 mr-3" />
-                      Continue with LinkedIn
-                    </>
-                  )}
+                  <Linkedin className="w-5 h-5 mr-3" />
+                  Continue with LinkedIn
                 </Button>
 
                 <div className="flex items-center justify-center gap-2 mt-4 mb-2">
@@ -90,7 +90,7 @@ export default function LinkedInAuth() {
                 </p>
               </Card>
             </motion.div>
-          ) : (
+          ) : !showVerification ? (
             <motion.div
               key="oauth"
               initial={{ opacity: 0, y: 20 }}
@@ -158,6 +158,51 @@ export default function LinkedInAuth() {
                     Allow
                   </Button>
                 </div>
+              </Card>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="verification"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+            >
+              <Card className="p-8 border-0 shadow-xl shadow-gray-200/50">
+                <div className="flex items-center justify-center gap-3 mb-6">
+                  <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
+                    <Shield className="w-6 h-6 text-orange-500" />
+                  </div>
+                </div>
+
+                <h2 className="text-xl font-bold text-gray-900 text-center mb-2">
+                  Security Check
+                </h2>
+                <p className="text-gray-500 text-center mb-6 text-sm">
+                  Please complete the verification below
+                </p>
+
+                {/* Visible Turnstile Widget Container */}
+                <div className="flex justify-center mb-6">
+                  <div id="turnstile-container" className="min-h-[65px]"></div>
+                </div>
+
+                {verificationError && (
+                  <p className="text-red-500 text-sm text-center mb-4">
+                    {verificationError}
+                  </p>
+                )}
+
+                <Button 
+                  variant="outline" 
+                  className="w-full h-12 rounded-xl font-medium"
+                  onClick={() => {
+                    setShowVerification(false);
+                    setVerificationError(null);
+                  }}
+                >
+                  <X className="w-4 h-4 mr-2" />
+                  Cancel
+                </Button>
               </Card>
             </motion.div>
           )}

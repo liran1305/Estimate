@@ -21,7 +21,7 @@ export default function QuoteSection() {
                 <span className="text-[#0A66C2] text-6xl">"</span>
               </p>
               <cite className="block text-xl md:text-2xl text-gray-600 not-italic font-medium mt-6">
-                — Simon Sinek
+                 Simon Sinek
               </cite>
             </blockquote>
           </div>
