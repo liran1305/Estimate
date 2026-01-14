@@ -5,6 +5,7 @@ import { Linkedin, Building2, Shield, Lock, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import WaitlistModal from "@/components/landing/WaitlistModal";
+import TypewriterTitle from "@/components/landing/TypewriterTitle";
 
 export default function HeroSection() {
   const [showWaitlist, setShowWaitlist] = useState(false);
@@ -13,12 +14,9 @@ export default function HeroSection() {
     <>
       <section className="pt-32 pb-20 px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 tracking-tight leading-tight mb-6">
-            Your Reputation Score.<br />
-            <span className="text-[#0A66C2]">From Real Colleagues.</span>
-          </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
-            Share it with recruiters when you're ready.
+          <TypewriterTitle />
+          <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-8 mt-6">
+            A peer-verified reputation layer for hiring — helping great talent get discovered and helping recruiters hire with confidence.
           </p>
           
           <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6 text-sm text-gray-500 mb-12">

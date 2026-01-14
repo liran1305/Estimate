@@ -1128,7 +1128,33 @@
       "tags": [],
       "commit_hash": "4e0a7b39b8bf53994e7a1d40fc23e4201ac6bb1f",
       "created_at": "2026-01-14T11:57:40.000Z"
+    },
+    {
+      "id": 77,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix: Handle reviewees without user accounts in score updates",
+      "files": [
+        "backend/routes/reviews.js"
+      ],
+      "tags": [
+        "fix"
+      ],
+      "commit_hash": "1c98d480b01d19772d7da05fadc959aa5ec7a726",
+      "created_at": "2026-01-14T11:58:20.000Z"
+    },
+    {
+      "id": 78,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add comprehensive data field audit documentation",
+      "files": [
+        "DATA_FIELD_AUDIT.md"
+      ],
+      "tags": [],
+      "commit_hash": "5a25f925c6c85fd973cde66a46a6eef921c15046",
+      "created_at": "2026-01-14T12:00:06.000Z"
     }
   ],
-  "nextId": 77
+  "nextId": 79
 }
