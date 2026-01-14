@@ -361,7 +361,7 @@ app.post('/api/auth/linkedin/callback', async (req, res) => {
 
     // Check if user already exists
     const [existingUsers] = await connection.query(
-      'SELECT id, linkedin_profile_id, is_blocked FROM users WHERE email = ?',
+      'SELECT id, linkedin_profile_id FROM users WHERE email = ?',
       [profile.email]
     );
 
