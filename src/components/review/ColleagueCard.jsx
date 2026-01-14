@@ -8,19 +8,29 @@ import { RefreshCw, Loader2 } from "lucide-react";
 
 const interactionTypes = [
   { 
-    value: "direct", 
-    label: "Direct Collaboration", 
-    description: "Worked closely together at this or previous company" 
+    value: "peer", 
+    label: "Direct Colleague", 
+    description: "Worked directly with them as a peer" 
   },
   { 
-    value: "departmental", 
-    label: "Departmental Interaction", 
-    description: "Same department at this or previous company" 
+    value: "manager", 
+    label: "They Were My Manager", 
+    description: "They managed or supervised me" 
   },
   { 
-    value: "general", 
-    label: "General Association", 
-    description: "Know of them from current or previous workplace" 
+    value: "direct_report", 
+    label: "They Reported to Me", 
+    description: "I managed or supervised them" 
+  },
+  { 
+    value: "cross_team", 
+    label: "Cross-Team Collaboration", 
+    description: "Worked with them across different teams" 
+  },
+  { 
+    value: "other", 
+    label: "Other Professional Interaction", 
+    description: "Know them from work but limited interaction" 
   }
 ];
 

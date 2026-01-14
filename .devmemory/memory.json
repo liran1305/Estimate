@@ -1085,7 +1085,23 @@
       ],
       "commit_hash": "505f540e9681ef22bd4fed1b813553f45abc99a5",
       "created_at": "2026-01-14T11:44:21.000Z"
+    },
+    {
+      "id": 74,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Optimize mobile OAuth + Add user-facing message",
+      "files": [
+        "backend/database/migration-optimize-image-matching.sql",
+        "backend/server.js",
+        "src/pages/LinkedInCallback.jsx"
+      ],
+      "tags": [
+        "auth"
+      ],
+      "commit_hash": "0331516ce1c89f250bfae1e62bd9a01509b8ccef",
+      "created_at": "2026-01-14T11:51:17.000Z"
     }
   ],
-  "nextId": 74
+  "nextId": 75
 }

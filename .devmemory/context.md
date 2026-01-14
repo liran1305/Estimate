@@ -1,20 +1,22 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-14T11:50:17.166Z
+> Last updated: 2026-01-14T11:54:18.223Z
 
 ## Project Stats
-- Total memories: 73
-- Commits tracked: 73
+- Total memories: 74
+- Commits tracked: 74
 - Decisions recorded: 0
 
 ## Relevant to Current Work
+- **1/14/2026**: Optimize mobile OAuth + Add user-facing message (backend/database/migration-optimize-image-matching.sql, backend/server.js, src/pages/LinkedInCallback.jsx)
 - **1/14/2026**: Fix: Remove is_blocked column reference (not in schema yet) (backend/server.js)
 - **1/13/2026**: Enforce blocking: redirect blocked users to Blocked page immediately, prevent access to other pages (backend/server.js, src/pages/Layout.jsx)
 - **1/13/2026**: Register admin routes in server.js (backend/server.js)
 - **1/13/2026**: Implement image matching: extract image ID from LinkedIn OAuth picture and match to Bright Data avat (backend/server.js)
-- **1/13/2026**: Add detailed OAuth logging to debug profile matching (backend/server.js, src/pages/Profile.jsx)
 
 ## Recent Changes
+- `0331516` 1/14/2026: Optimize mobile OAuth + Add user-facing message
+  Files: backend/database/migration-optimize-image-matching.sql, backend/server.js, src/pages/LinkedInCallback.jsx
 - `505f540` 1/14/2026: Fix mobile OAuth: Use sessionStorage + localStorage fallback
   Files: src/lib/linkedinAuth.js
 - `3d9c8ec` 1/14/2026: Restore is_blocked abuse detection + Add migration
@@ -43,8 +45,6 @@
   Files: backend/routes/reviews.js, src/components/review/ColleagueCard.jsx
 - `27e3e87` 1/13/2026: Fix colleague query to prioritize current and most recent shared companies
   Files: backend/routes/reviews.js
-- `90a8942` 1/13/2026: Add new images: anonymous icon and right arrow
-  Files: public/images/anonimous.png, public/images/right-arrow.png
 
 ## Do Not Repeat
 These issues have already been solved:
