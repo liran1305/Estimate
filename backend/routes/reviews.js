@@ -36,7 +36,12 @@ function calculateTimeOverlap(userFrom, userTo, userIsCurrent, colleagueFrom, co
   const colleagueEnd = parseDate(colleagueTo, colleagueIsCurrent, true);
 
   if (!userStart || !userEnd || !colleagueStart || !colleagueEnd) {
-    if (userIsCurrent && colleagueIsCurrent) return 12;
+    // Better handling for profiles with missing dates
+    // If both are current employees at the same company, assume significant overlap
+    if (userIsCurrent && colleagueIsCurrent) return 24; // Assume 2 years overlap
+    // If one is current and one has dates, assume moderate overlap
+    if (userIsCurrent || colleagueIsCurrent) return 12; // Assume 1 year overlap
+    // If neither has dates, assume minimal overlap
     return 6;
   }
 
