@@ -69,24 +69,38 @@ export default function Layout({ children, currentPageName }) {
             </Link>
 
             <nav className="flex items-center gap-2">
-              <Link to={createPageUrl("Review")}>
-                <Button 
-                  variant={currentPageName === 'Review' ? 'secondary' : 'ghost'} 
-                  className="font-medium"
-                >
-                  <Users className="w-4 h-4 mr-2" />
-                  Review
-                </Button>
-              </Link>
-              <Link to={createPageUrl("Profile")}>
-                <Button 
-                  variant={currentPageName === 'Profile' ? 'secondary' : 'ghost'} 
-                  className="font-medium"
-                >
-                  <User className="w-4 h-4 mr-2" />
-                  Profile
-                </Button>
-              </Link>
+              <DropdownMenu modal={false}>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="font-medium">
+                    {currentPageName === 'Review' ? (
+                      <>
+                        <Users className="w-4 h-4 mr-2" />
+                        Review
+                      </>
+                    ) : (
+                      <>
+                        <User className="w-4 h-4 mr-2" />
+                        Profile
+                      </>
+                    )}
+                    <ChevronDown className="w-4 h-4 ml-2" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <Link to={createPageUrl("Review")}>
+                    <DropdownMenuItem className={currentPageName === 'Review' ? 'bg-gray-100' : ''}>
+                      <Users className="w-4 h-4 mr-2" />
+                      Review
+                    </DropdownMenuItem>
+                  </Link>
+                  <Link to={createPageUrl("Profile")}>
+                    <DropdownMenuItem className={currentPageName === 'Profile' ? 'bg-gray-100' : ''}>
+                      <User className="w-4 h-4 mr-2" />
+                      Profile
+                    </DropdownMenuItem>
+                  </Link>
+                </DropdownMenuContent>
+              </DropdownMenu>
               
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

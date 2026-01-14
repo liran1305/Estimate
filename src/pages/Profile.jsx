@@ -143,7 +143,8 @@ export default function Profile() {
 
   const averageScores = calculateAverageScores();
   const overallScore = calculateOverallScore(averageScores);
-  const hasEnoughReviews = reviews.length >= 3;
+  const hasAnyReviews = reviews.length > 0;
+  const hasEnoughForRecruiters = reviews.length >= 3;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-12 px-6">
@@ -168,7 +169,7 @@ export default function Profile() {
           </p>
         </motion.div>
 
-        {hasEnoughReviews ? (
+        {hasAnyReviews ? (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -197,12 +198,17 @@ export default function Profile() {
               <div className="flex items-center justify-between">
                 <div>
                   <Label className="font-medium text-gray-900">Reviews Permitted for Recruitment</Label>
-                  <p className="text-sm text-gray-500">Allow verified recruiters to see your reviews</p>
+                  <p className="text-sm text-gray-500">
+                    {hasEnoughForRecruiters 
+                      ? 'Allow verified recruiters to see your reviews'
+                      : `Complete ${3 - reviews.length} more review${3 - reviews.length > 1 ? 's' : ''} to enable recruiter visibility`
+                    }
+                  </p>
                 </div>
                 <Switch 
                   checked={user.recruitment_consent || false}
                   onCheckedChange={handleConsentToggle}
-                  disabled={isUpdating}
+                  disabled={isUpdating || !hasEnoughForRecruiters}
                 />
               </div>
             </Card>
