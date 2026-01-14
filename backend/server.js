@@ -158,6 +158,9 @@ app.post('/api/migrate', async (req, res) => {
 });
 
 app.post('/api/auth/linkedin/callback', async (req, res) => {
+  const startTime = Date.now();
+  const timings = {};
+  
   const { code, redirect_uri, turnstile_token } = req.body;
 
   if (!code || !redirect_uri) {
@@ -166,6 +169,8 @@ app.post('/api/auth/linkedin/callback', async (req, res) => {
       message: 'Both code and redirect_uri are required' 
     });
   }
+
+  timings.requestReceived = Date.now() - startTime;
 
   // Verify Turnstile token if provided
   if (turnstile_token && process.env.TURNSTILE_SECRET_KEY) {
@@ -182,6 +187,7 @@ app.post('/api/auth/linkedin/callback', async (req, res) => {
       });
 
       const verifyData = await verifyResponse.json();
+      timings.turnstileVerify = Date.now() - startTime;
       
       if (!verifyData.success) {
         console.error('Turnstile verification failed:', verifyData);
@@ -226,6 +232,7 @@ app.post('/api/auth/linkedin/callback', async (req, res) => {
     }
 
     const tokenData = await tokenResponse.json();
+    timings.linkedinTokenExchange = Date.now() - startTime;
 
     const profileResponse = await fetch('https://api.linkedin.com/v2/userinfo', {
       headers: {
@@ -243,6 +250,7 @@ app.post('/api/auth/linkedin/callback', async (req, res) => {
     }
 
     const profile = await profileResponse.json();
+    timings.linkedinProfileFetch = Date.now() - startTime;
     
     // Log the full LinkedIn profile response for debugging
     console.log('=== LinkedIn OAuth Profile Response ===');
@@ -260,6 +268,7 @@ app.post('/api/auth/linkedin/callback', async (req, res) => {
       database: process.env.CLOUD_SQL_DATABASE,
       port: process.env.CLOUD_SQL_PORT || 3306
     });
+    timings.dbConnection = Date.now() - startTime;
 
     // Try to match by image, LinkedIn profile URL/ID, numeric ID, then by name
     let linkedinProfileId = null;
@@ -293,6 +302,7 @@ app.post('/api/auth/linkedin/callback', async (req, res) => {
         );
         imageMatches.push(...fallbackMatches);
       }
+      timings.imageMatching = Date.now() - startTime;
       if (imageMatches.length === 1) {
         linkedinProfileId = imageMatches[0].id;
         matchMethod = 'image';
@@ -420,6 +430,12 @@ app.post('/api/auth/linkedin/callback', async (req, res) => {
     const isBlocked = userStatus.length > 0 ? userStatus[0].is_blocked : false;
 
     await connection.end();
+    timings.total = Date.now() - startTime;
+    
+    // Log all timings for performance analysis
+    console.log('=== OAuth Timing Analysis ===');
+    console.log(JSON.stringify(timings, null, 2));
+    console.log('=============================');
 
     return res.status(200).json({
       access_token: tokenData.access_token,

@@ -1,20 +1,19 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-14T12:15:40.296Z
+> Last updated: 2026-01-14T12:22:22.864Z
 
 ## Project Stats
-- Total memories: 79
-- Commits tracked: 79
+- Total memories: 80
+- Commits tracked: 80
 - Decisions recorded: 0
 
 ## Relevant to Current Work
 - **1/14/2026**: Optimize mobile OAuth + Add user-facing message (backend/database/migration-optimize-image-matching.sql, backend/server.js, src/pages/LinkedInCallback.jsx)
-- **1/14/2026**: Fix: Remove is_blocked column reference (not in schema yet) (backend/server.js)
-- **1/13/2026**: Enforce blocking: redirect blocked users to Blocked page immediately, prevent access to other pages (backend/server.js, src/pages/Layout.jsx)
-- **1/13/2026**: Register admin routes in server.js (backend/server.js)
-- **1/13/2026**: Implement image matching: extract image ID from LinkedIn OAuth picture and match to Bright Data avat (backend/server.js)
+- **1/9/2026**: Implement real LinkedIn OAuth authentication (.env.example, src/lib/linkedinAuth.js, src/pages/LinkedInAuth.jsx)
 
 ## Recent Changes
+- `6f63a51` 1/14/2026: Update FAQ: Accurate 3-review unlock mechanism for recruiter visibility
+  Files: src/components/landing/FAQ.jsx
 - `5d56e97` 1/14/2026: Add dynamic typewriter hero titles with animation
   Files: DATA_FIELD_AUDIT.md, src/components/landing/HeroSection.jsx, src/components/landing/TypewriterTitle.jsx
 - `5a25f92` 1/14/2026: Add comprehensive data field audit documentation
@@ -43,8 +42,6 @@
   Files: src/components/profile/WaitingState.jsx, src/pages/Profile.jsx
 - `af39ba3` 1/13/2026: Add score fetching from backend API to display user reviews and scores on Profile page
   Files: src/pages/Profile.jsx
-- `4ae7afd` 1/13/2026: Enforce blocking: redirect blocked users to Blocked page immediately, prevent access to other pages
-  Files: backend/server.js, src/pages/Layout.jsx
 
 ## Do Not Repeat
 These issues have already been solved:

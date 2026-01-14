@@ -1,26 +1,26 @@
+import React, { Suspense } from 'react';
 import Layout from "./Layout.jsx";
-
-import Landing from "./Landing";
-
-import Onboarding from "./Onboarding";
-
-import LinkedInAuth from "./LinkedInAuth";
-
-import Review from "./Review";
-
-import Profile from "./Profile";
-
-import TermsOfService from "./TermsOfService";
-
-import PrivacyPolicy from "./PrivacyPolicy";
-
-import Disclaimer from "./Disclaimer";
-
-import LinkedInCallback from "./LinkedInCallback";
-
-import Blocked from "./Blocked";
-
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import { Loader2 } from "lucide-react";
+
+// Lazy load all pages for faster initial load (critical for mobile OAuth callback)
+const Landing = React.lazy(() => import("./Landing"));
+const Onboarding = React.lazy(() => import("./Onboarding"));
+const LinkedInAuth = React.lazy(() => import("./LinkedInAuth"));
+const Review = React.lazy(() => import("./Review"));
+const Profile = React.lazy(() => import("./Profile"));
+const TermsOfService = React.lazy(() => import("./TermsOfService"));
+const PrivacyPolicy = React.lazy(() => import("./PrivacyPolicy"));
+const Disclaimer = React.lazy(() => import("./Disclaimer"));
+const LinkedInCallback = React.lazy(() => import("./LinkedInCallback"));
+const Blocked = React.lazy(() => import("./Blocked"));
+
+// Minimal loading fallback
+const PageLoader = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <Loader2 className="w-8 h-8 text-[#0A66C2] animate-spin" />
+  </div>
+);
 
 const PAGES = {
     
@@ -66,32 +66,21 @@ function PagesContent() {
     
     return (
         <Layout currentPageName={currentPage}>
-            <Routes>            
-                
+            <Suspense fallback={<PageLoader />}>
+                <Routes>            
                     <Route path="/" element={<Landing />} />
-                
-                
-                <Route path="/Landing" element={<Landing />} />
-                
-                <Route path="/Onboarding" element={<Onboarding />} />
-                
-                <Route path="/LinkedInAuth" element={<LinkedInAuth />} />
-                
-                <Route path="/Review" element={<Review />} />
-                
-                <Route path="/Profile" element={<Profile />} />
-                
-                <Route path="/TermsOfService" element={<TermsOfService />} />
-                
-                <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
-                
-                <Route path="/Disclaimer" element={<Disclaimer />} />
-                
-                <Route path="/auth/linkedin/callback" element={<LinkedInCallback />} />
-                
-                <Route path="/Blocked" element={<Blocked />} />
-                
-            </Routes>
+                    <Route path="/Landing" element={<Landing />} />
+                    <Route path="/Onboarding" element={<Onboarding />} />
+                    <Route path="/LinkedInAuth" element={<LinkedInAuth />} />
+                    <Route path="/Review" element={<Review />} />
+                    <Route path="/Profile" element={<Profile />} />
+                    <Route path="/TermsOfService" element={<TermsOfService />} />
+                    <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
+                    <Route path="/Disclaimer" element={<Disclaimer />} />
+                    <Route path="/auth/linkedin/callback" element={<LinkedInCallback />} />
+                    <Route path="/Blocked" element={<Blocked />} />
+                </Routes>
+            </Suspense>
         </Layout>
     );
 }

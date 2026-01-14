@@ -1168,7 +1168,21 @@
       "tags": [],
       "commit_hash": "5d56e97300b02048b9df7cac46c0f08cf64ea6c4",
       "created_at": "2026-01-14T12:12:37.000Z"
+    },
+    {
+      "id": 80,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Update FAQ: Accurate 3-review unlock mechanism for recruiter visibility",
+      "files": [
+        "src/components/landing/FAQ.jsx"
+      ],
+      "tags": [
+        "ui"
+      ],
+      "commit_hash": "6f63a512d3d037a9ca5f933fccf6d3243f2a79ae",
+      "created_at": "2026-01-14T12:15:55.000Z"
     }
   ],
-  "nextId": 80
+  "nextId": 81
 }
