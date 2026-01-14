@@ -16,7 +16,7 @@ const faqs = [
   },
   {
     question: "How does sharing with recruiters work?",
-    answer: "Once you have your score, you can add it to your profile or applications. Verified recruiters can discover candidates with high scores, giving you an edge in the hiring process."
+    answer: "After receiving at least 3 peer reviews, your professional reputation score becomes available to unlock. You maintain full control over visibility — choose to make your verified score discoverable to recruiters when you're ready. This gives you a competitive advantage by showcasing validated peer feedback from real colleagues."
   }
 ];
 

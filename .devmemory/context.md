@@ -1,10 +1,10 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-14T12:11:29.928Z
+> Last updated: 2026-01-14T12:15:40.296Z
 
 ## Project Stats
-- Total memories: 78
-- Commits tracked: 78
+- Total memories: 79
+- Commits tracked: 79
 - Decisions recorded: 0
 
 ## Relevant to Current Work
@@ -15,6 +15,8 @@
 - **1/13/2026**: Implement image matching: extract image ID from LinkedIn OAuth picture and match to Bright Data avat (backend/server.js)
 
 ## Recent Changes
+- `5d56e97` 1/14/2026: Add dynamic typewriter hero titles with animation
+  Files: DATA_FIELD_AUDIT.md, src/components/landing/HeroSection.jsx, src/components/landing/TypewriterTitle.jsx
 - `5a25f92` 1/14/2026: Add comprehensive data field audit documentation
   Files: DATA_FIELD_AUDIT.md
 - `1c98d48` 1/14/2026: Fix: Handle reviewees without user accounts in score updates
@@ -43,8 +45,6 @@
   Files: src/pages/Profile.jsx
 - `4ae7afd` 1/13/2026: Enforce blocking: redirect blocked users to Blocked page immediately, prevent access to other pages
   Files: backend/server.js, src/pages/Layout.jsx
-- `1f3af0e` 1/13/2026: Fix database column name: use started_at instead of created_at for review_sessions
-  Files: backend/routes/reviews.js
 
 ## Do Not Repeat
 These issues have already been solved:
