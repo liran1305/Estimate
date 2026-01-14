@@ -1,10 +1,10 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-14T11:54:18.223Z
+> Last updated: 2026-01-14T11:56:56.036Z
 
 ## Project Stats
-- Total memories: 74
-- Commits tracked: 74
+- Total memories: 75
+- Commits tracked: 75
 - Decisions recorded: 0
 
 ## Relevant to Current Work
@@ -15,6 +15,8 @@
 - **1/13/2026**: Implement image matching: extract image ID from LinkedIn OAuth picture and match to Bright Data avat (backend/server.js)
 
 ## Recent Changes
+- `e2e37ec` 1/14/2026: Fix: Match interaction types to database ENUM values
+  Files: src/components/review/ColleagueCard.jsx
 - `0331516` 1/14/2026: Optimize mobile OAuth + Add user-facing message
   Files: backend/database/migration-optimize-image-matching.sql, backend/server.js, src/pages/LinkedInCallback.jsx
 - `505f540` 1/14/2026: Fix mobile OAuth: Use sessionStorage + localStorage fallback
@@ -43,13 +45,11 @@
   Files: backend/routes/reviews.js, src/components/review/ColleagueCard.jsx, src/pages/Blocked.jsx
 - `2f665e6` 1/13/2026: Add daily skip budget refresh: sessions expire after 24 hours, button shows 'Try again tomorrow' when skips exhausted
   Files: backend/routes/reviews.js, src/components/review/ColleagueCard.jsx
-- `27e3e87` 1/13/2026: Fix colleague query to prioritize current and most recent shared companies
-  Files: backend/routes/reviews.js
 
 ## Do Not Repeat
 These issues have already been solved:
+- Match interaction types to database ENUM values
 - Fix mobile OAuth: Use sessionStorage + localStorage fallback
 - Remove is_blocked column reference (not in schema yet)
 - Fix mobile OAuth CSRF error: switch from sessionStorage to localStorage with 10min expiration
 - Fix database column name: use started_at instead of created_at for review_sessions
-- Fix skip budget: company-size-based (3-13 max), +3 daily refresh only when exhausted

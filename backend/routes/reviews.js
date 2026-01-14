@@ -619,6 +619,14 @@ router.post('/review/submit', async (req, res) => {
       const assignmentId = assignments.length > 0 ? assignments[0].id : null;
       const companyContext = assignments.length > 0 ? assignments[0].company_context : 'previous';
 
+      // Map old frontend values to new database ENUM values (temporary until frontend redeploys)
+      const interactionTypeMap = {
+        'direct': 'peer',
+        'departmental': 'cross_team',
+        'general': 'other'
+      };
+      const mappedInteractionType = interactionTypeMap[interaction_type] || interaction_type || 'peer';
+
       // Create review
       const reviewId = uuidv4();
       await connection.query(`
@@ -634,7 +642,7 @@ router.post('/review/submit', async (req, res) => {
         assignmentId,
         company_name,
         companyContext,
-        interaction_type || 'peer',
+        mappedInteractionType,
         technical_rating,
         communication_rating,
         teamwork_rating,

@@ -1101,7 +1101,22 @@
       ],
       "commit_hash": "0331516ce1c89f250bfae1e62bd9a01509b8ccef",
       "created_at": "2026-01-14T11:51:17.000Z"
+    },
+    {
+      "id": 75,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix: Match interaction types to database ENUM values",
+      "files": [
+        "src/components/review/ColleagueCard.jsx"
+      ],
+      "tags": [
+        "fix",
+        "database"
+      ],
+      "commit_hash": "e2e37ecd8b89f8193f1ff6a9213bd9f9f2920cbf",
+      "created_at": "2026-01-14T11:54:28.000Z"
     }
   ],
-  "nextId": 75
+  "nextId": 76
 }
