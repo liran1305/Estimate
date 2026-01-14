@@ -6,10 +6,15 @@ const BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhos
 export const linkedinAuth = {
   initiateLogin(turnstileToken) {
     const state = this.generateState();
-    sessionStorage.setItem('linkedin_oauth_state', state);
+    const stateData = {
+      state: state,
+      timestamp: Date.now(),
+      expiresAt: Date.now() + (10 * 60 * 1000) // 10 minutes
+    };
+    localStorage.setItem('linkedin_oauth_state', JSON.stringify(stateData));
     
     if (turnstileToken) {
-      sessionStorage.setItem('turnstile_token', turnstileToken);
+      localStorage.setItem('turnstile_token', turnstileToken);
     }
     
     const authUrl = new URL('https://www.linkedin.com/oauth/v2/authorization');
@@ -28,13 +33,32 @@ export const linkedinAuth = {
   },
 
   async handleCallback(code, state) {
-    const savedState = sessionStorage.getItem('linkedin_oauth_state');
+    const savedStateStr = localStorage.getItem('linkedin_oauth_state');
     
-    if (state !== savedState) {
+    if (!savedStateStr) {
+      throw new Error('OAuth state not found - please try logging in again');
+    }
+    
+    let savedStateData;
+    try {
+      savedStateData = JSON.parse(savedStateStr);
+    } catch (e) {
+      localStorage.removeItem('linkedin_oauth_state');
+      throw new Error('Invalid OAuth state - please try logging in again');
+    }
+    
+    // Check if state has expired
+    if (Date.now() > savedStateData.expiresAt) {
+      localStorage.removeItem('linkedin_oauth_state');
+      throw new Error('OAuth session expired - please try logging in again');
+    }
+    
+    if (state !== savedStateData.state) {
+      localStorage.removeItem('linkedin_oauth_state');
       throw new Error('Invalid state parameter - possible CSRF attack');
     }
     
-    sessionStorage.removeItem('linkedin_oauth_state');
+    localStorage.removeItem('linkedin_oauth_state');
     
     try {
       // Backend returns user object with matched LinkedIn profile
@@ -64,8 +88,8 @@ export const linkedinAuth = {
   },
 
   async exchangeCodeForToken(code) {
-    const turnstileToken = sessionStorage.getItem('turnstile_token');
-    sessionStorage.removeItem('turnstile_token');
+    const turnstileToken = localStorage.getItem('turnstile_token');
+    localStorage.removeItem('turnstile_token');
     
     // Call secure backend API instead of exposing client secret
     const response = await fetch(`${BACKEND_API_URL}/api/auth/linkedin/callback`, {
