@@ -77,8 +77,11 @@ export default function LinkedInCallback() {
               <h2 className="text-xl font-bold text-gray-900 mb-2">
                 Authenticating...
               </h2>
-              <p className="text-gray-600">
+              <p className="text-gray-600 mb-2">
                 Please wait while we complete your sign-in
+              </p>
+              <p className="text-sm text-gray-500">
+                This may take 10-20 seconds on mobile networks
               </p>
             </div>
           )}

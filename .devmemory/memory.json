@@ -1071,7 +1071,21 @@
       "tags": [],
       "commit_hash": "3d9c8ecbdbd515a4e6a3d1194fdb174a48a95ed3",
       "created_at": "2026-01-14T11:37:15.000Z"
+    },
+    {
+      "id": 73,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix mobile OAuth: Use sessionStorage + localStorage fallback",
+      "files": [
+        "src/lib/linkedinAuth.js"
+      ],
+      "tags": [
+        "auth"
+      ],
+      "commit_hash": "505f540e9681ef22bd4fed1b813553f45abc99a5",
+      "created_at": "2026-01-14T11:44:21.000Z"
     }
   ],
-  "nextId": 73
+  "nextId": 74
 }

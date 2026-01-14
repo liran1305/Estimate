@@ -1,10 +1,10 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-14T11:43:03.552Z
+> Last updated: 2026-01-14T11:50:17.166Z
 
 ## Project Stats
-- Total memories: 72
-- Commits tracked: 72
+- Total memories: 73
+- Commits tracked: 73
 - Decisions recorded: 0
 
 ## Relevant to Current Work
@@ -15,6 +15,8 @@
 - **1/13/2026**: Add detailed OAuth logging to debug profile matching (backend/server.js, src/pages/Profile.jsx)
 
 ## Recent Changes
+- `505f540` 1/14/2026: Fix mobile OAuth: Use sessionStorage + localStorage fallback
+  Files: src/lib/linkedinAuth.js
 - `3d9c8ec` 1/14/2026: Restore is_blocked abuse detection + Add migration
   Files: DATA_STRUCTURES.md, backend/database/migration-add-abuse-detection.sql, backend/routes/reviews.js
 - `67196c6` 1/14/2026: Fix: Remove is_blocked column reference (not in schema yet)
@@ -43,13 +45,11 @@
   Files: backend/routes/reviews.js
 - `90a8942` 1/13/2026: Add new images: anonymous icon and right arrow
   Files: public/images/anonimous.png, public/images/right-arrow.png
-- `e76c64d` 1/13/2026: Update Onboarding: wider card, user name greeting, bigger anonymous icon, replace all arrows with new design
-  Files: src/components/landing/HeroSection.jsx, src/components/review/ColleagueCard.jsx, src/components/review/ReviewSuccess.jsx
 
 ## Do Not Repeat
 These issues have already been solved:
+- Fix mobile OAuth: Use sessionStorage + localStorage fallback
 - Remove is_blocked column reference (not in schema yet)
 - Fix mobile OAuth CSRF error: switch from sessionStorage to localStorage with 10min expiration
 - Fix database column name: use started_at instead of created_at for review_sessions
 - Fix skip budget: company-size-based (3-13 max), +3 daily refresh only when exhausted
-- Fix colleague query to prioritize current and most recent shared companies
