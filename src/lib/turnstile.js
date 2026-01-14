@@ -2,7 +2,8 @@ const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY;
 
 export const turnstile = {
   // Render Turnstile widget that auto-verifies (no user action needed)
-  renderAutoVerify(containerId, onSuccess, onError) {
+  // containerOrId can be either a DOM element or an element ID string
+  renderAutoVerify(containerOrId, onSuccess, onError) {
     // Skip Turnstile in local development
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
       console.log('Turnstile verification skipped in local development');
@@ -16,9 +17,13 @@ export const turnstile = {
       return;
     }
 
-    const container = document.getElementById(containerId);
+    // Accept either element or ID string
+    const container = typeof containerOrId === 'string' 
+      ? document.getElementById(containerOrId) 
+      : containerOrId;
+      
     if (!container) {
-      console.error('Turnstile container not found:', containerId);
+      console.error('Turnstile container not found');
       onError(new Error('Turnstile container not found'));
       return;
     }

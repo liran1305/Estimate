@@ -25,32 +25,22 @@ export default function LinkedInAuth() {
     setVerificationError(null);
   };
 
-  // Render Turnstile when verification screen is shown
-  useEffect(() => {
-    if (showVerification && !verificationError) {
-      // Small delay to ensure DOM is ready
-      const timer = setTimeout(() => {
-        const container = document.getElementById('turnstile-container');
-        if (container) {
-          turnstile.renderAutoVerify(
-            'turnstile-container',
-            (token) => {
-              // Success - proceed to LinkedIn
-              linkedinAuth.initiateLogin(token);
-            },
-            (error) => {
-              console.error('Bot verification failed:', error);
-              setVerificationError('Verification failed. Please try again.');
-            }
-          );
-        } else {
-          console.error('Container still not found after delay');
+  // Ref callback - renders Turnstile when container is mounted
+  const turnstileContainerRef = (element) => {
+    if (element && !element.hasChildNodes()) {
+      turnstile.renderAutoVerify(
+        element,
+        (token) => {
+          // Success - proceed to LinkedIn
+          linkedinAuth.initiateLogin(token);
+        },
+        (error) => {
+          console.error('Bot verification failed:', error);
           setVerificationError('Verification failed. Please try again.');
         }
-      }, 200);
-      return () => clearTimeout(timer);
+      );
     }
-  }, [showVerification, verificationError]);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center p-6">
@@ -190,7 +180,7 @@ export default function LinkedInAuth() {
                     </p>
                     {/* Cloudflare Turnstile Widget - shows logo and auto-verifies */}
                     <div className="flex justify-center mb-4">
-                      <div id="turnstile-container"></div>
+                      <div ref={turnstileContainerRef}></div>
                     </div>
                   </>
                 ) : (
