@@ -1,13 +1,24 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-14T11:20:04.384Z
+> Last updated: 2026-01-14T11:37:02.839Z
 
 ## Project Stats
-- Total memories: 69
-- Commits tracked: 69
+- Total memories: 71
+- Commits tracked: 71
 - Decisions recorded: 0
 
+## Relevant to Current Work
+- **1/14/2026**: Fix: Remove is_blocked column reference (not in schema yet) (backend/server.js)
+- **1/13/2026**: Enforce blocking: redirect blocked users to Blocked page immediately, prevent access to other pages (backend/server.js, src/pages/Layout.jsx)
+- **1/13/2026**: Register admin routes in server.js (backend/server.js)
+- **1/13/2026**: Implement image matching: extract image ID from LinkedIn OAuth picture and match to Bright Data avat (backend/server.js)
+- **1/13/2026**: Add detailed OAuth logging to debug profile matching (backend/server.js, src/pages/Profile.jsx)
+
 ## Recent Changes
+- `67196c6` 1/14/2026: Fix: Remove is_blocked column reference (not in schema yet)
+  Files: backend/server.js
+- `b6663ce` 1/14/2026: Add skip tracking: profiles get 2nd chance after 1st skip, excluded after 2nd skip (per user)
+  Files: backend/database/migration-add-skip-tracking.sql, backend/routes/reviews.js
 - `78b4333` 1/14/2026: Improve colleague matching: better handling for duration-only profiles (assume 24mo overlap for current employees)
   Files: backend/routes/reviews.js
 - `ecc3faa` 1/14/2026: Fix mobile OAuth CSRF error: switch from sessionStorage to localStorage with 10min expiration
@@ -34,15 +45,11 @@
   Files: src/components/landing/HeroSection.jsx, src/components/review/ColleagueCard.jsx, src/components/review/ReviewSuccess.jsx
 - `74aa496` 1/13/2026: Add loading state to skip button and fix counter jumping issue
   Files: src/components/review/ColleagueCard.jsx, src/pages/Review.jsx
-- `a51e49d` 1/13/2026: Fix refresh bypass: add pending status to assignments and skip Turnstile in local dev
-  Files: backend/routes/reviews.js, src/lib/turnstile.js
-- `202fc1b` 1/13/2026: Fix refresh bypass: create assignment with 'pending' status immediately when colleague is shown
-  Files: backend/routes/reviews.js
 
 ## Do Not Repeat
 These issues have already been solved:
+- Remove is_blocked column reference (not in schema yet)
 - Fix mobile OAuth CSRF error: switch from sessionStorage to localStorage with 10min expiration
 - Fix database column name: use started_at instead of created_at for review_sessions
 - Fix skip budget: company-size-based (3-13 max), +3 daily refresh only when exhausted
 - Fix colleague query to prioritize current and most recent shared companies
-- Fix refresh bypass: add pending status to assignments and skip Turnstile in local dev

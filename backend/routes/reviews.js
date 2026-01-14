@@ -172,8 +172,8 @@ router.get('/session/start', async (req, res) => {
         if (allExhausted && allConsecutiveDays) {
           // Block user for abuse
           await connection.query(
-            'UPDATE users SET is_blocked = TRUE, blocked_reason = "Excessive skip usage" WHERE id = ?',
-            [user_id]
+            'UPDATE users SET is_blocked = TRUE, blocked_reason = ?, blocked_at = CURRENT_TIMESTAMP WHERE id = ?',
+            ['Excessive skip usage without submitting reviews', user_id]
           );
           return res.status(403).json({
             success: false,

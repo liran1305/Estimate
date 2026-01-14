@@ -1030,7 +1030,34 @@
       "tags": [],
       "commit_hash": "78b4333d748a683a37dfbc496cfc6ab8889056f6",
       "created_at": "2026-01-14T10:20:21.000Z"
+    },
+    {
+      "id": 70,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add skip tracking: profiles get 2nd chance after 1st skip, excluded after 2nd skip (per user)",
+      "files": [
+        "backend/database/migration-add-skip-tracking.sql",
+        "backend/routes/reviews.js"
+      ],
+      "tags": [],
+      "commit_hash": "b6663ce72f2ecdd2d0473c284cfec13c83515e62",
+      "created_at": "2026-01-14T11:22:35.000Z"
+    },
+    {
+      "id": 71,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix: Remove is_blocked column reference (not in schema yet)",
+      "files": [
+        "backend/server.js"
+      ],
+      "tags": [
+        "fix"
+      ],
+      "commit_hash": "67196c69ac7291c7f6dc79291556d8ae2d622cc0",
+      "created_at": "2026-01-14T11:29:41.000Z"
     }
   ],
-  "nextId": 70
+  "nextId": 72
 }
