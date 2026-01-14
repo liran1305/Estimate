@@ -19,14 +19,14 @@ export default function LinkedInAuth() {
     turnstile.loadScript().catch(console.error);
   }, []);
 
-  // Show verification step
+  // Show verification step with auto-verify (no user action needed)
   const handleAllow = () => {
     setShowVerification(true);
     setVerificationError(null);
     
-    // Render Turnstile widget after state update
+    // Render Turnstile widget after state update - auto-verifies without user action
     setTimeout(() => {
-      turnstile.renderVisible(
+      turnstile.renderAutoVerify(
         'turnstile-container',
         (token) => {
           // Success - proceed to LinkedIn
@@ -168,41 +168,41 @@ export default function LinkedInAuth() {
               exit={{ opacity: 0, y: -20 }}
             >
               <Card className="p-8 border-0 shadow-xl shadow-gray-200/50">
-                <div className="flex items-center justify-center gap-3 mb-6">
-                  <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
-                    <Shield className="w-6 h-6 text-orange-500" />
-                  </div>
-                </div>
-
-                <h2 className="text-xl font-bold text-gray-900 text-center mb-2">
-                  Security Check
-                </h2>
-                <p className="text-gray-500 text-center mb-6 text-sm">
-                  Please complete the verification below
-                </p>
-
-                {/* Visible Turnstile Widget Container */}
-                <div className="flex justify-center mb-6">
-                  <div id="turnstile-container" className="min-h-[65px]"></div>
-                </div>
-
-                {verificationError && (
-                  <p className="text-red-500 text-sm text-center mb-4">
-                    {verificationError}
-                  </p>
+                {!verificationError ? (
+                  <>
+                    <h2 className="text-xl font-bold text-gray-900 text-center mb-2">
+                      Security Check
+                    </h2>
+                    <p className="text-gray-500 text-center mb-6 text-sm">
+                      Verifying you're human...
+                    </p>
+                    {/* Cloudflare Turnstile Widget - shows logo and auto-verifies */}
+                    <div className="flex justify-center mb-4">
+                      <div id="turnstile-container"></div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <X className="w-6 h-6 text-red-600" />
+                    </div>
+                    <h2 className="text-xl font-bold text-gray-900 text-center mb-2">
+                      Verification Failed
+                    </h2>
+                    <p className="text-gray-500 text-center mb-6 text-sm">
+                      {verificationError}
+                    </p>
+                    <Button 
+                      className="w-full bg-[#0A66C2] hover:bg-[#004182] h-12 rounded-xl font-medium"
+                      onClick={() => {
+                        setShowVerification(false);
+                        setVerificationError(null);
+                      }}
+                    >
+                      Try Again
+                    </Button>
+                  </>
                 )}
-
-                <Button 
-                  variant="outline" 
-                  className="w-full h-12 rounded-xl font-medium"
-                  onClick={() => {
-                    setShowVerification(false);
-                    setVerificationError(null);
-                  }}
-                >
-                  <X className="w-4 h-4 mr-2" />
-                  Cancel
-                </Button>
               </Card>
             </motion.div>
           )}

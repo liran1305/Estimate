@@ -1,18 +1,21 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-14T12:33:08.957Z
+> Last updated: 2026-01-14T12:38:18.537Z
 
 ## Project Stats
-- Total memories: 81
-- Commits tracked: 81
+- Total memories: 82
+- Commits tracked: 82
 - Decisions recorded: 0
 
 ## Relevant to Current Work
+- **1/14/2026**: Fix mobile OAuth: Make Cloudflare Turnstile verification visible (src/components/landing/HeroSection.jsx, src/components/landing/QuoteSection.jsx, src/lib/turnstile.js)
 - **1/13/2026**: Fix refresh bypass: add pending status to assignments and skip Turnstile in local dev (backend/routes/reviews.js, src/lib/turnstile.js)
 - **1/11/2026**: Security fix and UX improvements (src/components/review/ColleagueCard.jsx, src/lib/turnstile.js, src/pages/Review.jsx)
 - **1/11/2026**: Add Cloudflare Turnstile invisible bot protection (.env.example, backend/.env.example, backend/server.js)
 
 ## Recent Changes
+- `0df80d2` 1/14/2026: Fix mobile OAuth: Make Cloudflare Turnstile verification visible
+  Files: src/components/landing/HeroSection.jsx, src/components/landing/QuoteSection.jsx, src/lib/turnstile.js
 - `aaf6db5` 1/14/2026: Fix mobile OAuth slowness: Implement lazy loading for all pages
   Files: backend/server.js, src/pages/index.jsx
 - `6f63a51` 1/14/2026: Update FAQ: Accurate 3-review unlock mechanism for recruiter visibility
@@ -41,13 +44,11 @@
   Files: backend/routes/reviews.js
 - `ecc3faa` 1/14/2026: Fix mobile OAuth CSRF error: switch from sessionStorage to localStorage with 10min expiration
   Files: src/lib/linkedinAuth.js
-- `6cb04e8` 1/13/2026: Clean up Profile page: remove clock icon, hide Reviews Received when 0, remove duplicate button
-  Files: src/components/profile/WaitingState.jsx, src/pages/Profile.jsx
 
 ## Do Not Repeat
 These issues have already been solved:
+- Fix mobile OAuth: Make Cloudflare Turnstile verification visible
 - Fix mobile OAuth slowness: Implement lazy loading for all pages
 - Handle reviewees without user accounts in score updates
 - Match interaction types to database ENUM values
 - Fix mobile OAuth: Use sessionStorage + localStorage fallback
-- Remove is_blocked column reference (not in schema yet)

@@ -1,12 +1,12 @@
 const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY;
 
 export const turnstile = {
-  // Render visible Turnstile widget in a container element
-  renderVisible(containerId, onSuccess, onError) {
+  // Render Turnstile widget that auto-verifies (no user action needed)
+  renderAutoVerify(containerId, onSuccess, onError) {
     // Skip Turnstile in local development
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
       console.log('Turnstile verification skipped in local development');
-      setTimeout(() => onSuccess(null), 100);
+      setTimeout(() => onSuccess(null), 500);
       return;
     }
 
@@ -31,8 +31,11 @@ export const turnstile = {
       'error-callback': () => {
         onError(new Error('Bot verification failed'));
       },
+      'expired-callback': () => {
+        onError(new Error('Verification expired'));
+      },
       theme: 'light',
-      size: 'normal', // Use normal size for visibility
+      size: 'normal', // Show Cloudflare widget with logo and loading
     });
   },
 
