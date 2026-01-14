@@ -19,26 +19,38 @@ export default function LinkedInAuth() {
     turnstile.loadScript().catch(console.error);
   }, []);
 
-  // Show verification step with auto-verify (no user action needed)
+  // Show verification step
   const handleAllow = () => {
     setShowVerification(true);
     setVerificationError(null);
-    
-    // Render Turnstile widget after state update - auto-verifies without user action
-    setTimeout(() => {
-      turnstile.renderAutoVerify(
-        'turnstile-container',
-        (token) => {
-          // Success - proceed to LinkedIn
-          linkedinAuth.initiateLogin(token);
-        },
-        (error) => {
-          console.error('Bot verification failed:', error);
+  };
+
+  // Render Turnstile when verification screen is shown
+  useEffect(() => {
+    if (showVerification && !verificationError) {
+      // Small delay to ensure DOM is ready
+      const timer = setTimeout(() => {
+        const container = document.getElementById('turnstile-container');
+        if (container) {
+          turnstile.renderAutoVerify(
+            'turnstile-container',
+            (token) => {
+              // Success - proceed to LinkedIn
+              linkedinAuth.initiateLogin(token);
+            },
+            (error) => {
+              console.error('Bot verification failed:', error);
+              setVerificationError('Verification failed. Please try again.');
+            }
+          );
+        } else {
+          console.error('Container still not found after delay');
           setVerificationError('Verification failed. Please try again.');
         }
-      );
-    }, 100);
-  };
+      }, 200);
+      return () => clearTimeout(timer);
+    }
+  }, [showVerification, verificationError]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center p-6">

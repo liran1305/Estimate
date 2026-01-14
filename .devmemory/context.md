@@ -1,19 +1,22 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-14T12:38:18.537Z
+> Last updated: 2026-01-14T12:42:35.956Z
 
 ## Project Stats
-- Total memories: 82
-- Commits tracked: 82
+- Total memories: 83
+- Commits tracked: 83
 - Decisions recorded: 0
 
 ## Relevant to Current Work
+- **1/14/2026**: Show actual Cloudflare Turnstile widget with logo and loading (src/lib/turnstile.js, src/pages/LinkedInAuth.jsx)
 - **1/14/2026**: Fix mobile OAuth: Make Cloudflare Turnstile verification visible (src/components/landing/HeroSection.jsx, src/components/landing/QuoteSection.jsx, src/lib/turnstile.js)
 - **1/13/2026**: Fix refresh bypass: add pending status to assignments and skip Turnstile in local dev (backend/routes/reviews.js, src/lib/turnstile.js)
 - **1/11/2026**: Security fix and UX improvements (src/components/review/ColleagueCard.jsx, src/lib/turnstile.js, src/pages/Review.jsx)
 - **1/11/2026**: Add Cloudflare Turnstile invisible bot protection (.env.example, backend/.env.example, backend/server.js)
 
 ## Recent Changes
+- `6800147` 1/14/2026: Show actual Cloudflare Turnstile widget with logo and loading
+  Files: src/lib/turnstile.js, src/pages/LinkedInAuth.jsx
 - `0df80d2` 1/14/2026: Fix mobile OAuth: Make Cloudflare Turnstile verification visible
   Files: src/components/landing/HeroSection.jsx, src/components/landing/QuoteSection.jsx, src/lib/turnstile.js
 - `aaf6db5` 1/14/2026: Fix mobile OAuth slowness: Implement lazy loading for all pages
@@ -42,8 +45,6 @@
   Files: backend/database/migration-add-skip-tracking.sql, backend/routes/reviews.js
 - `78b4333` 1/14/2026: Improve colleague matching: better handling for duration-only profiles (assume 24mo overlap for current employees)
   Files: backend/routes/reviews.js
-- `ecc3faa` 1/14/2026: Fix mobile OAuth CSRF error: switch from sessionStorage to localStorage with 10min expiration
-  Files: src/lib/linkedinAuth.js
 
 ## Do Not Repeat
 These issues have already been solved:

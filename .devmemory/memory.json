@@ -1214,7 +1214,20 @@
       ],
       "commit_hash": "0df80d2f43cc1f062054140573dcaffa7342e267",
       "created_at": "2026-01-14T12:33:19.000Z"
+    },
+    {
+      "id": 83,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Show actual Cloudflare Turnstile widget with logo and loading",
+      "files": [
+        "src/lib/turnstile.js",
+        "src/pages/LinkedInAuth.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "6800147d67766f9325f3fb632ea43d4547e0100e",
+      "created_at": "2026-01-14T12:38:32.000Z"
     }
   ],
-  "nextId": 83
+  "nextId": 84
 }
