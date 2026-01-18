@@ -1013,18 +1013,18 @@ router.post('/review/polish-comment', async (req, res) => {
         'Authorization': `Bearer ${openaiApiKey}`
       },
       body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-4o-mini',
         messages: [
           {
             role: 'system',
-            content: 'You are a helpful assistant that polishes text for grammar and clarity. Fix only grammar, spelling, and punctuation. Do NOT change the meaning, tone, or add new content. Keep it concise and professional. Return ONLY the polished text, nothing else.'
+            content: 'Fix ONLY spelling errors and basic grammar mistakes. Do NOT reword, rephrase, or change the sentence structure. Keep the original wording and style. Only fix: spelling mistakes, missing articles (a/an/the), capitalization, and obvious typos. Return ONLY the corrected text with minimal changes.'
           },
           {
             role: 'user',
             content: comment
           }
         ],
-        temperature: 0.3,
+        temperature: 0.2,
         max_tokens: 100
       })
     });
