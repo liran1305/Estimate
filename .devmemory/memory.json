@@ -1520,7 +1520,19 @@
       ],
       "commit_hash": "96a1a91c2be7bcc7d0995b34b9ec976c3e72b5d6",
       "created_at": "2026-01-18T16:19:15.000Z"
+    },
+    {
+      "id": 105,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Improve tag button alignment: left-align text and icons",
+      "files": [
+        "src/components/review/ReviewFormDynamic.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "dd4e0e82fd725fd5b3b1b0f591155b6a28cb7dcb",
+      "created_at": "2026-01-18T16:21:07.000Z"
     }
   ],
-  "nextId": 105
+  "nextId": 106
 }

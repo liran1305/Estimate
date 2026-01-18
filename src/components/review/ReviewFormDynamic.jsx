@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Send, Sparkles } from 'lucide-react';
+import { ArrowLeft, Send, Sparkles, AlertTriangle, Clock } from 'lucide-react';
 import { reviewConfig, getSlidersForRelationship, getTagsForRelationship } from "@/config/reviewConfig";
 
 const getScoreColor = (score) => {
@@ -39,6 +39,67 @@ export default function ReviewFormDynamic({
   const [polishedComment, setPolishedComment] = useState('');
   const [isPolishing, setIsPolishing] = useState(false);
   const [showPolishSuggestion, setShowPolishSuggestion] = useState(false);
+  
+  // Abuse detection state
+  const startTimeRef = useRef(Date.now());
+  const [timeSpent, setTimeSpent] = useState(0);
+  const [showTimeWarning, setShowTimeWarning] = useState(false);
+  const [showPatternWarning, setShowPatternWarning] = useState(false);
+  const [patternWarningMessage, setPatternWarningMessage] = useState('');
+  const [hasAcknowledgedWarning, setHasAcknowledgedWarning] = useState(false);
+  
+  // Track time spent on review
+  useEffect(() => {
+    startTimeRef.current = Date.now();
+    const interval = setInterval(() => {
+      setTimeSpent(Math.floor((Date.now() - startTimeRef.current) / 1000));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+  
+  // Abuse detection functions
+  const checkForPatterns = () => {
+    const scoreValues = Object.values(scores).filter(s => s !== null);
+    if (scoreValues.length === 0) return { valid: true };
+    
+    // Check if all scores are identical
+    const allIdentical = scoreValues.every(s => s === scoreValues[0]);
+    if (allIdentical && scoreValues.length >= 3) {
+      return {
+        valid: false,
+        blocked: true,
+        message: `You rated all ${scoreValues.length} categories as ${scoreValues[0]}/10. Everyone has different strengths and weaknesses. Please rate each category individually.`
+      };
+    }
+    
+    // Check for all extreme scores (all 10s or all 1s)
+    const allMax = scoreValues.every(s => s >= 9);
+    const allMin = scoreValues.every(s => s <= 2);
+    if ((allMax || allMin) && scoreValues.length >= 3) {
+      return {
+        valid: false,
+        blocked: false,
+        warning: true,
+        message: allMax 
+          ? "You've given very high scores across all categories. Are you sure this accurately reflects this person's skills?"
+          : "You've given very low scores across all categories. Are you sure this accurately reflects this person's skills?"
+      };
+    }
+    
+    // Check for low variance (all scores within 1 point of each other)
+    const min = Math.min(...scoreValues);
+    const max = Math.max(...scoreValues);
+    if (max - min <= 1 && scoreValues.length >= 4) {
+      return {
+        valid: false,
+        blocked: false,
+        warning: true,
+        message: "Your ratings are very similar across all categories. Consider if there are areas where this person excels or could improve."
+      };
+    }
+    
+    return { valid: true };
+  };
 
   const handleScoreChange = (key, value) => {
     setScores(prev => ({ ...prev, [key]: value }));
@@ -62,12 +123,36 @@ export default function ReviewFormDynamic({
   };
 
   const handleSubmit = () => {
+    const currentTimeSpent = Math.floor((Date.now() - startTimeRef.current) / 1000);
+    
+    // Time-based fraud detection
+    if (currentTimeSpent < 15) {
+      setShowTimeWarning(true);
+      return;
+    }
+    
+    // Pattern-based fraud detection
+    const patternCheck = checkForPatterns();
+    if (!patternCheck.valid) {
+      if (patternCheck.blocked) {
+        setPatternWarningMessage(patternCheck.message);
+        setShowPatternWarning(true);
+        return;
+      }
+      if (patternCheck.warning && !hasAcknowledgedWarning) {
+        setPatternWarningMessage(patternCheck.message);
+        setShowPatternWarning(true);
+        return;
+      }
+    }
+    
     // Build the review data object
     const reviewData = {
       scores,
       strength_tags: selectedTags,
       would_work_again: workAgain,
-      optional_comment: comment.trim() || null
+      optional_comment: comment.trim() || null,
+      time_spent_seconds: currentTimeSpent
     };
 
     if (relationshipConfig.showWouldPromote && wouldPromote) {
@@ -75,6 +160,11 @@ export default function ReviewFormDynamic({
     }
 
     onSubmit(reviewData);
+  };
+  
+  const handleAcknowledgeWarning = () => {
+    setHasAcknowledgedWarning(true);
+    setShowPatternWarning(false);
   };
 
   const isValid = relationshipConfig.showWorkAgain ? workAgain !== null : 
@@ -369,6 +459,66 @@ export default function ReviewFormDynamic({
       <p className="text-center text-xs text-gray-400 mt-4">
         ⏱️ Takes about {sliders.length <= 3 ? '60' : '90'} seconds
       </p>
+      
+      {/* Time Warning Modal */}
+      {showTimeWarning && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center">
+                <Clock className="w-6 h-6 text-amber-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900">Please take more time</h3>
+            </div>
+            <p className="text-gray-600 mb-4">
+              This review affects a real person's professional reputation. Please take at least 15 seconds to thoughtfully rate each category.
+            </p>
+            <p className="text-sm text-gray-500 mb-6">
+              Time spent: {timeSpent} seconds. Submit unlocks in {Math.max(0, 15 - timeSpent)} seconds.
+            </p>
+            <Button 
+              className="w-full bg-amber-500 hover:bg-amber-600 text-white"
+              onClick={() => setShowTimeWarning(false)}
+            >
+              I'll take more time
+            </Button>
+          </div>
+        </div>
+      )}
+      
+      {/* Pattern Warning Modal */}
+      {showPatternWarning && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
+                <AlertTriangle className="w-6 h-6 text-red-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900">Review Pattern Detected</h3>
+            </div>
+            <p className="text-gray-600 mb-6">
+              {patternWarningMessage}
+            </p>
+            <div className="flex gap-3">
+              <Button 
+                variant="outline"
+                className="flex-1"
+                onClick={() => setShowPatternWarning(false)}
+              >
+                Adjust Ratings
+              </Button>
+              {!checkForPatterns().blocked && (
+                <Button 
+                  className="flex-1 bg-gray-800 hover:bg-gray-900 text-white"
+                  onClick={handleAcknowledgeWarning}
+                >
+                  Submit Anyway
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </Card>
   );
 }

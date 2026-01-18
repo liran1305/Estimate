@@ -650,6 +650,54 @@ router.post('/review/submit', async (req, res) => {
         error: 'Would promote rating must be between 1 and 4' 
       });
     }
+    
+    // ========== ABUSE DETECTION ==========
+    let fraudFlags = [];
+    let reviewWeight = 1.0; // Default weight
+    
+    // Check for suspicious patterns in scores
+    if (scores && typeof scores === 'object') {
+      const scoreValues = Object.values(scores).filter(s => s !== null && s !== undefined);
+      
+      if (scoreValues.length >= 3) {
+        // Check if all scores are identical
+        const allIdentical = scoreValues.every(s => s === scoreValues[0]);
+        if (allIdentical) {
+          fraudFlags.push('all_identical_scores');
+          reviewWeight = 0.3; // Heavily reduce weight
+        }
+        
+        // Check for all extreme scores (all 9-10 or all 1-2)
+        const allMax = scoreValues.every(s => s >= 9);
+        const allMin = scoreValues.every(s => s <= 2);
+        if (allMax || allMin) {
+          fraudFlags.push(allMax ? 'all_max_scores' : 'all_min_scores');
+          reviewWeight = Math.min(reviewWeight, 0.3); // Silently weight at 30%
+        }
+        
+        // Check for low variance (all scores within 1 point)
+        const min = Math.min(...scoreValues);
+        const max = Math.max(...scoreValues);
+        if (max - min <= 1 && scoreValues.length >= 4) {
+          fraudFlags.push('low_variance');
+          reviewWeight = Math.min(reviewWeight, 0.7); // Weight at 70%
+        }
+      }
+    }
+    
+    // Time-based fraud detection (if time_spent_seconds is provided)
+    const timeSpentSeconds = req.body.time_spent_seconds;
+    if (timeSpentSeconds !== undefined) {
+      if (timeSpentSeconds < 15) {
+        fraudFlags.push('too_fast');
+        reviewWeight = Math.min(reviewWeight, 0.5); // Reduce weight for fast reviews
+      } else if (timeSpentSeconds < 30) {
+        fraudFlags.push('fast_review');
+        // Warning only, don't reduce weight
+      }
+    }
+    
+    console.log(`Review fraud check: flags=${JSON.stringify(fraudFlags)}, weight=${reviewWeight}, time=${timeSpentSeconds}s`);
 
     const pool = await getPool();
     const connection = await pool.getConnection();
@@ -728,7 +776,10 @@ router.post('/review/submit', async (req, res) => {
       
       // Apply relationship weight
       const relationshipWeight = relationshipWeights[mappedInteractionType] || 1.0;
-      const overall_score = baseScore * relationshipWeight;
+      
+      // Apply fraud detection weight (reduces impact of suspicious reviews)
+      const finalWeight = relationshipWeight * reviewWeight;
+      const overall_score = baseScore * finalWeight;
 
       // Create review with dynamic structure
       const reviewId = uuidv4();

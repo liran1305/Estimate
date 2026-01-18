@@ -1,13 +1,22 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-18T16:20:48.240Z
+> Last updated: 2026-01-18T16:33:03.848Z
 
 ## Project Stats
-- Total memories: 104
-- Commits tracked: 104
+- Total memories: 105
+- Commits tracked: 105
 - Decisions recorded: 0
 
+## Relevant to Current Work
+- **1/18/2026**: Improve tag button alignment: left-align text and icons (src/components/review/ReviewFormDynamic.jsx)
+- **1/18/2026**: Improve review form UI: wider layout, better organization, moved content up (src/components/review/ReviewFormDynamic.jsx, src/config/reviewConfig.js, src/pages/Review.jsx)
+- **1/18/2026**: Fix Polish button: move below textarea and use production API URL (src/components/review/ReviewFormDynamic.jsx)
+- **1/18/2026**: Add AI grammar polish feature with OpenAI integration (backend/routes/reviews.js, src/components/review/ReviewFormDynamic.jsx)
+- **1/18/2026**: Add relationship-specific review questions with weighted scoring (NEW_REVIEW_STRUCTURE.md, backend/database/migration-dynamic-reviews.sql, backend/database/migration-new-review-structure.sql)
+
 ## Recent Changes
+- `dd4e0e8` 1/18/2026: Improve tag button alignment: left-align text and icons
+  Files: src/components/review/ReviewFormDynamic.jsx
 - `96a1a91` 1/18/2026: Improve review form UI: wider layout, better organization, moved content up
   Files: src/components/review/ReviewFormDynamic.jsx, src/config/reviewConfig.js, src/pages/Review.jsx
 - `19cc7f3` 1/18/2026: Improve mobile UI: logo icon and score circle
@@ -36,8 +45,6 @@
   Files: backend/routes/reviews.js
 - `65d0c7b` 1/18/2026: Add /api/analytics/users endpoint for detailed user review activity table
   Files: backend/routes/analytics.js
-- `846a93e` 1/18/2026: Improve clarity of 'Handles Disagreements' question - rename to 'Conflict Resolution'
-  Files: src/config/reviewConfig.js
 
 ## Do Not Repeat
 These issues have already been solved:
