@@ -276,24 +276,24 @@ export default function Profile() {
                   </div>
                 </div>
 
-                {/* Right: Score Circle - Centered on mobile */}
-                <div className="flex flex-col items-center w-full sm:w-auto mt-2 sm:mt-0">
-                  <div className={`w-18 h-18 sm:w-20 sm:h-20 rounded-full flex flex-col items-center justify-center border-4 ${
+                {/* Right: Score Circle - Smaller on mobile, centered */}
+                <div className="flex flex-col items-center w-full sm:w-auto mt-3 sm:mt-0">
+                  <div className={`w-24 h-24 sm:w-20 sm:h-20 rounded-full flex flex-col items-center justify-center border-4 shadow-lg ${
                     overallScore >= 8 ? 'border-emerald-500 bg-white' :
                     overallScore >= 6 ? 'border-yellow-500 bg-white' :
                     'border-orange-500 bg-white'
                   }`}>
-                    <span className={`text-xl sm:text-2xl font-bold ${
+                    <span className={`text-3xl sm:text-2xl font-bold ${
                       overallScore >= 8 ? 'text-emerald-600' :
                       overallScore >= 6 ? 'text-yellow-600' :
                       'text-orange-600'
                     }`}>
                       {overallScore.toFixed(1)}
                     </span>
-                    <span className="text-[8px] sm:text-[9px] text-gray-400">out of 10</span>
+                    <span className="text-[9px] sm:text-[9px] text-gray-400 mt-0.5">out of 10</span>
                   </div>
                   <p 
-                    className="text-[10px] font-medium mt-1.5 px-2 py-0.5 rounded"
+                    className="text-[11px] sm:text-[10px] font-medium mt-2 px-2.5 py-1 rounded-md"
                     style={{ 
                       backgroundColor: `${percentileTier.color}20`, 
                       color: percentileTier.color 

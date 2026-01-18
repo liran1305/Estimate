@@ -1,20 +1,15 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-18T15:33:18.283Z
+> Last updated: 2026-01-18T15:39:20.188Z
 
 ## Project Stats
-- Total memories: 101
-- Commits tracked: 101
+- Total memories: 102
+- Commits tracked: 102
 - Decisions recorded: 0
 
-## Relevant to Current Work
-- **1/18/2026**: Profile page redesign: percentile tiers, mobile responsiveness, consent modal update (backend/routes/reviews.js, backend/utils/jobTitlesSystem.js, src/components/profile/ConsentModal.jsx)
-- **1/18/2026**: Upgrade to GPT-4o-mini for better grammar correction with lower temperature (backend/routes/reviews.js)
-- **1/18/2026**: Fix polish-comment route path to match frontend API call (backend/routes/reviews.js)
-- **1/18/2026**: Add AI grammar polish feature with OpenAI integration (backend/routes/reviews.js, src/components/review/ReviewFormDynamic.jsx)
-- **1/18/2026**: Add randomization and prioritize colleagues with 1-2 reviews for completion (backend/routes/reviews.js)
-
 ## Recent Changes
+- `96405d7` 1/18/2026: Fix job title normalization for percentile badge
+  Files: backend/routes/reviews.js, src/pages/Profile.jsx
 - `ae56b96` 1/18/2026: Add new relationship-specific soft skills to review config
   Files: src/config/reviewConfig.js
 - `311b945` 1/18/2026: Profile page redesign: percentile tiers, mobile responsiveness, consent modal update
@@ -43,12 +38,10 @@
   Files: backend/routes/reviews.js
 - `8f58563` 1/18/2026: Add relationship-specific review questions with weighted scoring
   Files: NEW_REVIEW_STRUCTURE.md, backend/database/migration-dynamic-reviews.sql, backend/database/migration-new-review-structure.sql
-- `1105ce9` 1/18/2026: Fix: Change review session status from 'expired' to 'abandoned' to match ENUM values
-  Files: backend/routes/reviews.js
 
 ## Do Not Repeat
 These issues have already been solved:
+- Fix job title normalization for percentile badge
 - Fix polish-comment route path to match frontend API call
 - Fix Polish button: move below textarea and use production API URL
 - Fix validation: remove old column references, validate new scores structure
-- Change review session status from 'expired' to 'abandoned' to match ENUM values
