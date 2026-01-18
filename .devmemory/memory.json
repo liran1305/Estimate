@@ -1532,7 +1532,20 @@
       "tags": [],
       "commit_hash": "dd4e0e82fd725fd5b3b1b0f591155b6a28cb7dcb",
       "created_at": "2026-01-18T16:21:07.000Z"
+    },
+    {
+      "id": 106,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add comprehensive abuse detection system",
+      "files": [
+        "backend/routes/reviews.js",
+        "src/components/review/ReviewFormDynamic.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "bc0240ca4cd907695d29d70e20663b8fe3682521",
+      "created_at": "2026-01-18T16:33:35.000Z"
     }
   ],
-  "nextId": 106
+  "nextId": 107
 }
