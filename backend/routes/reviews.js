@@ -584,15 +584,32 @@ router.post('/review/submit', async (req, res) => {
       });
     }
 
-    // Validate ratings (1-5 scale)
-    const ratings = [technical_rating, communication_rating, teamwork_rating, leadership_rating];
-    for (const rating of ratings) {
-      if (rating !== undefined && (rating < 1 || rating > 5)) {
-        return res.status(400).json({ 
-          success: false, 
-          error: 'Ratings must be between 1 and 5' 
-        });
+    // Validate scores object (1-10 scale for new structure)
+    if (scores && typeof scores === 'object') {
+      for (const [key, value] of Object.entries(scores)) {
+        if (value !== null && value !== undefined && (value < 1 || value > 10)) {
+          return res.status(400).json({ 
+            success: false, 
+            error: 'Scores must be between 1 and 10' 
+          });
+        }
       }
+    }
+    
+    // Validate would_work_again (1-5 scale)
+    if (would_work_again && (would_work_again < 1 || would_work_again > 5)) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Would work again rating must be between 1 and 5' 
+      });
+    }
+    
+    // Validate would_promote (1-4 scale)
+    if (would_promote && (would_promote < 1 || would_promote > 4)) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Would promote rating must be between 1 and 4' 
+      });
     }
 
     const pool = await getPool();
