@@ -983,7 +983,7 @@ router.get('/score/me', async (req, res) => {
 // ============================================================================
 // POST /api/review/polish-comment - AI grammar polish for optional comments
 // ============================================================================
-router.post('/polish-comment', async (req, res) => {
+router.post('/review/polish-comment', async (req, res) => {
   try {
     const { comment } = req.body;
 
