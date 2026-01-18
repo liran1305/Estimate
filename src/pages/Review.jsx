@@ -5,7 +5,7 @@ import { linkedinAuth } from "@/lib/linkedinAuth";
 import { Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ColleagueCard from "@/components/review/ColleagueCard";
-import ReviewForm from "@/components/review/ReviewForm";
+import ReviewFormDynamic from "@/components/review/ReviewFormDynamic";
 import ReviewSuccess from "@/components/review/ReviewSuccess";
 
 const BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:3001';
@@ -121,13 +121,6 @@ export default function Review() {
 
   const handleContinue = () => {
     setStep('review');
-    setScores({
-      technical_rating: 3,
-      communication_rating: 3,
-      teamwork_rating: 3,
-      leadership_rating: 3
-    });
-    setNotRelevant({});
   };
 
   const handleBack = () => {
@@ -142,7 +135,7 @@ export default function Review() {
     setNotRelevant(prev => ({ ...prev, [category]: checked }));
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (reviewData) => {
     setIsSubmitting(true);
     
     try {
@@ -155,10 +148,7 @@ export default function Review() {
           colleague_id: currentColleague.id,
           company_name: currentColleague.company,
           interaction_type: interactionType,
-          technical_rating: notRelevant.technical_rating ? null : scores.technical_rating,
-          communication_rating: notRelevant.communication_rating ? null : scores.communication_rating,
-          teamwork_rating: notRelevant.teamwork_rating ? null : scores.teamwork_rating,
-          leadership_rating: notRelevant.leadership_rating ? null : scores.leadership_rating
+          ...reviewData
         })
       });
       
@@ -283,13 +273,9 @@ export default function Review() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
             >
-              <ReviewForm
+              <ReviewFormDynamic
                 colleague={currentColleague}
                 interactionType={interactionType}
-                scores={scores}
-                notRelevant={notRelevant}
-                onScoreChange={handleScoreChange}
-                onNotRelevantChange={handleNotRelevantChange}
                 onBack={handleBack}
                 onSubmit={handleSubmit}
                 isSubmitting={isSubmitting}

@@ -1,20 +1,24 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-14T14:13:41.162Z
+> Last updated: 2026-01-18T07:59:05.921Z
 
 ## Project Stats
-- Total memories: 85
-- Commits tracked: 85
+- Total memories: 87
+- Commits tracked: 87
 - Decisions recorded: 0
 
 ## Relevant to Current Work
-- **1/14/2026**: Fix: Match interaction types to database ENUM values (src/components/review/ColleagueCard.jsx)
-- **1/13/2026**: Add abuse detection: block users who exhaust skips 3 days in a row, cap max skips at 3/day, add Bloc (backend/routes/reviews.js, src/components/review/ColleagueCard.jsx, src/pages/Blocked.jsx)
-- **1/13/2026**: Add daily skip budget refresh: sessions expire after 24 hours, button shows 'Try again tomorrow' whe (backend/routes/reviews.js, src/components/review/ColleagueCard.jsx)
-- **1/13/2026**: Update Onboarding: wider card, user name greeting, bigger anonymous icon, replace all arrows with ne (src/components/landing/HeroSection.jsx, src/components/review/ColleagueCard.jsx, src/components/review/ReviewSuccess.jsx)
-- **1/13/2026**: Add loading state to skip button and fix counter jumping issue (src/components/review/ColleagueCard.jsx, src/pages/Review.jsx)
+- **1/12/2026**: Revert "Add Cloud SQL Connector for secure private connection" (backend/.env.example, backend/package.json, backend/routes/colleagues.js)
+- **1/12/2026**: Add Cloud SQL Connector for secure private connection (backend/.env.example, backend/package.json, backend/routes/colleagues.js)
+- **1/12/2026**: Add Cloud SQL integration and colleague search API (backend/.env.example, backend/database/schema.sql, backend/package.json)
+- **1/11/2026**: Add Cloudflare Turnstile invisible bot protection (.env.example, backend/.env.example, backend/server.js)
+- **1/9/2026**: Add secure backend and remove client secret from frontend (.env.example, backend/.env.example, backend/README.md)
 
 ## Recent Changes
+- `1105ce9` 1/18/2026: Fix: Change review session status from 'expired' to 'abandoned' to match ENUM values
+  Files: backend/routes/reviews.js
+- `7287631` 1/14/2026: Improve navigation and profile visibility
+  Files: src/pages/Layout.jsx, src/pages/Profile.jsx
 - `fe390ed` 1/14/2026: Fix: Use ref callback to render Turnstile when element is mounted
   Files: src/lib/turnstile.js, src/pages/LinkedInAuth.jsx
 - `d601d4e` 1/14/2026: Fix Turnstile container not found error
@@ -41,15 +45,11 @@
   Files: backend/database/migration-optimize-image-matching.sql, backend/server.js, src/pages/LinkedInCallback.jsx
 - `505f540` 1/14/2026: Fix mobile OAuth: Use sessionStorage + localStorage fallback
   Files: src/lib/linkedinAuth.js
-- `3d9c8ec` 1/14/2026: Restore is_blocked abuse detection + Add migration
-  Files: DATA_STRUCTURES.md, backend/database/migration-add-abuse-detection.sql, backend/routes/reviews.js
-- `67196c6` 1/14/2026: Fix: Remove is_blocked column reference (not in schema yet)
-  Files: backend/server.js
 
 ## Do Not Repeat
 These issues have already been solved:
+- Change review session status from 'expired' to 'abandoned' to match ENUM values
 - Use ref callback to render Turnstile when element is mounted
 - Fix Turnstile container not found error
 - Fix mobile OAuth: Make Cloudflare Turnstile verification visible
 - Fix mobile OAuth slowness: Implement lazy loading for all pages
-- Handle reviewees without user accounts in score updates

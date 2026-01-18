@@ -567,11 +567,13 @@ router.post('/review/submit', async (req, res) => {
       colleague_id,
       company_name,
       interaction_type,
-      technical_rating,
-      communication_rating,
-      teamwork_rating,
-      leadership_rating,
-      feedback
+      // Dynamic scores object (contains all relationship-specific scores)
+      scores,
+      // Qualitative data
+      strength_tags, // Array of up to 3 tags
+      would_work_again, // 1-5 scale
+      would_promote, // 1-4 scale (only for direct_report)
+      optional_comment
     } = req.body;
 
     // Validate required fields
@@ -627,14 +629,59 @@ router.post('/review/submit', async (req, res) => {
       };
       const mappedInteractionType = interactionTypeMap[interaction_type] || interaction_type || 'peer';
 
-      // Create review
+      // Calculate weighted overall score
+      const relationshipWeights = {
+        peer: 1.0,
+        manager: 0.9,
+        direct_report: 1.2,
+        cross_team: 0.8,
+        other: 0.5
+      };
+
+      const questionWeights = {
+        reliability: 1.2,
+        receptive_feedback: 1.2
+      };
+
+      // Calculate average score from all provided scores
+      let totalWeightedScore = 0;
+      let totalWeight = 0;
+
+      Object.entries(scores || {}).forEach(([key, value]) => {
+        if (value !== null && value !== undefined) {
+          const weight = questionWeights[key] || 1.0;
+          totalWeightedScore += value * weight;
+          totalWeight += weight;
+        }
+      });
+
+      // Add work_again score with heavy weight (1.5x)
+      if (would_work_again) {
+        totalWeightedScore += (would_work_again * 2) * 1.5; // Scale to 10 and apply weight
+        totalWeight += 1.5;
+      }
+
+      // Add would_promote score if applicable (1.3x weight)
+      if (would_promote) {
+        totalWeightedScore += ((would_promote / 4) * 10) * 1.3; // Scale to 10 and apply weight
+        totalWeight += 1.3;
+      }
+
+      // Calculate base score
+      const baseScore = totalWeight > 0 ? totalWeightedScore / totalWeight : 0;
+      
+      // Apply relationship weight
+      const relationshipWeight = relationshipWeights[mappedInteractionType] || 1.0;
+      const overall_score = baseScore * relationshipWeight;
+
+      // Create review with dynamic structure
       const reviewId = uuidv4();
       await connection.query(`
         INSERT INTO reviews 
         (id, reviewer_id, reviewee_id, assignment_id, company_name, company_context, 
-         interaction_type, technical_rating, communication_rating, teamwork_rating, 
-         leadership_rating, feedback)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+         interaction_type, scores, strength_tags, would_work_again, would_promote,
+         optional_comment, overall_score)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `, [
         reviewId,
         user_id,
@@ -643,11 +690,12 @@ router.post('/review/submit', async (req, res) => {
         company_name,
         companyContext,
         mappedInteractionType,
-        technical_rating,
-        communication_rating,
-        teamwork_rating,
-        leadership_rating,
-        feedback || null
+        JSON.stringify(scores || {}),
+        JSON.stringify(strength_tags || []),
+        would_work_again,
+        would_promote || null,
+        optional_comment || null,
+        overall_score
       ]);
 
       // Update assignment status
