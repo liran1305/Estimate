@@ -1281,7 +1281,118 @@
       ],
       "commit_hash": "1105ce9dd5ed317a725c9861571b7222d9cb9915",
       "created_at": "2026-01-18T07:05:24.000Z"
+    },
+    {
+      "id": 88,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add relationship-specific review questions with weighted scoring",
+      "files": [
+        "NEW_REVIEW_STRUCTURE.md",
+        "backend/database/migration-dynamic-reviews.sql",
+        "backend/database/migration-new-review-structure.sql",
+        "backend/routes/analytics.js",
+        "backend/routes/reviews.js",
+        "src/components/review/ReviewFormDynamic.jsx",
+        "src/components/review/ReviewFormNew.jsx",
+        "src/config/reviewConfig.js",
+        "src/pages/Review.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "8f585633373610fd05b9befd532ee2281f0173be",
+      "created_at": "2026-01-18T08:11:36.000Z"
+    },
+    {
+      "id": 89,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix validation: remove old column references, validate new scores structure",
+      "files": [
+        "backend/routes/reviews.js"
+      ],
+      "tags": [],
+      "commit_hash": "fd2d07481e33d82d14a94f1c63ba7bc2dce69631",
+      "created_at": "2026-01-18T08:22:25.000Z"
+    },
+    {
+      "id": 90,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Improve clarity of 'Handles Disagreements' question - rename to 'Conflict Resolution'",
+      "files": [
+        "src/config/reviewConfig.js"
+      ],
+      "tags": [],
+      "commit_hash": "846a93e1d9cddd631b7974a6dd9fe010278ec00c",
+      "created_at": "2026-01-18T08:29:10.000Z"
+    },
+    {
+      "id": 91,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add /api/analytics/users endpoint for detailed user review activity table",
+      "files": [
+        "backend/routes/analytics.js"
+      ],
+      "tags": [
+        "api"
+      ],
+      "commit_hash": "65d0c7bec2a973f139d0360614622c344992adcd",
+      "created_at": "2026-01-18T08:33:37.000Z"
+    },
+    {
+      "id": 92,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add randomization and prioritize colleagues with 1-2 reviews for completion",
+      "files": [
+        "backend/routes/reviews.js"
+      ],
+      "tags": [],
+      "commit_hash": "d5a3ab81cc31f352997a5fa53ff4f3ebb6a47534",
+      "created_at": "2026-01-18T08:50:32.000Z"
+    },
+    {
+      "id": 93,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add AI grammar polish feature with OpenAI integration",
+      "files": [
+        "backend/routes/reviews.js",
+        "src/components/review/ReviewFormDynamic.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "c9e7b35d86bb622e1163fdff2e3dd74e359a6e2c",
+      "created_at": "2026-01-18T09:31:07.000Z"
+    },
+    {
+      "id": 94,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix Polish button: move below textarea and use production API URL",
+      "files": [
+        "src/components/review/ReviewFormDynamic.jsx"
+      ],
+      "tags": [
+        "api"
+      ],
+      "commit_hash": "85e5f0902052de7f95ff49eba509fc1e1313face",
+      "created_at": "2026-01-18T09:37:04.000Z"
+    },
+    {
+      "id": 95,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add Netlify config to fix SPA routing and MIME type issues",
+      "files": [
+        "netlify.toml"
+      ],
+      "tags": [
+        "config"
+      ],
+      "commit_hash": "8978015b2009835a4bb3a4b0106dfdf36519407b",
+      "created_at": "2026-01-18T09:39:07.000Z"
     }
   ],
-  "nextId": 88
+  "nextId": 96
 }
