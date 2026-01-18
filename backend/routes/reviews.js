@@ -2,6 +2,14 @@ const express = require('express');
 const router = express.Router();
 const mysql = require('mysql2/promise');
 const { v4: uuidv4 } = require('uuid');
+const { 
+  calculatePercentileTier, 
+  getDefaultAverages, 
+  getCategoryAverage,
+  normalizeJobTitle,
+  getDisplayNameForRole,
+  DEFAULT_CATEGORY_AVERAGES
+} = require('../utils/jobTitlesSystem');
 
 let pool;
 
@@ -871,10 +879,11 @@ router.get('/score/me', async (req, res) => {
       // Calculate score if not cached or outdated
       const [reviews] = await connection.query(`
         SELECT 
-          technical_rating,
-          communication_rating,
-          teamwork_rating,
-          leadership_rating,
+          scores,
+          overall_score,
+          strength_tags,
+          would_work_again,
+          interaction_type,
           created_at
         FROM reviews 
         WHERE reviewee_id = ?
@@ -890,33 +899,96 @@ router.get('/score/me', async (req, res) => {
         });
       }
 
-      // Calculate weighted averages
-      let technicalSum = 0, communicationSum = 0, teamworkSum = 0, leadershipSum = 0;
+      // Calculate averages from new scores JSON field
+      const scoreCategories = {};
+      let overallSum = 0;
       let count = 0;
+      
+      // Aggregate strength tags with counts
+      const strengthTagCounts = {};
+      
+      // Would work again aggregation with breakdown
+      let wouldWorkAgainSum = 0;
+      let wouldWorkAgainCount = 0;
+      const wouldWorkAgainBreakdown = {
+        'Absolutely': 0,  // 5
+        'Gladly': 0,      // 4
+        'Sure': 0,        // 3
+        'Maybe': 0,       // 2
+        'Prefer not': 0   // 1
+      };
+      
+      // Reviewer breakdown by interaction type
+      const reviewerBreakdown = {
+        peer: 0,
+        manager: 0,
+        direct_report: 0,
+        cross_team: 0,
+        other: 0
+      };
 
       for (const review of reviews) {
-        technicalSum += review.technical_rating || 0;
-        communicationSum += review.communication_rating || 0;
-        teamworkSum += review.teamwork_rating || 0;
-        leadershipSum += review.leadership_rating || 0;
-        count++;
+        // Use overall_score if available, otherwise calculate from scores JSON
+        if (review.overall_score) {
+          overallSum += parseFloat(review.overall_score);
+          count++;
+        }
+        
+        // Aggregate individual scores from JSON
+        if (review.scores) {
+          const scores = typeof review.scores === 'string' ? JSON.parse(review.scores) : review.scores;
+          for (const [key, value] of Object.entries(scores)) {
+            if (value !== null && value !== undefined) {
+              if (!scoreCategories[key]) {
+                scoreCategories[key] = { sum: 0, count: 0 };
+              }
+              scoreCategories[key].sum += parseFloat(value);
+              scoreCategories[key].count++;
+            }
+          }
+        }
+        
+        // Aggregate strength tags
+        if (review.strength_tags) {
+          const tags = typeof review.strength_tags === 'string' ? JSON.parse(review.strength_tags) : review.strength_tags;
+          if (Array.isArray(tags)) {
+            tags.forEach(tag => {
+              strengthTagCounts[tag] = (strengthTagCounts[tag] || 0) + 1;
+            });
+          }
+        }
+        
+        // Aggregate would_work_again (1-5 scale maps to verbal responses)
+        if (review.would_work_again) {
+          wouldWorkAgainSum += review.would_work_again >= 4 ? 1 : 0;
+          wouldWorkAgainCount++;
+          // Map 1-5 scale to verbal responses
+          const wwaValue = parseInt(review.would_work_again);
+          if (wwaValue === 5) wouldWorkAgainBreakdown['Absolutely']++;
+          else if (wwaValue === 4) wouldWorkAgainBreakdown['Gladly']++;
+          else if (wwaValue === 3) wouldWorkAgainBreakdown['Sure']++;
+          else if (wwaValue === 2) wouldWorkAgainBreakdown['Maybe']++;
+          else if (wwaValue === 1) wouldWorkAgainBreakdown['Prefer not']++;
+        }
+        
+        // Count reviewer types
+        if (review.interaction_type && reviewerBreakdown.hasOwnProperty(review.interaction_type)) {
+          reviewerBreakdown[review.interaction_type]++;
+        }
       }
 
-      const technicalAvg = count > 0 ? technicalSum / count : 0;
-      const communicationAvg = count > 0 ? communicationSum / count : 0;
-      const teamworkAvg = count > 0 ? teamworkSum / count : 0;
-      const leadershipAvg = count > 0 ? leadershipSum / count : 0;
+      // Calculate category averages
+      const categoryAverages = {};
+      for (const [key, data] of Object.entries(scoreCategories)) {
+        categoryAverages[key] = data.count > 0 ? (data.sum / data.count).toFixed(1) : 0;
+      }
 
-      // Weighted overall score
-      const overallScore = (
-        technicalAvg * 0.30 +
-        communicationAvg * 0.25 +
-        teamworkAvg * 0.25 +
-        leadershipAvg * 0.20
-      );
+      // Calculate overall score (convert from 0-10 scale to 0-5 scale for DB constraint)
+      const overallScoreRaw = count > 0 ? overallSum / count : 0;
+      const overallScore = overallScoreRaw / 2; // Convert 0-10 to 0-5 scale
 
-      // Convert to display score (0-100)
-      const displayScore = Math.round((overallScore / 5) * 100);
+      // Convert to display score (0-100 scale)
+      const displayScore = Math.round((overallScoreRaw / 10) * 100);
 
       // Determine badge
       let badge = 'none';
@@ -924,41 +996,47 @@ router.get('/score/me', async (req, res) => {
       else if (count >= 5) badge = 'reliable';
       else if (count >= 3) badge = 'preliminary';
 
-      // Update cached scores
+      // Update cached scores (only update fields that exist)
       await connection.query(`
         UPDATE user_scores SET
           overall_score = ?,
-          display_score = ?,
-          technical_avg = ?,
-          communication_avg = ?,
-          teamwork_avg = ?,
-          leadership_avg = ?,
           reviews_received = ?,
           badge = ?,
           last_calculated = CURRENT_TIMESTAMP
         WHERE user_id = ?
       `, [
         overallScore.toFixed(2),
-        displayScore,
-        technicalAvg.toFixed(2),
-        communicationAvg.toFixed(2),
-        teamworkAvg.toFixed(2),
-        leadershipAvg.toFixed(2),
         count,
         badge,
         user_id
       ]);
 
+      // Sort strength tags by count and get top ones with counts
+      const sortedStrengthTags = Object.entries(strengthTagCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5)
+        .map(([tag, tagCount]) => ({ tag, count: tagCount }));
+      
+      // Calculate would work again percentage
+      const wouldWorkAgainPercent = wouldWorkAgainCount > 0 
+        ? Math.round((wouldWorkAgainSum / wouldWorkAgainCount) * 100) 
+        : 0;
+
+      // Calculate percentile tier based on overall score
+      const percentileTier = calculatePercentileTier(overallScoreRaw);
+      
+      // Get user's position/role for display
+      const userRole = scoreData.position || 'Professional';
+      const normalizedRole = normalizeJobTitle(userRole);
+      const roleDisplayName = normalizedRole ? normalizedRole.displayName : getDisplayNameForRole(userRole);
+
       res.json({
         success: true,
         score_unlocked: true,
         score: {
-          overall: overallScore.toFixed(2),
+          overall: overallScoreRaw.toFixed(1),  // Return 0-10 scale for display
           display: displayScore,
-          technical: technicalAvg.toFixed(2),
-          communication: communicationAvg.toFixed(2),
-          teamwork: teamworkAvg.toFixed(2),
-          leadership: leadershipAvg.toFixed(2)
+          ...categoryAverages
         },
         reviews_received: count,
         reviews_given: scoreData.reviews_given,
@@ -967,7 +1045,27 @@ router.get('/score/me', async (req, res) => {
           current: badge,
           next: badge === 'verified' ? null : (badge === 'reliable' ? 'verified' : (badge === 'preliminary' ? 'reliable' : 'preliminary')),
           reviews_needed: badge === 'verified' ? 0 : (badge === 'reliable' ? 10 - count : (badge === 'preliminary' ? 5 - count : 3 - count))
-        }
+        },
+        strength_tags: sortedStrengthTags,
+        would_work_again: {
+          percent: wouldWorkAgainPercent,
+          yes_count: wouldWorkAgainSum,
+          total_count: wouldWorkAgainCount,
+          breakdown: wouldWorkAgainBreakdown
+        },
+        reviewer_breakdown: reviewerBreakdown,
+        // New: Percentile tier information
+        percentile: {
+          tier: percentileTier.tier,
+          badge: percentileTier.badge,
+          color: percentileTier.color,
+          emoji: percentileTier.emoji,
+          usingDefaults: percentileTier.usingDefaults || false
+        },
+        // New: Category averages for comparison (cold start defaults)
+        category_averages: DEFAULT_CATEGORY_AVERAGES,
+        // New: Role display name for UI
+        role_display_name: roleDisplayName
       });
 
     } finally {

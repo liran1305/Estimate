@@ -2,14 +2,14 @@ import React from 'react';
 import { motion } from "framer-motion";
 
 const categories = [
-  { key: "communication_skills", label: "Communication" },
-  { key: "teamwork_skills", label: "Teamwork" },
+  { key: "communication", label: "Communication" },
+  { key: "teamwork", label: "Teamwork" },
   { key: "problem_solving", label: "Problem-Solving" },
-  { key: "adaptability", label: "Adaptability" },
+  { key: "reliability", label: "Reliability" },
   { key: "leadership_impact", label: "Leadership" },
-  { key: "goal_achievement", label: "Goal Achievement" },
-  { key: "creativity", label: "Creativity & Innovation" },
-  { key: "initiative", label: "Initiative" }
+  { key: "initiative", label: "Initiative" },
+  { key: "mentorship", label: "Mentorship" },
+  { key: "strategic_thinking", label: "Strategic Thinking" }
 ];
 
 const getBarColor = (score) => {
@@ -19,11 +19,17 @@ const getBarColor = (score) => {
 };
 
 export default function ScoreBreakdown({ scores }) {
+  if (!scores) return null;
+  
   return (
     <div className="space-y-4">
       {categories.map((category, index) => {
-        const score = scores[category.key];
-        if (score === null || score === undefined) return null;
+        const rawScore = scores[category.key];
+        if (rawScore === null || rawScore === undefined) return null;
+        
+        // Parse score as float (handles both string and number)
+        const score = parseFloat(rawScore);
+        if (isNaN(score)) return null;
         
         return (
           <div key={category.key}>

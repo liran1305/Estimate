@@ -1,18 +1,28 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-18T09:39:17.259Z
+> Last updated: 2026-01-18T14:53:07.140Z
 
 ## Project Stats
-- Total memories: 95
-- Commits tracked: 95
+- Total memories: 99
+- Commits tracked: 99
 - Decisions recorded: 0
 
 ## Relevant to Current Work
-- **1/18/2026**: Fix Polish button: move below textarea and use production API URL (src/components/review/ReviewFormDynamic.jsx)
+- **1/18/2026**: Upgrade to GPT-4o-mini for better grammar correction with lower temperature (backend/routes/reviews.js)
+- **1/18/2026**: Fix polish-comment route path to match frontend API call (backend/routes/reviews.js)
 - **1/18/2026**: Add AI grammar polish feature with OpenAI integration (backend/routes/reviews.js, src/components/review/ReviewFormDynamic.jsx)
-- **1/18/2026**: Add relationship-specific review questions with weighted scoring (NEW_REVIEW_STRUCTURE.md, backend/database/migration-dynamic-reviews.sql, backend/database/migration-new-review-structure.sql)
+- **1/18/2026**: Add randomization and prioritize colleagues with 1-2 reviews for completion (backend/routes/reviews.js)
+- **1/18/2026**: Fix validation: remove old column references, validate new scores structure (backend/routes/reviews.js)
 
 ## Recent Changes
+- `473ce79` 1/18/2026: Simplify profile page: compact hero section with Continue Reviewing button, fix onboarding redirect for users who completed 3 reviews
+  Files: src/components/profile/WaitingState.jsx, src/pages/Onboarding.jsx, src/pages/Profile.jsx
+- `bd6bac4` 1/18/2026: Upgrade to GPT-4o-mini for better grammar correction with lower temperature
+  Files: backend/routes/reviews.js
+- `4008fc8` 1/18/2026: Fix polish-comment route path to match frontend API call
+  Files: backend/routes/reviews.js
+- `a8d617c` 1/18/2026: Remove netlify.toml - using Vercel for frontend
+  Files: DATABASE_SCHEMA_REVIEW.md, PROJECT_CONTEXT.md, netlify.toml
 - `8978015` 1/18/2026: Add Netlify config to fix SPA routing and MIME type issues
   Files: netlify.toml
 - `85e5f09` 1/18/2026: Fix Polish button: move below textarea and use production API URL
@@ -35,19 +45,11 @@
   Files: src/pages/Layout.jsx, src/pages/Profile.jsx
 - `fe390ed` 1/14/2026: Fix: Use ref callback to render Turnstile when element is mounted
   Files: src/lib/turnstile.js, src/pages/LinkedInAuth.jsx
-- `d601d4e` 1/14/2026: Fix Turnstile container not found error
-  Files: src/pages/LinkedInAuth.jsx
-- `6800147` 1/14/2026: Show actual Cloudflare Turnstile widget with logo and loading
-  Files: src/lib/turnstile.js, src/pages/LinkedInAuth.jsx
-- `0df80d2` 1/14/2026: Fix mobile OAuth: Make Cloudflare Turnstile verification visible
-  Files: src/components/landing/HeroSection.jsx, src/components/landing/QuoteSection.jsx, src/lib/turnstile.js
-- `aaf6db5` 1/14/2026: Fix mobile OAuth slowness: Implement lazy loading for all pages
-  Files: backend/server.js, src/pages/index.jsx
 
 ## Do Not Repeat
 These issues have already been solved:
+- Fix polish-comment route path to match frontend API call
 - Fix Polish button: move below textarea and use production API URL
 - Fix validation: remove old column references, validate new scores structure
 - Change review session status from 'expired' to 'abandoned' to match ENUM values
 - Use ref callback to render Turnstile when element is mounted
-- Fix Turnstile container not found error

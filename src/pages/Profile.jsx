@@ -3,30 +3,76 @@ import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { linkedinAuth } from "@/lib/linkedinAuth";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { Loader2, TrendingUp } from "lucide-react";
+import { Loader2, CheckCircle2, MapPin, Clock, Users, Linkedin, LinkIcon, Star, Sparkles, Target, Lightbulb, MessageSquare, Zap } from "lucide-react";
 import { motion } from "framer-motion";
-import ScoreCircle from "@/components/profile/ScoreCircle";
-import ScoreBreakdown from "@/components/profile/ScoreBreakdown";
 import WaitingState from "@/components/profile/WaitingState";
 import ConsentModal from "@/components/profile/ConsentModal";
 
 const BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:3001';
+
+// Score badge colors based on score value
+const getScoreBadgeColor = (score) => {
+  if (score >= 9) return 'bg-emerald-500';
+  if (score >= 8) return 'bg-green-500';
+  if (score >= 7) return 'bg-lime-500';
+  if (score >= 6) return 'bg-yellow-500';
+  if (score >= 5) return 'bg-amber-500';
+  return 'bg-orange-500';
+};
+
+// Score categories for horizontal breakdown
+const scoreCategories = [
+  { key: "teamwork", label: "Teamwork" },
+  { key: "reliability", label: "Reliability" },
+  { key: "communication", label: "Communication" },
+  { key: "problem_solving", label: "Problem Solving" },
+  { key: "leadership_impact", label: "Leadership" },
+  { key: "initiative", label: "Initiative" },
+  { key: "mentorship", label: "Mentorship" },
+  { key: "strategic_thinking", label: "Strategic" }
+];
+
+// Strength tag icons mapping
+const strengthTagIcons = {
+  'Problem Solver': <Target className="w-4 h-4" />,
+  'Great Communicator': <MessageSquare className="w-4 h-4" />,
+  'Quick Learner': <Lightbulb className="w-4 h-4" />,
+  'Team Player': <Users className="w-4 h-4" />,
+  'Creative Thinker': <Sparkles className="w-4 h-4" />,
+  'Reliable': <CheckCircle2 className="w-4 h-4" />,
+  'Natural Leader': <Star className="w-4 h-4" />,
+  'High Energy': <Zap className="w-4 h-4" />,
+  'Detail-Oriented': <Target className="w-4 h-4" />,
+  'Calm Under Pressure': <CheckCircle2 className="w-4 h-4" />
+};
+
+// Extract role from position for TOP 10% calculation
+const extractRole = (position) => {
+  if (!position) return 'Professionals';
+  const lowerPos = position.toLowerCase();
+  if (lowerPos.includes('product manager') || lowerPos.includes('pm')) return 'Product Managers';
+  if (lowerPos.includes('engineer') || lowerPos.includes('developer')) return 'Engineers';
+  if (lowerPos.includes('designer')) return 'Designers';
+  if (lowerPos.includes('marketing')) return 'Marketing Professionals';
+  if (lowerPos.includes('sales')) return 'Sales Professionals';
+  if (lowerPos.includes('data')) return 'Data Professionals';
+  if (lowerPos.includes('founder') || lowerPos.includes('ceo')) return 'Founders';
+  return 'Professionals';
+};
 
 export default function Profile() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [profileData, setProfileData] = useState(null);
-  const [reviews, setReviews] = useState([]);
   const [scoreData, setScoreData] = useState(null);
   const [showConsent, setShowConsent] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     const init = async () => {
-      // Get real user from localStorage (set by LinkedIn OAuth)
       const currentUser = linkedinAuth.getCurrentUser();
       
       if (!currentUser) {
@@ -34,86 +80,33 @@ export default function Profile() {
         return;
       }
       
-      console.log('Current user from localStorage:', currentUser);
       setUser(currentUser);
       
-      // If user has a matched LinkedIn profile, fetch their full profile data
       if (currentUser.linkedinProfileId) {
-        console.log('Fetching profile data for:', currentUser.linkedinProfileId);
         try {
           const res = await fetch(`${BACKEND_API_URL}/api/colleagues/profile/${currentUser.linkedinProfileId}/colleagues`);
           const data = await res.json();
-          console.log('Profile API response:', data);
           if (data.success && data.profile) {
-            console.log('✅ Profile data loaded:', data.profile);
-            console.log('Position from profile:', data.profile.position);
             setProfileData(data.profile);
-          } else {
-            console.error('❌ Profile API returned no data');
           }
         } catch (err) {
-          console.error('❌ Failed to fetch profile data:', err);
+          console.error('Failed to fetch profile data:', err);
         }
 
-        // Fetch user's score and reviews
         try {
           const scoreRes = await fetch(`${BACKEND_API_URL}/api/score/me?user_id=${currentUser.id}`);
           const scoreApiData = await scoreRes.json();
-          console.log('Score API response:', scoreApiData);
           setScoreData(scoreApiData);
-          if (scoreApiData.success && scoreApiData.reviews) {
-            console.log('✅ Score data loaded:', scoreApiData);
-            setReviews(scoreApiData.reviews);
-          } else {
-            console.log('⚠️ No reviews found yet');
-            setReviews([]);
-          }
         } catch (err) {
-          console.error('❌ Failed to fetch score data:', err);
-          setReviews([]);
+          console.error('Failed to fetch score data:', err);
           setScoreData(null);
         }
-      } else {
-        console.warn('⚠️ No linkedinProfileId found for user:', currentUser);
-        console.log('User object keys:', Object.keys(currentUser));
-        console.log('Full user object:', JSON.stringify(currentUser, null, 2));
-        setReviews([]);
       }
       
       setIsLoading(false);
     };
     init();
   }, [navigate]);
-
-  const calculateAverageScores = () => {
-    if (reviews.length === 0) return null;
-
-    const categories = [
-      'communication_skills', 'teamwork_skills', 'problem_solving', 
-      'adaptability', 'leadership_impact', 'goal_achievement', 
-      'creativity', 'initiative'
-    ];
-
-    const averages = {};
-    categories.forEach(cat => {
-      const validScores = reviews
-        .map(r => r[cat])
-        .filter(s => s !== null && s !== undefined);
-      
-      if (validScores.length > 0) {
-        averages[cat] = validScores.reduce((a, b) => a + b, 0) / validScores.length;
-      }
-    });
-
-    return averages;
-  };
-
-  const calculateOverallScore = (averages) => {
-    if (!averages) return 0;
-    const values = Object.values(averages).filter(v => v !== undefined);
-    if (values.length === 0) return 0;
-    return values.reduce((a, b) => a + b, 0) / values.length;
-  };
 
   const handleConsentToggle = (checked) => {
     if (checked) {
@@ -125,7 +118,6 @@ export default function Profile() {
 
   const updateConsent = async (value) => {
     setIsUpdating(true);
-    // Update user in localStorage
     const updatedUser = { ...user, recruitment_consent: value };
     localStorage.setItem('user', JSON.stringify(updatedUser));
     setUser(updatedUser);
@@ -141,75 +133,318 @@ export default function Profile() {
     );
   }
 
-  const averageScores = calculateAverageScores();
-  const overallScore = calculateOverallScore(averageScores);
-  const hasAnyReviews = reviews.length > 0;
-  const hasEnoughForRecruiters = reviews.length >= 3;
+  const overallScore = scoreData?.score?.overall ? parseFloat(scoreData.score.overall) : 0;
+  const hasAnyReviews = (scoreData?.reviews_received || 0) > 0;
+  const hasEnoughForRecruiters = (scoreData?.reviews_received || 0) >= 3;
+  
+  // Get strength tags from score data (aggregated from reviews)
+  const strengthTags = scoreData?.strength_tags || [];
+  const wouldWorkAgain = scoreData?.would_work_again || { percent: 0, yes_count: 0, total_count: 0 };
+  const reviewerBreakdown = scoreData?.reviewer_breakdown || { peer: 0, manager: 0, direct_report: 0, cross_team: 0 };
+  
+  // Get percentile tier and role from API (with fallbacks)
+  const percentileTier = scoreData?.percentile || { tier: 'Top 20%', emoji: '✓', color: '#84cc16' };
+  const roleDisplayName = scoreData?.role_display_name || extractRole(profileData?.position || user?.position);
+  const categoryAverages = scoreData?.category_averages || {
+    teamwork: 7.2, reliability: 7.0, communication: 6.8, problem_solving: 7.1,
+    leadership_impact: 6.5, initiative: 6.9, mentorship: 6.3, strategic_thinking: 6.6
+  };
+  
+  // Legacy: Extract role for display (fallback)
+  const userRole = roleDisplayName;
+  
+  // Calculate total reviewers
+  const totalReviewers = Object.values(reviewerBreakdown).reduce((a, b) => a + b, 0);
+
+  // Human-readable "Would Work Again" response
+  const getWorkAgainVerbal = (percent) => {
+    if (percent >= 90) return { emoji: '🤩', text: 'Absolutely!', subtext: 'Colleagues would love to work with you again' };
+    if (percent >= 75) return { emoji: '😊', text: 'Gladly', subtext: 'Most colleagues would happily work with you again' };
+    if (percent >= 60) return { emoji: '🙂', text: 'Sure', subtext: 'Colleagues would be open to working together again' };
+    if (percent >= 40) return { emoji: '😐', text: 'Maybe', subtext: 'Mixed feelings about working together again' };
+    return { emoji: '😕', text: 'Uncertain', subtext: 'Building your professional reputation' };
+  };
+  
+  const workAgainVerbal = getWorkAgainVerbal(wouldWorkAgain.percent);
+
+  // Human-readable reviewer type labels
+  const reviewerTypeLabels = {
+    peer: { label: 'Direct Colleagues', description: 'Worked directly as peers', icon: '👥' },
+    manager: { label: 'Managers', description: 'Managed or supervised you', icon: '👔' },
+    direct_report: { label: 'Direct Reports', description: 'You managed them', icon: '📋' },
+    cross_team: { label: 'Cross-Team', description: 'Collaborated across teams', icon: '🔗' },
+    other: { label: 'Other Professionals', description: 'Professional connections', icon: '🤝' }
+  };
+
+  const handleShareLinkedIn = () => {
+    const text = `I just received my professional peer review score on Estimate! Check out how your colleagues really see you. 🎯`;
+    const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://estimatenow.io')}&title=${encodeURIComponent(text)}`;
+    window.open(url, '_blank', 'width=600,height=400');
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText('https://estimatenow.io');
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-12 px-6">
-      <div className="max-w-2xl mx-auto">
-        {/* Profile Header */}
-        <motion.div 
-          className="text-center mb-8"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          <div className="w-28 h-28 mx-auto mb-4">
-            <img 
-              src={user.picture || profileData?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'User')}&background=0A66C2&color=fff&size=200`}
-              alt={user.name}
-              className="w-full h-full rounded-full object-cover shadow-lg ring-4 ring-white"
-              style={{ objectPosition: 'center' }}
-            />
-          </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">{profileData?.name || user.name || 'Professional'}</h1>
-          <p className="text-gray-600 text-base max-w-2xl mx-auto px-4">
-            {profileData?.position || user.position || 'Professional'}
-          </p>
-        </motion.div>
-
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-4 sm:py-8 px-3 sm:px-4">
+      <div className="max-w-5xl mx-auto">
+        
         {hasAnyReviews ? (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
           >
-            {/* Score Card */}
-            <Card className="p-8 border-0 shadow-xl shadow-gray-200/50 mb-6">
-              <ScoreCircle score={overallScore} />
+            {/* Single Hero Section - Everything in One Card */}
+            <Card className="p-4 sm:p-6 md:p-8 border-0 shadow-xl shadow-gray-200/50">
               
-              <div className="flex items-center justify-center gap-2 mt-6 py-3 px-4 bg-[#0A66C2]/5 rounded-xl">
-                <TrendingUp className="w-5 h-5 text-[#0A66C2]" />
-                <span className="text-[#0A66C2] font-medium">
-                  You're in the TOP 10% of professionals
-                </span>
-              </div>
-            </Card>
+              {/* Top Row: Profile Info + Score */}
+              <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6 pb-4 sm:pb-6 border-b border-gray-100">
+                
+                {/* Left: Avatar and Info */}
+                <div className="flex items-start gap-3 sm:gap-4 flex-1 w-full">
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0">
+                    <img 
+                      src={user.picture || profileData?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'User')}&background=0A66C2&color=fff&size=200`}
+                      alt={user.name}
+                      className="w-full h-full rounded-full object-cover shadow-lg ring-2 ring-white"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h1 className="text-lg sm:text-xl font-bold text-gray-900 mb-0.5 leading-tight">
+                      {profileData?.name || user.name || 'Professional'}
+                    </h1>
+                    <p className="text-xs sm:text-sm text-gray-500 mb-2 truncate">
+                      {profileData?.position || user.position || 'Professional'}
+                    </p>
+                    <div className="flex flex-wrap items-center gap-3 text-xs text-gray-400 mb-2">
+                      <span className="flex items-center gap-1">
+                        <Users className="w-3 h-3" /> {scoreData?.reviews_received || 0} reviews received
+                      </span>
+                    </div>
+                    {/* Visible to Recruiters - More Prominent */}
+                    <div className="relative group">
+                      <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-md border ${
+                        user.recruitment_consent 
+                          ? 'bg-green-50 border-green-200' 
+                          : hasEnoughForRecruiters 
+                            ? 'bg-gray-50 border-gray-200 hover:bg-gray-100' 
+                            : 'bg-gray-50 border-gray-200 opacity-60'
+                      }`}>
+                        <CheckCircle2 className={`w-4 h-4 ${user.recruitment_consent ? 'text-green-500' : 'text-gray-400'}`} />
+                        <span className={`text-xs font-medium ${user.recruitment_consent ? 'text-green-700' : 'text-gray-600'}`}>
+                          {user.recruitment_consent ? 'Visible to Recruiters' : 'Open for Recruiters'}
+                        </span>
+                        <Switch 
+                          checked={user.recruitment_consent || false}
+                          onCheckedChange={handleConsentToggle}
+                          disabled={isUpdating || !hasEnoughForRecruiters}
+                          className="scale-75"
+                        />
+                      </div>
+                      {/* Tooltip */}
+                      {!hasEnoughForRecruiters && (
+                        <div className="absolute left-0 top-full mt-2 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none">
+                          <p className="font-medium mb-1">🔒 Locked</p>
+                          <p>You need at least 3 reviews to enable recruiter visibility. You currently have {scoreData?.reviews_received || 0} review{(scoreData?.reviews_received || 0) !== 1 ? 's' : ''}.</p>
+                          <div className="absolute -top-1 left-4 w-2 h-2 bg-gray-900 rotate-45"></div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
 
-            {/* Score Breakdown */}
-            <Card className="p-8 border-0 shadow-xl shadow-gray-200/50 mb-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-6">Score Breakdown</h3>
-              <ScoreBreakdown scores={averageScores} />
-            </Card>
-
-            {/* Recruitment Consent */}
-            <Card className="p-6 border-0 shadow-xl shadow-gray-200/50">
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label className="font-medium text-gray-900">Reviews Permitted for Recruitment</Label>
-                  <p className="text-sm text-gray-500">
-                    {hasEnoughForRecruiters 
-                      ? 'Allow verified recruiters to see your reviews'
-                      : `Complete ${3 - reviews.length} more review${3 - reviews.length > 1 ? 's' : ''} to enable recruiter visibility`
-                    }
+                {/* Right: Score Circle - Centered on mobile */}
+                <div className="flex flex-col items-center w-full sm:w-auto mt-2 sm:mt-0">
+                  <div className={`w-18 h-18 sm:w-20 sm:h-20 rounded-full flex flex-col items-center justify-center border-4 ${
+                    overallScore >= 8 ? 'border-emerald-500 bg-white' :
+                    overallScore >= 6 ? 'border-yellow-500 bg-white' :
+                    'border-orange-500 bg-white'
+                  }`}>
+                    <span className={`text-xl sm:text-2xl font-bold ${
+                      overallScore >= 8 ? 'text-emerald-600' :
+                      overallScore >= 6 ? 'text-yellow-600' :
+                      'text-orange-600'
+                    }`}>
+                      {overallScore.toFixed(1)}
+                    </span>
+                    <span className="text-[8px] sm:text-[9px] text-gray-400">out of 10</span>
+                  </div>
+                  <p 
+                    className="text-[10px] font-medium mt-1.5 px-2 py-0.5 rounded"
+                    style={{ 
+                      backgroundColor: `${percentileTier.color}20`, 
+                      color: percentileTier.color 
+                    }}
+                  >
+                    {percentileTier.emoji} {percentileTier.tier} of {userRole}
                   </p>
                 </div>
-                <Switch 
-                  checked={user.recruitment_consent || false}
-                  onCheckedChange={handleConsentToggle}
-                  disabled={isUpdating || !hasEnoughForRecruiters}
-                />
+              </div>
+
+              {/* Middle Row: Would Work Again + Top Strengths */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 py-4 sm:py-6 border-b border-gray-100">
+                
+                {/* Would Work Again - Blurred until 3+ reviews */}
+                <div className="relative">
+                  <p className="text-sm sm:text-base font-semibold text-gray-900 mb-2 sm:mb-3">Would Work Again</p>
+                  {(scoreData?.reviews_received || 0) >= 3 ? (
+                    <>
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="text-3xl">{workAgainVerbal.emoji}</div>
+                        <div>
+                          <p className="font-semibold text-gray-800">{workAgainVerbal.text}</p>
+                          <p className="text-xs text-gray-500">{workAgainVerbal.subtext}</p>
+                        </div>
+                      </div>
+                      {/* Response breakdown */}
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {wouldWorkAgain.breakdown ? (
+                          Object.entries(wouldWorkAgain.breakdown).map(([response, count]) => {
+                            if (count === 0) return null;
+                            return (
+                              <span key={response} className="text-[10px] px-2 py-1 bg-gray-100 rounded-full text-gray-600">
+                                {count} said "{response}"
+                              </span>
+                            );
+                          })
+                        ) : (
+                          <span className="text-[10px] text-gray-400">
+                            {wouldWorkAgain.yes_count} of {wouldWorkAgain.total_count} reviewers would gladly work together again
+                          </span>
+                        )}
+                      </div>
+                    </>
+                  ) : (
+                    <div className="relative">
+                      <div className="blur-sm select-none pointer-events-none">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="text-3xl">😊</div>
+                          <div>
+                            <p className="font-semibold text-gray-800">Gladly</p>
+                            <p className="text-xs text-gray-500">Most colleagues would happily work with you again</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="absolute inset-0 flex items-center justify-center bg-white/60 rounded-lg">
+                        <p className="text-xs text-gray-500 text-center px-4">
+                          🔒 Unlocks after 3 reviews<br/>
+                          <span className="text-[10px] text-gray-400">{3 - (scoreData?.reviews_received || 0)} more to go</span>
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Top Strengths */}
+                <div>
+                  <p className="text-sm sm:text-base font-semibold text-gray-900 mb-2">Top Strengths</p>
+                  <div className="flex flex-wrap gap-2">
+                    {(strengthTags.length > 0 ? strengthTags : [
+                      { tag: 'Problem Solver', count: 1 },
+                      { tag: 'Great Communicator', count: 1 }
+                    ]).slice(0, 3).map((item, index) => (
+                      <span
+                        key={item.tag || index}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-md text-xs font-medium text-amber-800"
+                      >
+                        {strengthTagIcons[item.tag] || <Star className="w-3 h-3" />}
+                        {item.tag}
+                        {item.count > 1 && <span className="text-amber-500 ml-1">×{item.count}</span>}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Score Breakdown Row - Bar Chart Style */}
+              <div className="py-4 sm:py-6 border-b border-gray-100">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3 sm:mb-4">
+                  <p className="text-sm sm:text-base font-semibold text-gray-900">Score Breakdown</p>
+                  <div className="flex items-center gap-3 sm:gap-4 text-[9px] sm:text-[10px]">
+                    <span className="flex items-center gap-1">
+                      <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-sm bg-emerald-500"></span> Your Score
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-sm bg-gray-300"></span> Avg {userRole}
+                    </span>
+                  </div>
+                </div>
+                <div className="space-y-2 sm:space-y-3">
+                  {scoreCategories.map((category, index) => {
+                    const score = scoreData?.score?.[category.key];
+                    if (!score) return null;
+                    
+                    const numScore = parseFloat(score);
+                    // Get the average for this category from API (cold start defaults)
+                    const positionAvg = categoryAverages[category.key] || 7.0;
+                    
+                    return (
+                      <motion.div
+                        key={category.key}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                        className="flex items-center gap-2 sm:gap-3"
+                      >
+                        <span className="text-[10px] sm:text-xs text-gray-600 w-20 sm:w-24 flex-shrink-0">{category.label}</span>
+                        <div className="flex-1 relative h-5 sm:h-6">
+                          {/* Background bar (position average) */}
+                          <div 
+                            className="absolute top-1 h-3 sm:h-4 bg-gray-200 rounded"
+                            style={{ width: `${(positionAvg / 10) * 100}%` }}
+                          />
+                          {/* Your score bar */}
+                          <div 
+                            className={`absolute top-1 h-3 sm:h-4 rounded ${getScoreBadgeColor(numScore)}`}
+                            style={{ width: `${(numScore / 10) * 100}%` }}
+                          />
+                          {/* Position average marker */}
+                          <div 
+                            className="absolute top-0 h-5 sm:h-6 w-0.5 bg-gray-400"
+                            style={{ left: `${(positionAvg / 10) * 100}%` }}
+                          />
+                        </div>
+                        <span className="text-xs sm:text-sm font-bold text-gray-900 w-7 sm:w-8 text-right">{numScore.toFixed(1)}</span>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Bottom Row: Who Reviewed (LEFT) + Share Button (RIGHT) */}
+              <div className="pt-4 sm:pt-6 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+                {/* Who Reviewed - LEFT */}
+                <div>
+                  <p className="text-[11px] sm:text-xs font-medium text-gray-500 mb-2">Who reviewed you:</p>
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                    {Object.entries(reviewerBreakdown).map(([type, count]) => {
+                      if (count === 0) return null;
+                      const typeInfo = reviewerTypeLabels[type];
+                      return (
+                        <div key={type} className="flex items-center gap-2 px-2 py-1.5 bg-gray-50 rounded-lg">
+                          <span className="text-base">{typeInfo.icon}</span>
+                          <div>
+                            <p className="text-[11px] font-medium text-gray-700">{count} {typeInfo.label}</p>
+                            <p className="text-[9px] text-gray-400">{typeInfo.description}</p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                    {totalReviewers === 0 && (
+                      <p className="text-[10px] text-gray-400">Details appear after more reviews</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Share Button - Full width on mobile, normal on desktop */}
+                <Button 
+                  onClick={handleShareLinkedIn}
+                  className="w-full sm:w-auto bg-[#0A66C2] hover:bg-[#004182] text-white rounded-lg px-5 flex-shrink-0"
+                >
+                  <Linkedin className="w-4 h-4 mr-2" />
+                  Share to LinkedIn
+                </Button>
               </div>
             </Card>
           </motion.div>

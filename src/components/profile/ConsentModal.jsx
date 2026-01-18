@@ -3,7 +3,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Shield, Eye, LogOut } from "lucide-react";
 
 export default function ConsentModal({ open, onClose, onConfirm, isLoading }) {
   const [agreed, setAgreed] = useState(false);
@@ -11,69 +10,69 @@ export default function ConsentModal({ open, onClose, onConfirm, isLoading }) {
   const handleConfirm = () => {
     if (agreed) {
       onConfirm();
+      setAgreed(false);
     }
   };
 
+  const handleClose = () => {
+    setAgreed(false);
+    onClose();
+  };
+
   return (
-    <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+    <Dialog open={open} onOpenChange={handleClose}>
+      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold">Consent to Use Reviews in Recruitment</DialogTitle>
+          <DialogTitle className="text-xl font-bold text-center">Consent to Use Reviews in Recruitment</DialogTitle>
         </DialogHeader>
         
-        <div className="py-4 space-y-4">
-          <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
-            <div className="w-10 h-10 bg-[#0A66C2]/10 rounded-lg flex items-center justify-center flex-shrink-0">
-              <Eye className="w-5 h-5 text-[#0A66C2]" />
-            </div>
-            <div>
-              <p className="font-medium text-gray-900 text-sm">Visible to Recruiters</p>
-              <p className="text-xs text-gray-500">Your reviews become visible to verified recruiters</p>
-            </div>
-          </div>
+        <div className="py-4 space-y-4 text-sm text-gray-700">
+          <p>
+            By switching on "Reviews Permitted for Recruitment," you are granting Estimate the permission to:
+          </p>
           
-          <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
-            <div className="w-10 h-10 bg-[#0A66C2]/10 rounded-lg flex items-center justify-center flex-shrink-0">
-              <Shield className="w-5 h-5 text-[#0A66C2]" />
-            </div>
-            <div>
-              <p className="font-medium text-gray-900 text-sm">Anonymous Reviews</p>
-              <p className="text-xs text-gray-500">Your identity stays anonymous to reviewers</p>
-            </div>
-          </div>
-          
-          <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
-            <div className="w-10 h-10 bg-[#0A66C2]/10 rounded-lg flex items-center justify-center flex-shrink-0">
-              <LogOut className="w-5 h-5 text-[#0A66C2]" />
-            </div>
-            <div>
-              <p className="font-medium text-gray-900 text-sm">Opt Out Anytime</p>
-              <p className="text-xs text-gray-500">You can disable this setting whenever you want</p>
-            </div>
-          </div>
+          <ol className="list-decimal list-outside ml-5 space-y-3">
+            <li>
+              <span className="font-medium">Share Your Reviews:</span> Make your professional reviews accessible to our network of verified recruiters and hiring companies. This includes all past and future reviews you submit.
+            </li>
+            <li>
+              <span className="font-medium">Enhance Your Professional Opportunities:</span> Use your reviews to match you with relevant job opportunities and career advancements. Your insights and feedback are valuable to potential employers seeking candidates with your experience and skills.
+            </li>
+            <li>
+              <span className="font-medium">Privacy and Anonymity:</span> While your reviews will be shared to showcase your professional insights, Estimate is committed to protecting your privacy. Your identity will remain anonymous to employers viewing your reviews, unless you decide to engage further with their opportunities.
+            </li>
+            <li>
+              <span className="font-medium">Opt-out Anytime:</span> You have full control over this permission and can opt out at any moment. Disabling this feature will immediately cease the sharing of your reviews with recruiters and companies, but will not affect reviews already accessed during the enabled period.
+            </li>
+          </ol>
 
-          <div className="flex items-center gap-3 pt-2">
+          <p className="text-gray-600">
+            Please read our <a href="/privacy" className="text-[#0A66C2] underline hover:no-underline">Privacy Policy</a> and <a href="/terms" className="text-[#0A66C2] underline hover:no-underline">Terms of Use</a> for more detailed information on how your data is managed and protected.
+          </p>
+
+          <div className="flex items-start gap-3 pt-4 border-t border-gray-100">
             <Checkbox 
               id="consent" 
               checked={agreed} 
               onCheckedChange={setAgreed}
+              className="mt-1"
             />
-            <Label htmlFor="consent" className="text-sm text-gray-700 cursor-pointer">
-              I agree to the terms and conditions
+            <Label htmlFor="consent" className="text-sm text-gray-700 cursor-pointer leading-relaxed">
+              I agree to the "Reviews Permitted for Recruitment" terms and consent to my reviews being used for recruitment purposes.
             </Label>
           </div>
         </div>
 
-        <DialogFooter className="gap-3">
-          <Button variant="outline" onClick={onClose} className="rounded-xl">
+        <DialogFooter className="gap-3 sm:gap-3">
+          <Button variant="outline" onClick={handleClose} className="rounded-lg px-6">
             Cancel
           </Button>
           <Button 
             onClick={handleConfirm}
             disabled={!agreed || isLoading}
-            className="bg-[#0A66C2] hover:bg-[#004182] rounded-xl"
+            className="bg-[#0A66C2] hover:bg-[#004182] rounded-lg px-6"
           >
-            Confirm
+            {isLoading ? 'Confirming...' : 'Confirm'}
           </Button>
         </DialogFooter>
       </DialogContent>
