@@ -7,13 +7,15 @@ import { createPageUrl } from "@/utils";
 import { linkedinAuth } from "@/lib/linkedinAuth";
 import { motion } from "framer-motion";
 
+const BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:3001';
+
 export default function Onboarding() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const checkUser = () => {
+    const checkUser = async () => {
       const currentUser = linkedinAuth.getCurrentUser();
       
       if (!currentUser) {
@@ -23,6 +25,23 @@ export default function Onboarding() {
       
       setUser(currentUser);
       
+      // Check if user has already completed 3 reviews (from database)
+      try {
+        const scoreRes = await fetch(`${BACKEND_API_URL}/api/score/me?user_id=${currentUser.id}`);
+        const scoreData = await scoreRes.json();
+        
+        if (scoreData.success && scoreData.reviews_given >= 3) {
+          // User has completed 3 reviews, mark as onboarded and go to Profile
+          const updatedUser = { ...currentUser, isOnboarded: true };
+          localStorage.setItem('user', JSON.stringify(updatedUser));
+          navigate(createPageUrl("Profile"));
+          return;
+        }
+      } catch (err) {
+        console.error('Error checking review status:', err);
+      }
+      
+      // Also check localStorage flag
       if (currentUser.isOnboarded) {
         navigate(createPageUrl("Profile"));
         return;

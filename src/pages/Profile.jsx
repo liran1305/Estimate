@@ -221,25 +221,6 @@ export default function Profile() {
           />
         )}
 
-        {/* Review CTA */}
-        {(user.reviewsGiven || 0) < 3 && (
-          <motion.div 
-            className="mt-8 text-center"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-          >
-            <p className="text-gray-500 mb-4">
-              Complete your reviews to unlock more features
-            </p>
-            <Link 
-              to={createPageUrl("Review")}
-              className="inline-flex items-center justify-center px-6 py-3 bg-[#0A66C2] text-white rounded-xl font-medium hover:bg-[#004182] transition-colors"
-            >
-              Continue Reviewing
-            </Link>
-          </motion.div>
-        )}
       </div>
 
       <ConsentModal 
