@@ -260,48 +260,49 @@ export default function ReviewFormDynamic({
         <p className="text-sm text-gray-500 mb-3">
           One sentence that captures working with {colleague.name.split(' ')[0]}
         </p>
-        <div className="relative">
-          <Textarea
-            placeholder="e.g., 'Always the first to help when deadlines get tight'"
-            value={comment}
-            onChange={(e) => {
-              setComment(e.target.value);
-              setShowPolishSuggestion(false);
-              setPolishedComment('');
-            }}
-            className="resize-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400"
-            rows={2}
-            maxLength={200}
-          />
-          {comment.length > 10 && !showPolishSuggestion && (
-            <button
-              onClick={async () => {
-                setIsPolishing(true);
-                try {
-                  const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/api/review/polish-comment`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ comment })
-                  });
-                  const data = await response.json();
-                  if (data.success && data.polished !== comment) {
-                    setPolishedComment(data.polished);
-                    setShowPolishSuggestion(true);
-                  }
-                } catch (error) {
-                  console.error('Polish error:', error);
-                } finally {
-                  setIsPolishing(false);
+        <Textarea
+          placeholder="e.g., 'Always the first to help when deadlines get tight'"
+          value={comment}
+          onChange={(e) => {
+            setComment(e.target.value);
+            setShowPolishSuggestion(false);
+            setPolishedComment('');
+          }}
+          className="resize-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400"
+          rows={2}
+          maxLength={200}
+        />
+        
+        {/* Polish Button - Below textarea */}
+        {comment.length > 10 && !showPolishSuggestion && (
+          <button
+            onClick={async () => {
+              setIsPolishing(true);
+              try {
+                const apiUrl = import.meta.env.VITE_API_URL || 'https://estimate-mio1.onrender.com';
+                const response = await fetch(`${apiUrl}/api/review/polish-comment`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ comment })
+                });
+                const data = await response.json();
+                if (data.success && data.polished !== comment) {
+                  setPolishedComment(data.polished);
+                  setShowPolishSuggestion(true);
                 }
-              }}
-              disabled={isPolishing}
-              className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 text-xs text-blue-600 hover:text-blue-700 bg-white border border-blue-200 rounded-md hover:bg-blue-50 transition-colors disabled:opacity-50"
-            >
-              <Sparkles className="w-3 h-3" />
-              {isPolishing ? 'Polishing...' : 'Polish'}
-            </button>
-          )}
-        </div>
+              } catch (error) {
+                console.error('Polish error:', error);
+              } finally {
+                setIsPolishing(false);
+              }
+            }}
+            disabled={isPolishing}
+            className="mt-2 flex items-center gap-1 px-3 py-1.5 text-xs text-blue-600 hover:text-blue-700 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 transition-colors disabled:opacity-50"
+          >
+            <Sparkles className="w-3 h-3" />
+            {isPolishing ? 'Polishing...' : 'Polish with AI'}
+          </button>
+        )}
         
         {/* Polish Suggestion */}
         {showPolishSuggestion && polishedComment && (
