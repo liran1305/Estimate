@@ -5,8 +5,8 @@ export const reviewConfig = {
     peer: {
       label: "Direct Colleague",
       description: "Worked directly with them as a peer",
-      sliders: ["communication", "reliability", "problem_solving", "teamwork", "disagreements"],
-      tags: ["reliable", "creative", "team_player", "detail_oriented", "high_energy", "calm_pressure", "communicator", "quick_learner", "problem_solver", "fast_executor", "helpful", "strategic"],
+      sliders: ["communication", "reliability", "problem_solving", "teamwork", "handles_pressure", "easy_to_work_with", "delivers_on_time"],
+      tags: ["reliable", "creative", "team_player", "detail_oriented", "high_energy", "calm_pressure", "communicator", "quick_learner", "problem_solver", "fast_executor", "helpful", "strategic", "owns_mistakes", "easy_to_work_with"],
       maxTags: 3,
       showWorkAgain: true,
       showWouldPromote: false,
@@ -15,8 +15,8 @@ export const reviewConfig = {
     manager: {
       label: "They Were My Manager",
       description: "They managed or supervised me",
-      sliders: ["communication", "reliability", "problem_solving", "clear_direction", "supports_growth", "handles_pressure", "recognition_feedback"],
-      tags: ["clear_communicator", "shields_team", "grows_people", "approachable", "fair_consistent", "decision_maker", "good_listener", "inspires", "gives_autonomy", "leads_by_example", "clear_goals", "calm_pressure"],
+      sliders: ["communication", "reliability", "problem_solving", "clear_direction", "supports_growth", "handles_pressure", "recognition_feedback", "receptive_feedback", "low_maintenance", "gives_autonomy"],
+      tags: ["clear_communicator", "shields_team", "grows_people", "approachable", "fair_consistent", "decision_maker", "good_listener", "inspires", "gives_autonomy", "leads_by_example", "clear_goals", "calm_pressure", "owns_mistakes", "not_micromanager", "low_drama"],
       maxTags: 3,
       showWorkAgain: true,
       showWouldPromote: false,
@@ -25,8 +25,8 @@ export const reviewConfig = {
     direct_report: {
       label: "They Reported to Me",
       description: "I managed or supervised them",
-      sliders: ["communication", "reliability", "problem_solving", "receptive_feedback", "takes_ownership", "works_independently", "shows_growth"],
-      tags: ["reliable", "high_potential", "quick_learner", "self_starter", "adaptable", "proactive_communicator", "problem_solver", "fast_executor", "team_player", "detail_oriented", "growth_mindset", "exceeds_expectations"],
+      sliders: ["communication", "reliability", "problem_solving", "receptive_feedback", "takes_ownership", "works_independently", "shows_growth", "handles_pressure", "delivers_on_time", "low_maintenance"],
+      tags: ["reliable", "high_potential", "quick_learner", "self_starter", "adaptable", "proactive_communicator", "problem_solver", "fast_executor", "team_player", "detail_oriented", "growth_mindset", "exceeds_expectations", "owns_mistakes", "low_maintenance", "autonomous"],
       maxTags: 3,
       showWorkAgain: true,
       showWouldPromote: true,
@@ -35,8 +35,8 @@ export const reviewConfig = {
     cross_team: {
       label: "Cross-Team Collaboration",
       description: "Worked with them across different teams",
-      sliders: ["communication", "reliability", "problem_solving", "cross_team_commitments", "responsive"],
-      tags: ["reliable", "communicator", "easy_to_work_with", "responsive", "flexible", "low_drama", "organized", "bridge_builder", "brings_solutions", "gets_things_done", "represents_team", "respects_deadlines"],
+      sliders: ["communication", "reliability", "problem_solving", "cross_team_commitments", "responsive", "easy_to_work_with", "delivers_on_time"],
+      tags: ["reliable", "communicator", "easy_to_work_with", "responsive", "flexible", "low_drama", "organized", "bridge_builder", "brings_solutions", "gets_things_done", "represents_team", "respects_deadlines", "owns_mistakes"],
       maxTags: 3,
       showWorkAgain: true,
       showWouldPromote: false,
@@ -63,16 +63,20 @@ export const reviewConfig = {
     disagreements: { label: "Conflict Resolution", description: "Handles disagreements and conflicts professionally", optional: true },
     clear_direction: { label: "Provides Clear Direction", description: "Sets clear expectations and goals" },
     supports_growth: { label: "Supports Growth & Development", description: "Invests in team members' careers" },
-    handles_pressure: { label: "Handles Pressure Well", description: "Stays composed, doesn't dump stress on team" },
+    handles_pressure: { label: "Handles Pressure Well", description: "Stays composed under stress, doesn't panic or dump stress on team", weight: 1.1 },
     recognition_feedback: { label: "Gives Recognition & Feedback", description: "Acknowledges good work, provides constructive feedback" },
     receptive_feedback: { label: "Receptive to Feedback", description: "Takes feedback well and acts on it", weight: 1.2 },
-    takes_ownership: { label: "Takes Ownership", description: "Owns mistakes, doesn't make excuses" },
+    takes_ownership: { label: "Takes Ownership", description: "Owns mistakes, doesn't make excuses", weight: 1.2 },
     works_independently: { label: "Works Independently", description: "Needs minimal supervision" },
     shows_growth: { label: "Shows Growth Over Time", description: "Improved and developed during tenure" },
     cross_team_commitments: { label: "Meets Cross-Team Commitments", description: "Delivers what they promise to other teams" },
     responsive: { label: "Responsive & Accessible", description: "Easy to reach, doesn't block others" },
     professionalism: { label: "Professionalism", description: "Conducted themselves professionally" },
-    overall_impression: { label: "Overall Impression", description: "General impression from interactions" }
+    overall_impression: { label: "Overall Impression", description: "General impression from interactions" },
+    easy_to_work_with: { label: "Easy to Work With", description: "Pleasant, low drama, collaborative", weight: 1.1 },
+    delivers_on_time: { label: "Delivers on Time", description: "Meets deadlines and commitments consistently", weight: 1.2 },
+    low_maintenance: { label: "Low Maintenance", description: "Doesn't require excessive management or hand-holding" },
+    gives_autonomy: { label: "Gives Autonomy", description: "Trusts team members, doesn't micromanage" }
   },
 
   tagDefinitions: {
@@ -119,7 +123,11 @@ export const reviewConfig = {
     positive_impression: { label: "Positive Impression", emoji: "👍" },
     easy_going: { label: "Easy Going", emoji: "🧘" },
     competent: { label: "Seemed Competent", emoji: "🎯" },
-    knowledgeable: { label: "Knowledgeable", emoji: "💡" }
+    knowledgeable: { label: "Knowledgeable", emoji: "💡" },
+    owns_mistakes: { label: "Owns Mistakes", emoji: "🙋" },
+    low_maintenance: { label: "Low Maintenance", emoji: "✅" },
+    autonomous: { label: "Autonomous", emoji: "🚀" },
+    not_micromanager: { label: "Not a Micromanager", emoji: "🔓" }
   },
 
   workAgainOptions: {
