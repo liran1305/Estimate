@@ -205,9 +205,9 @@ router.get('/session/start', async (req, res) => {
               [session.id]
             );
           } else {
-            // Mark as expired (didn't use all skips)
+            // Mark as abandoned (didn't use all skips)
             await connection.query(
-              'UPDATE review_sessions SET status = "expired" WHERE id = ?',
+              'UPDATE review_sessions SET status = "abandoned" WHERE id = ?',
               [session.id]
             );
           }
