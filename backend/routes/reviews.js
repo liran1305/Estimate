@@ -415,30 +415,61 @@ router.get('/colleague/next', async (req, res) => {
         });
       }
 
+      // Get review counts for each colleague to prioritize those with 1-2 reviews
+      const colleagueIds = colleaguesWithOverlap.map(c => c.id);
+      const [reviewCounts] = await connection.query(`
+        SELECT 
+          lp.id as colleague_id,
+          COALESCE(us.reviews_given, 0) as reviews_given
+        FROM linkedin_profiles lp
+        LEFT JOIN users u ON u.linkedin_profile_id = lp.id
+        LEFT JOIN user_scores us ON us.user_id = u.id
+        WHERE lp.id IN (?)
+      `, [colleagueIds]);
+
+      const reviewCountMap = {};
+      reviewCounts.forEach(rc => {
+        reviewCountMap[rc.colleague_id] = rc.reviews_given;
+      });
+
       // Score and rank colleagues by overlap months (most overlap first)
       const scoredColleagues = colleaguesWithOverlap.map(colleague => {
         const userCompany = userWorkHistory.find(w => w.company_name === colleague.company_name);
         const companyContext = (colleague.is_current && userCompany?.is_current) ? 'current' : 'previous';
+        const reviewsGiven = reviewCountMap[colleague.id] || 0;
         
         return {
           ...colleague,
           match_score: colleague.overlap_months, // Score = overlap months
-          company_context: companyContext
+          company_context: companyContext,
+          reviews_given: reviewsGiven
         };
       });
 
       // Sort by priority:
-      // 1. Never-skipped colleagues (highest priority)
-      // 2. Once-skipped colleagues (lower priority, get second chance)
-      // Sort each group by overlap months
-      const neverSkipped = scoredColleagues.filter(c => !onceSkippedIds.includes(c.id));
+      // 1. Colleagues with 1-2 reviews (help them complete 3 reviews) - HIGHEST PRIORITY
+      // 2. Never-skipped colleagues
+      // 3. Once-skipped colleagues (lower priority, get second chance)
+      // Within each group, randomize to avoid showing same order
+      const needsCompletion = scoredColleagues.filter(c => c.reviews_given >= 1 && c.reviews_given <= 2 && !onceSkippedIds.includes(c.id));
+      const neverSkipped = scoredColleagues.filter(c => (c.reviews_given === 0 || c.reviews_given >= 3) && !onceSkippedIds.includes(c.id));
       const onceSkipped = scoredColleagues.filter(c => onceSkippedIds.includes(c.id));
       
-      neverSkipped.sort((a, b) => b.match_score - a.match_score);
-      onceSkipped.sort((a, b) => b.match_score - a.match_score);
+      // Randomize within each priority group
+      const shuffleArray = (array) => {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+      };
       
-      // Prioritize never-skipped, then once-skipped
-      const prioritizedColleagues = [...neverSkipped, ...onceSkipped];
+      const shuffledNeedsCompletion = shuffleArray([...needsCompletion]);
+      const shuffledNeverSkipped = shuffleArray([...neverSkipped]);
+      const shuffledOnceSkipped = shuffleArray([...onceSkipped]);
+      
+      // Prioritize: 1-2 reviews > never-skipped > once-skipped
+      const prioritizedColleagues = [...shuffledNeedsCompletion, ...shuffledNeverSkipped, ...shuffledOnceSkipped];
       const selectedColleague = prioritizedColleagues[0];
 
       // Create assignment record with 'pending' status (so refresh returns same colleague)
