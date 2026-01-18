@@ -1,10 +1,10 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-18T15:03:06.138Z
+> Last updated: 2026-01-18T15:33:18.283Z
 
 ## Project Stats
-- Total memories: 100
-- Commits tracked: 100
+- Total memories: 101
+- Commits tracked: 101
 - Decisions recorded: 0
 
 ## Relevant to Current Work
@@ -15,6 +15,8 @@
 - **1/18/2026**: Add randomization and prioritize colleagues with 1-2 reviews for completion (backend/routes/reviews.js)
 
 ## Recent Changes
+- `ae56b96` 1/18/2026: Add new relationship-specific soft skills to review config
+  Files: src/config/reviewConfig.js
 - `311b945` 1/18/2026: Profile page redesign: percentile tiers, mobile responsiveness, consent modal update
   Files: backend/routes/reviews.js, backend/utils/jobTitlesSystem.js, src/components/profile/ConsentModal.jsx
 - `473ce79` 1/18/2026: Simplify profile page: compact hero section with Continue Reviewing button, fix onboarding redirect for users who completed 3 reviews
@@ -43,8 +45,6 @@
   Files: NEW_REVIEW_STRUCTURE.md, backend/database/migration-dynamic-reviews.sql, backend/database/migration-new-review-structure.sql
 - `1105ce9` 1/18/2026: Fix: Change review session status from 'expired' to 'abandoned' to match ENUM values
   Files: backend/routes/reviews.js
-- `7287631` 1/14/2026: Improve navigation and profile visibility
-  Files: src/pages/Layout.jsx, src/pages/Profile.jsx
 
 ## Do Not Repeat
 These issues have already been solved:

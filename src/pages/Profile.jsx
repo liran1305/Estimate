@@ -48,18 +48,35 @@ const strengthTagIcons = {
   'Calm Under Pressure': <CheckCircle2 className="w-4 h-4" />
 };
 
-// Extract role from position for TOP 10% calculation
-const extractRole = (position) => {
-  if (!position) return 'Professionals';
+// Extract canonical job title from position (singular)
+const extractCanonicalTitle = (position) => {
+  if (!position) return 'Professional';
   const lowerPos = position.toLowerCase();
-  if (lowerPos.includes('product manager') || lowerPos.includes('pm')) return 'Product Managers';
-  if (lowerPos.includes('engineer') || lowerPos.includes('developer')) return 'Engineers';
-  if (lowerPos.includes('designer')) return 'Designers';
-  if (lowerPos.includes('marketing')) return 'Marketing Professionals';
-  if (lowerPos.includes('sales')) return 'Sales Professionals';
-  if (lowerPos.includes('data')) return 'Data Professionals';
-  if (lowerPos.includes('founder') || lowerPos.includes('ceo')) return 'Founders';
-  return 'Professionals';
+  if (lowerPos.includes('product manager') || lowerPos.includes('pm')) return 'Product Manager';
+  if (lowerPos.includes('frontend') || lowerPos.includes('front-end') || lowerPos.includes('react') || lowerPos.includes('vue') || lowerPos.includes('angular')) return 'Frontend Engineer';
+  if (lowerPos.includes('backend') || lowerPos.includes('back-end') || lowerPos.includes('node') || lowerPos.includes('python') || lowerPos.includes('java')) return 'Backend Engineer';
+  if (lowerPos.includes('fullstack') || lowerPos.includes('full-stack') || lowerPos.includes('full stack')) return 'Full Stack Engineer';
+  if (lowerPos.includes('devops') || lowerPos.includes('sre') || lowerPos.includes('infrastructure')) return 'DevOps Engineer';
+  if (lowerPos.includes('data scientist') || lowerPos.includes('machine learning') || lowerPos.includes('ml engineer')) return 'Data Scientist';
+  if (lowerPos.includes('data engineer') || lowerPos.includes('etl') || lowerPos.includes('data pipeline')) return 'Data Engineer';
+  if (lowerPos.includes('data analyst') || lowerPos.includes('business analyst')) return 'Data Analyst';
+  if (lowerPos.includes('engineer') || lowerPos.includes('developer')) return 'Software Engineer';
+  if (lowerPos.includes('ux') || lowerPos.includes('ui') || lowerPos.includes('product design')) return 'Product Designer';
+  if (lowerPos.includes('designer')) return 'Designer';
+  if (lowerPos.includes('marketing')) return 'Marketing Manager';
+  if (lowerPos.includes('sales')) return 'Sales Professional';
+  if (lowerPos.includes('founder') || lowerPos.includes('ceo')) return 'Founder';
+  if (lowerPos.includes('cto')) return 'CTO';
+  if (lowerPos.includes('engineering manager') || lowerPos.includes('em')) return 'Engineering Manager';
+  if (lowerPos.includes('tech lead') || lowerPos.includes('technical lead')) return 'Tech Lead';
+  return 'Professional';
+};
+
+// Pluralize for "Avg Product Managers" display
+const extractRole = (position) => {
+  const canonical = extractCanonicalTitle(position);
+  if (canonical.endsWith('s')) return canonical;
+  return canonical + 's';
 };
 
 export default function Profile() {
@@ -144,13 +161,18 @@ export default function Profile() {
   
   // Get percentile tier and role from API (with fallbacks)
   const percentileTier = scoreData?.percentile || { tier: 'Top 20%', emoji: '✓', color: '#84cc16' };
-  const roleDisplayName = scoreData?.role_display_name || extractRole(profileData?.position || user?.position);
+  // Get position from profile data (headline like "Senior AI/AdTech Product Manager")
+  const rawPosition = profileData?.position || user?.position || '';
+  // Use canonical position (e.g., "Product Manager" not "Senior AI/AdTech Product Manager")
+  const roleDisplayName = scoreData?.role_display_name || extractRole(rawPosition);
+  // userPosition should be the normalized canonical title (singular) for percentile badge
+  const userPosition = scoreData?.user_position || extractCanonicalTitle(rawPosition) || 'Professional';
   const categoryAverages = scoreData?.category_averages || {
     teamwork: 7.2, reliability: 7.0, communication: 6.8, problem_solving: 7.1,
     leadership_impact: 6.5, initiative: 6.9, mentorship: 6.3, strategic_thinking: 6.6
   };
   
-  // Legacy: Extract role for display (fallback)
+  // Use pluralized for "Avg Product Managers", actual position for percentile badge
   const userRole = roleDisplayName;
   
   // Calculate total reviewers
@@ -277,7 +299,7 @@ export default function Profile() {
                       color: percentileTier.color 
                     }}
                   >
-                    {percentileTier.emoji} {percentileTier.tier} of {userRole}
+                    {percentileTier.emoji} {percentileTier.tier} of {userPosition}
                   </p>
                 </div>
               </div>

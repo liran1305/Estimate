@@ -846,13 +846,16 @@ router.get('/score/me', async (req, res) => {
     const connection = await pool.getConnection();
 
     try {
-      // Get user score data
+      // Get user score data with position from linkedin_profiles
       const [scores] = await connection.query(`
         SELECT 
           us.*,
+          lp.position,
           (SELECT COUNT(*) FROM reviews WHERE reviewee_id = us.linkedin_profile_id) as actual_reviews_received
         FROM user_scores us
+        LEFT JOIN linkedin_profiles lp ON us.linkedin_profile_id = lp.id
         WHERE us.user_id = ?
+        LIMIT 1
       `, [user_id]);
 
       if (scores.length === 0) {
@@ -1025,10 +1028,12 @@ router.get('/score/me', async (req, res) => {
       // Calculate percentile tier based on overall score
       const percentileTier = calculatePercentileTier(overallScoreRaw);
       
-      // Get user's position/role for display
-      const userRole = scoreData.position || 'Professional';
-      const normalizedRole = normalizeJobTitle(userRole);
-      const roleDisplayName = normalizedRole ? normalizedRole.displayName : getDisplayNameForRole(userRole);
+      // Get user's position/role for display - normalize to canonical job title
+      const rawPosition = scoreData.position || 'Professional';
+      const normalizedRole = normalizeJobTitle(rawPosition);
+      // Use canonical title (e.g., "Product Manager") not the raw title (e.g., "Senior AI/AdTech Product Manager")
+      const canonicalPosition = normalizedRole ? normalizedRole.canonical : rawPosition;
+      const roleDisplayName = normalizedRole ? normalizedRole.displayName : getDisplayNameForRole(rawPosition);
 
       res.json({
         success: true,
@@ -1064,8 +1069,10 @@ router.get('/score/me', async (req, res) => {
         },
         // New: Category averages for comparison (cold start defaults)
         category_averages: DEFAULT_CATEGORY_AVERAGES,
-        // New: Role display name for UI
-        role_display_name: roleDisplayName
+        // New: Role display name for UI (pluralized for "Avg Product Managers")
+        role_display_name: roleDisplayName,
+        // New: Canonical position title for percentile badge (e.g., "Product Manager")
+        user_position: canonicalPosition
       });
 
     } finally {
