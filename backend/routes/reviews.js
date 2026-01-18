@@ -980,4 +980,73 @@ router.get('/score/me', async (req, res) => {
   }
 });
 
+// ============================================================================
+// POST /api/review/polish-comment - AI grammar polish for optional comments
+// ============================================================================
+router.post('/polish-comment', async (req, res) => {
+  try {
+    const { comment } = req.body;
+
+    if (!comment || comment.trim().length === 0) {
+      return res.status(400).json({ success: false, error: 'Comment is required' });
+    }
+
+    // Use OpenAI API to polish the comment
+    const openaiApiKey = process.env.OPENAI_API_KEY;
+    
+    if (!openaiApiKey) {
+      // Fallback: basic grammar fixes without AI
+      const polished = comment
+        .trim()
+        .replace(/\s+/g, ' ') // Remove extra spaces
+        .replace(/([.!?])\s*([a-z])/g, (match, p1, p2) => `${p1} ${p2.toUpperCase()}`) // Capitalize after punctuation
+        .replace(/^[a-z]/, (match) => match.toUpperCase()); // Capitalize first letter
+      
+      return res.json({ success: true, polished });
+    }
+
+    // Call OpenAI API for grammar polishing
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${openaiApiKey}`
+      },
+      body: JSON.stringify({
+        model: 'gpt-3.5-turbo',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a helpful assistant that polishes text for grammar and clarity. Fix only grammar, spelling, and punctuation. Do NOT change the meaning, tone, or add new content. Keep it concise and professional. Return ONLY the polished text, nothing else.'
+          },
+          {
+            role: 'user',
+            content: comment
+          }
+        ],
+        temperature: 0.3,
+        max_tokens: 100
+      })
+    });
+
+    const data = await response.json();
+    
+    if (!response.ok) {
+      console.error('OpenAI API error:', data);
+      // Fallback to basic polish
+      const polished = comment.trim();
+      return res.json({ success: true, polished });
+    }
+
+    const polished = data.choices[0].message.content.trim();
+    
+    res.json({ success: true, polished });
+
+  } catch (error) {
+    console.error('Polish comment error:', error);
+    // Return original comment on error
+    res.json({ success: true, polished: req.body.comment.trim() });
+  }
+});
+
 module.exports = router;

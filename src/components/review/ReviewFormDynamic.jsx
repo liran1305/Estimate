@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Send } from "lucide-react";
+import { ArrowLeft, Send, Sparkles } from 'lucide-react';
 import { reviewConfig, getSlidersForRelationship, getTagsForRelationship } from "@/config/reviewConfig";
 
 const getScoreColor = (score) => {
@@ -36,6 +36,9 @@ export default function ReviewFormDynamic({
   const [workAgain, setWorkAgain] = useState(null);
   const [wouldPromote, setWouldPromote] = useState(null);
   const [comment, setComment] = useState('');
+  const [polishedComment, setPolishedComment] = useState('');
+  const [isPolishing, setIsPolishing] = useState(false);
+  const [showPolishSuggestion, setShowPolishSuggestion] = useState(false);
 
   const handleScoreChange = (key, value) => {
     setScores(prev => ({ ...prev, [key]: value }));
@@ -257,14 +260,83 @@ export default function ReviewFormDynamic({
         <p className="text-sm text-gray-500 mb-3">
           One sentence that captures working with {colleague.name.split(' ')[0]}
         </p>
-        <Textarea
-          placeholder="e.g., 'Always the first to help when deadlines get tight'"
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-          className="resize-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400"
-          rows={2}
-          maxLength={200}
-        />
+        <div className="relative">
+          <Textarea
+            placeholder="e.g., 'Always the first to help when deadlines get tight'"
+            value={comment}
+            onChange={(e) => {
+              setComment(e.target.value);
+              setShowPolishSuggestion(false);
+              setPolishedComment('');
+            }}
+            className="resize-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400"
+            rows={2}
+            maxLength={200}
+          />
+          {comment.length > 10 && !showPolishSuggestion && (
+            <button
+              onClick={async () => {
+                setIsPolishing(true);
+                try {
+                  const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/api/review/polish-comment`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ comment })
+                  });
+                  const data = await response.json();
+                  if (data.success && data.polished !== comment) {
+                    setPolishedComment(data.polished);
+                    setShowPolishSuggestion(true);
+                  }
+                } catch (error) {
+                  console.error('Polish error:', error);
+                } finally {
+                  setIsPolishing(false);
+                }
+              }}
+              disabled={isPolishing}
+              className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 text-xs text-blue-600 hover:text-blue-700 bg-white border border-blue-200 rounded-md hover:bg-blue-50 transition-colors disabled:opacity-50"
+            >
+              <Sparkles className="w-3 h-3" />
+              {isPolishing ? 'Polishing...' : 'Polish'}
+            </button>
+          )}
+        </div>
+        
+        {/* Polish Suggestion */}
+        {showPolishSuggestion && polishedComment && (
+          <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="flex items-start gap-2 mb-2">
+              <Sparkles className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+              <div className="flex-1">
+                <p className="text-xs font-medium text-blue-900 mb-1">Polished version:</p>
+                <p className="text-sm text-gray-800">{polishedComment}</p>
+              </div>
+            </div>
+            <div className="flex gap-2 mt-3">
+              <button
+                onClick={() => {
+                  setComment(polishedComment);
+                  setShowPolishSuggestion(false);
+                  setPolishedComment('');
+                }}
+                className="flex-1 px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors"
+              >
+                Use this version
+              </button>
+              <button
+                onClick={() => {
+                  setShowPolishSuggestion(false);
+                  setPolishedComment('');
+                }}
+                className="flex-1 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 rounded-md transition-colors"
+              >
+                Keep original
+              </button>
+            </div>
+          </div>
+        )}
+        
         <div className="flex justify-between items-center mt-2">
           <p className="text-xs text-gray-400">💡 Great reviews include specific examples</p>
           <p className="text-xs text-gray-400">{comment.length}/200</p>
