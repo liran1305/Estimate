@@ -242,4 +242,39 @@ router.get('/summary', async (req, res) => {
   }
 });
 
+// GET /api/analytics/users - Detailed user review activity table
+router.get('/users', async (req, res) => {
+  const pool = await getPool();
+  const connection = await pool.getConnection();
+
+  try {
+    const { startDate = '2026-01-01' } = req.query;
+
+    const [results] = await connection.query(`
+      SELECT 
+        u.id as user_id,
+        u.full_name,
+        u.email,
+        COALESCE(us.reviews_given, 0) as reviews_given,
+        COALESCE(us.reviews_received, 0) as reviews_received,
+        us.score_unlocked,
+        us.overall_score,
+        us.recruiter_consent,
+        u.created_at as joined_date,
+        (SELECT MAX(r.created_at) FROM reviews r WHERE r.reviewer_id = u.id) as last_review_date
+      FROM users u
+      LEFT JOIN user_scores us ON us.user_id = u.id
+      WHERE u.created_at >= ?
+      ORDER BY us.reviews_given DESC, us.reviews_received DESC, u.created_at DESC
+    `, [startDate]);
+
+    res.json({ success: true, data: results });
+  } catch (error) {
+    console.error('Users analytics error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  } finally {
+    connection.release();
+  }
+});
+
 module.exports = router;
