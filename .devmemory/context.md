@@ -1,13 +1,15 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-18T16:17:47.792Z
+> Last updated: 2026-01-18T16:20:48.240Z
 
 ## Project Stats
-- Total memories: 103
-- Commits tracked: 103
+- Total memories: 104
+- Commits tracked: 104
 - Decisions recorded: 0
 
 ## Recent Changes
+- `96a1a91` 1/18/2026: Improve review form UI: wider layout, better organization, moved content up
+  Files: src/components/review/ReviewFormDynamic.jsx, src/config/reviewConfig.js, src/pages/Review.jsx
 - `19cc7f3` 1/18/2026: Improve mobile UI: logo icon and score circle
   Files: src/components/Logo.jsx, src/pages/Profile.jsx
 - `96405d7` 1/18/2026: Fix job title normalization for percentile badge
@@ -36,12 +38,9 @@
   Files: backend/routes/analytics.js
 - `846a93e` 1/18/2026: Improve clarity of 'Handles Disagreements' question - rename to 'Conflict Resolution'
   Files: src/config/reviewConfig.js
-- `fd2d074` 1/18/2026: Fix validation: remove old column references, validate new scores structure
-  Files: backend/routes/reviews.js
 
 ## Do Not Repeat
 These issues have already been solved:
 - Fix job title normalization for percentile badge
 - Fix polish-comment route path to match frontend API call
 - Fix Polish button: move below textarea and use production API URL
-- Fix validation: remove old column references, validate new scores structure

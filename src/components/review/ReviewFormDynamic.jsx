@@ -170,13 +170,14 @@ export default function ReviewFormDynamic({
             <button
               key={tag.id}
               onClick={() => handleTagClick(tag.id)}
-              className={`px-4 py-2.5 rounded-lg border-2 text-sm font-medium transition-all ${
+              className={`px-4 py-2.5 rounded-lg border-2 text-sm font-medium transition-all flex items-center gap-2 justify-start ${
                 selectedTags.includes(tag.id)
                   ? 'bg-blue-50 border-blue-400'
                   : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50'
               }`}
             >
-              {tag.emoji} {tag.label}
+              <span className="text-base">{tag.emoji}</span>
+              <span>{tag.label}</span>
             </button>
           ))}
         </div>
