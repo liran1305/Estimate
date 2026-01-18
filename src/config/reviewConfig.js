@@ -60,7 +60,7 @@ export const reviewConfig = {
     reliability: { label: "Reliability & Follow-Through", description: "Delivers on commitments", weight: 1.2 },
     problem_solving: { label: "Problem-Solving", description: "Analytical thinking and solutions" },
     teamwork: { label: "Teamwork & Collaboration", description: "Works well with others, shares credit" },
-    disagreements: { label: "Handles Disagreements", description: "Resolves conflicts constructively", optional: true },
+    disagreements: { label: "Conflict Resolution", description: "Handles disagreements and conflicts professionally", optional: true },
     clear_direction: { label: "Provides Clear Direction", description: "Sets clear expectations and goals" },
     supports_growth: { label: "Supports Growth & Development", description: "Invests in team members' careers" },
     handles_pressure: { label: "Handles Pressure Well", description: "Stays composed, doesn't dump stress on team" },
