@@ -15,7 +15,7 @@ export const reviewConfig = {
     manager: {
       label: "They Were My Manager",
       description: "They managed or supervised me",
-      sliders: ["communication", "reliability", "problem_solving", "clear_direction", "supports_growth", "handles_pressure", "recognition_feedback", "receptive_feedback", "low_maintenance", "gives_autonomy"],
+      sliders: ["communication", "reliability", "problem_solving", "clear_direction", "supports_growth", "handles_pressure", "recognition_feedback", "gives_autonomy"],
       tags: ["clear_communicator", "shields_team", "grows_people", "approachable", "fair_consistent", "decision_maker", "good_listener", "inspires", "gives_autonomy", "leads_by_example", "clear_goals", "calm_pressure", "owns_mistakes", "not_micromanager", "low_drama"],
       maxTags: 3,
       showWorkAgain: true,

@@ -89,9 +89,9 @@ export default function ReviewFormDynamic({
       {/* Profile Header */}
       <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl mb-8">
         <img 
-          src={colleague.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(colleague.name)}&background=0A66C2&color=fff&size=56`}
+          src={colleague.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(colleague.name)}&background=0A66C2&color=fff&size=80`}
           alt={colleague.name}
-          className="w-14 h-14 rounded-full object-cover"
+          className="w-20 h-20 rounded-full object-cover"
         />
         <div>
           <h2 className="font-semibold text-gray-900">{colleague.name}</h2>
@@ -165,12 +165,12 @@ export default function ReviewFormDynamic({
           Select up to {relationshipConfig.maxTags} strengths <span className="text-amber-600">({selectedTags.length} selected)</span>
         </p>
 
-        <div className="flex flex-wrap gap-2">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
           {tags.map((tag) => (
             <button
               key={tag.id}
               onClick={() => handleTagClick(tag.id)}
-              className={`px-4 py-2 rounded-lg border-2 text-sm font-medium transition-all ${
+              className={`px-4 py-2.5 rounded-lg border-2 text-sm font-medium transition-all ${
                 selectedTags.includes(tag.id)
                   ? 'bg-blue-50 border-blue-400'
                   : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50'

@@ -217,9 +217,9 @@ export default function Review() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-12 px-6">
-      <div className="max-w-lg mx-auto">
-        <div className="flex items-center justify-between mb-8">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-4 px-6">
+      <div className="max-w-2xl mx-auto">
+        <div className="flex items-center justify-between mb-6">
           <button
             onClick={() => navigate(createPageUrl("Profile"))}
             className="text-gray-500 hover:text-gray-700 text-sm font-medium transition-colors"
@@ -239,7 +239,7 @@ export default function Review() {
           </div>
         </div>
 
-        <div className="text-center mb-8">
+        <div className="text-center mb-6">
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Review a Colleague</h1>
           <p className="text-gray-500">Select someone you've worked with</p>
         </div>

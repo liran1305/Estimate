@@ -1,13 +1,15 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-18T15:39:20.188Z
+> Last updated: 2026-01-18T16:17:47.792Z
 
 ## Project Stats
-- Total memories: 102
-- Commits tracked: 102
+- Total memories: 103
+- Commits tracked: 103
 - Decisions recorded: 0
 
 ## Recent Changes
+- `19cc7f3` 1/18/2026: Improve mobile UI: logo icon and score circle
+  Files: src/components/Logo.jsx, src/pages/Profile.jsx
 - `96405d7` 1/18/2026: Fix job title normalization for percentile badge
   Files: backend/routes/reviews.js, src/pages/Profile.jsx
 - `ae56b96` 1/18/2026: Add new relationship-specific soft skills to review config
@@ -36,8 +38,6 @@
   Files: src/config/reviewConfig.js
 - `fd2d074` 1/18/2026: Fix validation: remove old column references, validate new scores structure
   Files: backend/routes/reviews.js
-- `8f58563` 1/18/2026: Add relationship-specific review questions with weighted scoring
-  Files: NEW_REVIEW_STRUCTURE.md, backend/database/migration-dynamic-reviews.sql, backend/database/migration-new-review-structure.sql
 
 ## Do Not Repeat
 These issues have already been solved:
