@@ -1,13 +1,15 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-19T10:06:16.006Z
+> Last updated: 2026-01-19T10:16:03.763Z
 
 ## Project Stats
-- Total memories: 108
-- Commits tracked: 108
+- Total memories: 109
+- Commits tracked: 109
 - Decisions recorded: 0
 
 ## Recent Changes
+- `d3d00a1` 1/19/2026: Update logo to light version
+  Files: public/images/Estimate_logo_LIGHT_00000.png, src/components/Logo.jsx
 - `7d5743e` 1/19/2026: Add clean badge preview to profile headline
   Files: src/pages/Profile.jsx
 - `1845647` 1/18/2026: Add escalating violation warnings with 24-hour lockout
@@ -36,11 +38,8 @@
   Files: DATABASE_SCHEMA_REVIEW.md, PROJECT_CONTEXT.md, netlify.toml
 - `8978015` 1/18/2026: Add Netlify config to fix SPA routing and MIME type issues
   Files: netlify.toml
-- `85e5f09` 1/18/2026: Fix Polish button: move below textarea and use production API URL
-  Files: src/components/review/ReviewFormDynamic.jsx
 
 ## Do Not Repeat
 These issues have already been solved:
 - Fix job title normalization for percentile badge
 - Fix polish-comment route path to match frontend API call
-- Fix Polish button: move below textarea and use production API URL

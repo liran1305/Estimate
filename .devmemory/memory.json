@@ -1569,7 +1569,20 @@
       "tags": [],
       "commit_hash": "7d5743e956f8a4fe0a79c5f7174f8f6571de3739",
       "created_at": "2026-01-19T09:37:02.000Z"
+    },
+    {
+      "id": 109,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Update logo to light version",
+      "files": [
+        "public/images/Estimate_logo_LIGHT_00000.png",
+        "src/components/Logo.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "d3d00a16e44357f45867dfb974cfdd9881b57c18",
+      "created_at": "2026-01-19T10:12:58.000Z"
     }
   ],
-  "nextId": 109
+  "nextId": 110
 }
