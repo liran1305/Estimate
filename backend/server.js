@@ -49,9 +49,11 @@ app.get('/api/server-ip', async (req, res) => {
 const colleaguesRouter = require('./routes/colleagues');
 const reviewsRouter = require('./routes/reviews');
 const adminRouter = require('./routes/admin');
+const fraudRouter = require('./routes/fraud');
 app.use('/api/colleagues', colleaguesRouter);
 app.use('/api', reviewsRouter);
 app.use('/api/admin', adminRouter);
+app.use('/api/fraud', fraudRouter);
 
 // Check table structure
 app.get('/api/table-info/:tableName', async (req, res) => {

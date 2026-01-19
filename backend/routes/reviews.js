@@ -651,20 +651,62 @@ router.post('/review/submit', async (req, res) => {
       });
     }
     
+    const pool = await getPool();
+    const connection = await pool.getConnection();
+
+    // ========== SERVER-SIDE LOCKOUT CHECK ==========
+    const [userCheck] = await connection.query(
+      'SELECT violation_count, last_violation_at, locked_until FROM users WHERE id = ?',
+      [user_id]
+    );
+
+    if (userCheck.length > 0) {
+      const user = userCheck[0];
+      const now = new Date();
+
+      // Check if user is locked out
+      if (user.locked_until && new Date(user.locked_until) > now) {
+        const remainingMs = new Date(user.locked_until) - now;
+        const remainingHours = Math.ceil(remainingMs / (60 * 60 * 1000));
+        connection.release();
+        return res.status(403).json({
+          success: false,
+          error: 'locked_out',
+          message: `You've been temporarily locked out due to multiple violations. Please try again in ${remainingHours} hours.`,
+          remainingHours
+        });
+      }
+
+      // Reset violation count if last violation was more than 24 hours ago
+      if (user.last_violation_at) {
+        const hoursSinceLastViolation = (now - new Date(user.last_violation_at)) / (60 * 60 * 1000);
+        if (hoursSinceLastViolation > 24) {
+          await connection.query(
+            'UPDATE users SET violation_count = 0, last_violation_at = NULL, locked_until = NULL WHERE id = ?',
+            [user_id]
+          );
+        }
+      }
+    }
+
     // ========== ABUSE DETECTION ==========
     let fraudFlags = [];
     let reviewWeight = 1.0; // Default weight
+    let shouldRecordViolation = false;
+    let violationType = null;
     
     // Check for suspicious patterns in scores
     if (scores && typeof scores === 'object') {
       const scoreValues = Object.values(scores).filter(s => s !== null && s !== undefined);
       
       if (scoreValues.length >= 3) {
-        // Check if all scores are identical
+        // Check if all scores are identical - BLOCKING VIOLATION
         const allIdentical = scoreValues.every(s => s === scoreValues[0]);
         if (allIdentical) {
           fraudFlags.push('all_identical_scores');
-          reviewWeight = 0.3; // Heavily reduce weight
+          reviewWeight = 0.3;
+          shouldRecordViolation = true;
+          violationType = 'all_identical_scores';
         }
         
         // Check for all extreme scores (all 9-10 or all 1-2)
@@ -672,7 +714,7 @@ router.post('/review/submit', async (req, res) => {
         const allMin = scoreValues.every(s => s <= 2);
         if (allMax || allMin) {
           fraudFlags.push(allMax ? 'all_max_scores' : 'all_min_scores');
-          reviewWeight = Math.min(reviewWeight, 0.3); // Silently weight at 30%
+          reviewWeight = Math.min(reviewWeight, 0.3);
         }
         
         // Check for low variance (all scores within 1 point)
@@ -680,27 +722,49 @@ router.post('/review/submit', async (req, res) => {
         const max = Math.max(...scoreValues);
         if (max - min <= 1 && scoreValues.length >= 4) {
           fraudFlags.push('low_variance');
-          reviewWeight = Math.min(reviewWeight, 0.7); // Weight at 70%
+          reviewWeight = Math.min(reviewWeight, 0.7);
         }
       }
     }
     
-    // Time-based fraud detection (if time_spent_seconds is provided)
+    // Time-based fraud detection - BLOCKING VIOLATION
     const timeSpentSeconds = req.body.time_spent_seconds;
     if (timeSpentSeconds !== undefined) {
       if (timeSpentSeconds < 15) {
         fraudFlags.push('too_fast');
-        reviewWeight = Math.min(reviewWeight, 0.5); // Reduce weight for fast reviews
+        reviewWeight = Math.min(reviewWeight, 0.5);
+        shouldRecordViolation = true;
+        violationType = violationType || 'too_fast';
       } else if (timeSpentSeconds < 30) {
         fraudFlags.push('fast_review');
-        // Warning only, don't reduce weight
       }
     }
     
     console.log(`Review fraud check: flags=${JSON.stringify(fraudFlags)}, weight=${reviewWeight}, time=${timeSpentSeconds}s`);
 
-    const pool = await getPool();
-    const connection = await pool.getConnection();
+    // Record violation if blocking pattern detected
+    if (shouldRecordViolation && violationType) {
+      await connection.query(
+        'INSERT INTO user_violations (user_id, violation_type, review_session_id, time_spent_seconds) VALUES (?, ?, ?, ?)',
+        [user_id, violationType, session_id, timeSpentSeconds]
+      );
+
+      const currentCount = userCheck.length > 0 ? (userCheck[0].violation_count || 0) : 0;
+      const newCount = currentCount + 1;
+      const now = new Date();
+      let lockedUntil = null;
+
+      if (newCount >= 3) {
+        lockedUntil = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+      }
+
+      await connection.query(
+        'UPDATE users SET violation_count = ?, last_violation_at = ?, locked_until = ? WHERE id = ?',
+        [newCount, now, lockedUntil, user_id]
+      );
+
+      console.log(`Violation recorded for user ${user_id}: ${violationType}, count: ${newCount}`);
+    }
 
     try {
       // Check if review already exists

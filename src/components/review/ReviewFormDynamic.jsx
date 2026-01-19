@@ -48,40 +48,7 @@ export default function ReviewFormDynamic({
   const [patternWarningMessage, setPatternWarningMessage] = useState('');
   const [hasAcknowledgedWarning, setHasAcknowledgedWarning] = useState(false);
   
-  // Violation tracking (persisted in localStorage)
-  const [violationCount, setViolationCount] = useState(() => {
-    const stored = localStorage.getItem('estimate_violation_count');
-    const lastViolation = localStorage.getItem('estimate_last_violation');
-    // Reset if last violation was more than 24 hours ago
-    if (lastViolation && Date.now() - parseInt(lastViolation) > 24 * 60 * 60 * 1000) {
-      localStorage.removeItem('estimate_violation_count');
-      localStorage.removeItem('estimate_last_violation');
-      return 0;
-    }
-    return stored ? parseInt(stored) : 0;
-  });
-  const [isLockedOut, setIsLockedOut] = useState(() => {
-    const lockoutUntil = localStorage.getItem('estimate_lockout_until');
-    if (lockoutUntil && Date.now() < parseInt(lockoutUntil)) {
-      return true;
-    }
-    localStorage.removeItem('estimate_lockout_until');
-    return false;
-  });
-  
-  const recordViolation = () => {
-    const newCount = violationCount + 1;
-    setViolationCount(newCount);
-    localStorage.setItem('estimate_violation_count', newCount.toString());
-    localStorage.setItem('estimate_last_violation', Date.now().toString());
-    
-    // Lock out after 3rd violation
-    if (newCount >= 3) {
-      const lockoutUntil = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
-      localStorage.setItem('estimate_lockout_until', lockoutUntil.toString());
-      setIsLockedOut(true);
-    }
-  };
+  // Server-side fraud detection - no client-side tracking needed
   
   // Track time spent on review
   useEffect(() => {
@@ -158,38 +125,20 @@ export default function ReviewFormDynamic({
   };
 
   const handleSubmit = () => {
-    // Check if user is locked out
-    if (isLockedOut) {
-      const lockoutUntil = localStorage.getItem('estimate_lockout_until');
-      const remainingHours = lockoutUntil ? Math.ceil((parseInt(lockoutUntil) - Date.now()) / (60 * 60 * 1000)) : 24;
-      setPatternWarningMessage(`You've been temporarily locked out due to multiple violations. Please try again in ${remainingHours} hours.`);
-      setShowPatternWarning(true);
-      return;
-    }
-    
     const currentTimeSpent = Math.floor((Date.now() - startTimeRef.current) / 1000);
     
-    // Time-based fraud detection
+    // Client-side warnings only (server enforces blocking)
     if (currentTimeSpent < 15) {
-      recordViolation();
       setShowTimeWarning(true);
       return;
     }
     
-    // Pattern-based fraud detection
+    // Pattern-based warnings (non-blocking)
     const patternCheck = checkForPatterns();
-    if (!patternCheck.valid) {
-      if (patternCheck.blocked) {
-        recordViolation();
-        setPatternWarningMessage(patternCheck.message);
-        setShowPatternWarning(true);
-        return;
-      }
-      if (patternCheck.warning && !hasAcknowledgedWarning) {
-        setPatternWarningMessage(patternCheck.message);
-        setShowPatternWarning(true);
-        return;
-      }
+    if (!patternCheck.valid && patternCheck.warning && !hasAcknowledgedWarning) {
+      setPatternWarningMessage(patternCheck.message);
+      setShowPatternWarning(true);
+      return;
     }
     
     // Build the review data object
@@ -511,14 +460,11 @@ export default function ReviewFormDynamic({
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl">
             <div className="flex items-center gap-3 mb-4">
-              <div className={`w-12 h-12 rounded-full flex items-center justify-center ${violationCount >= 2 ? 'bg-red-100' : 'bg-amber-100'}`}>
-                <Clock className={`w-6 h-6 ${violationCount >= 2 ? 'text-red-600' : 'text-amber-600'}`} />
+              <div className="w-12 h-12 rounded-full flex items-center justify-center bg-amber-100">
+                <Clock className="w-6 h-6 text-amber-600" />
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-gray-900">Please take more time</h3>
-                {violationCount > 0 && (
-                  <p className="text-xs text-red-500 font-medium">Warning {violationCount} of 3</p>
-                )}
               </div>
             </div>
             <p className="text-gray-600 mb-4">
@@ -527,32 +473,11 @@ export default function ReviewFormDynamic({
             <p className="text-sm text-gray-500 mb-4">
               Time spent: {timeSpent} seconds. Submit unlocks in {Math.max(0, 15 - timeSpent)} seconds.
             </p>
-            
-            {/* Escalating warning message */}
-            {violationCount === 1 && (
-              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4">
-                <p className="text-sm text-amber-800">
-                  ⚠️ <strong>First warning:</strong> Rushing through reviews undermines the platform's integrity.
-                </p>
-              </div>
-            )}
-            {violationCount === 2 && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
-                <p className="text-sm text-red-800">
-                  🚨 <strong>Final warning:</strong> One more violation will result in a 24-hour lockout from submitting reviews.
-                </p>
-              </div>
-            )}
-            {violationCount >= 3 && (
-              <div className="bg-red-100 border border-red-300 rounded-lg p-3 mb-4">
-                <p className="text-sm text-red-900 font-medium">
-                  🔒 <strong>Account temporarily locked.</strong> You've been locked out for 24 hours due to repeated violations.
-                </p>
-              </div>
-            )}
-            
+            <p className="text-xs text-amber-700 mb-4">
+              Note: Repeated violations may result in temporary account restrictions.
+            </p>
             <Button 
-              className={`w-full ${violationCount >= 2 ? 'bg-red-500 hover:bg-red-600' : 'bg-amber-500 hover:bg-amber-600'} text-white`}
+              className="w-full bg-amber-500 hover:bg-amber-600 text-white"
               onClick={() => setShowTimeWarning(false)}
             >
               I'll take more time
@@ -582,14 +507,12 @@ export default function ReviewFormDynamic({
               >
                 Adjust Ratings
               </Button>
-              {!checkForPatterns().blocked && (
-                <Button 
-                  className="flex-1 bg-gray-800 hover:bg-gray-900 text-white"
-                  onClick={handleAcknowledgeWarning}
-                >
-                  Submit Anyway
-                </Button>
-              )}
+              <Button 
+                className="flex-1 bg-gray-800 hover:bg-gray-900 text-white"
+                onClick={handleAcknowledgeWarning}
+              >
+                Submit Anyway
+              </Button>
             </div>
           </div>
         </div>
