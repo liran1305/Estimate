@@ -1655,7 +1655,22 @@
       ],
       "commit_hash": "815bb7a3702f3a506b22dd8f6ee5e0b319913046",
       "created_at": "2026-01-19T14:46:42.000Z"
+    },
+    {
+      "id": 115,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "feat: Add 'Can't rate this' skip feature with 30% limit + fix review counter bug",
+      "files": [
+        "backend/routes/reviews.js",
+        "src/components/review/ReviewFormDynamic.jsx"
+      ],
+      "tags": [
+        "feat"
+      ],
+      "commit_hash": "940c345aeaa11e87bae1f8614cd8ea8c103ed8e5",
+      "created_at": "2026-01-19T15:04:53.000Z"
     }
   ],
-  "nextId": 115
+  "nextId": 116
 }

@@ -5,7 +5,7 @@ import { CheckCircle2, User } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function ReviewSuccess({ completedCount, onNextReview, onGoToProfile }) {
-  const isComplete = completedCount >= 3;
+  const isUnlocked = completedCount >= 3;
 
   return (
     <motion.div
@@ -22,25 +22,27 @@ export default function ReviewSuccess({ completedCount, onNextReview, onGoToProf
           Review Submitted! ✓
         </h1>
 
-        <div className="flex items-center justify-center gap-2 mb-8">
-          {[1, 2, 3].map((num) => (
-            <div
-              key={num}
-              className={`w-3 h-3 rounded-full transition-colors ${
-                num <= completedCount ? 'bg-[#0A66C2]' : 'bg-gray-200'
-              }`}
-            />
-          ))}
-        </div>
+        {!isUnlocked && (
+          <div className="flex items-center justify-center gap-2 mb-8">
+            {[1, 2, 3].map((num) => (
+              <div
+                key={num}
+                className={`w-3 h-3 rounded-full transition-colors ${
+                  num <= completedCount ? 'bg-[#0A66C2]' : 'bg-gray-200'
+                }`}
+              />
+            ))}
+          </div>
+        )}
 
         <p className="text-gray-500 mb-8">
-          {isComplete 
-            ? "You've completed all 3 reviews! Your professional score is now being calculated."
+          {isUnlocked 
+            ? `${completedCount} reviews given! Keep helping colleagues unlock their scores.`
             : `${completedCount} of 3 reviews completed`
           }
         </p>
 
-        {isComplete ? (
+        {isUnlocked ? (
           <Button 
             className="w-full bg-[#0A66C2] hover:bg-[#004182] h-14 rounded-xl font-medium text-base"
             onClick={onGoToProfile}

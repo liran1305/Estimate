@@ -53,8 +53,16 @@ export default function Review() {
         }
 
         setSession(sessionData.session);
-        setReviewsGiven(sessionData.session.reviews_completed || 0);
         setSkipsRemaining(sessionData.session.skips_remaining || 0);
+
+        // Fetch user's total reviews given (not just this session)
+        const userRes = await fetch(`${BACKEND_API_URL}/api/user/stats?user_id=${currentUser.id}`);
+        const userData = await userRes.json();
+        if (userData.success) {
+          setReviewsGiven(userData.reviews_given || 0);
+        } else {
+          setReviewsGiven(0);
+        }
 
         // Get first colleague
         await fetchNextColleague(currentUser.id, sessionData.session.id);
@@ -227,15 +235,21 @@ export default function Review() {
             ← Back to Profile
           </button>
           <div className="flex items-center gap-2">
-            {[1, 2, 3].map((num) => (
-              <div
-                key={num}
-                className={`w-2.5 h-2.5 rounded-full transition-colors ${
-                  num <= reviewsGiven ? 'bg-[#0A66C2]' : 'bg-gray-200'
-                }`}
-              />
-            ))}
-            <span className="text-sm text-gray-500 ml-2">{reviewsGiven}/3 reviews</span>
+            {reviewsGiven < 3 ? (
+              <>
+                {[1, 2, 3].map((num) => (
+                  <div
+                    key={num}
+                    className={`w-2.5 h-2.5 rounded-full transition-colors ${
+                      num <= reviewsGiven ? 'bg-[#0A66C2]' : 'bg-gray-200'
+                    }`}
+                  />
+                ))}
+                <span className="text-sm text-gray-500 ml-2">{reviewsGiven}/3 reviews</span>
+              </>
+            ) : (
+              <span className="text-sm text-gray-500">{reviewsGiven} reviews given ✓</span>
+            )}
           </div>
         </div>
 

@@ -255,20 +255,30 @@ export default function Profile() {
                       </p>
                       {/* Badge Preview - Grayed with hover-to-copy */}
                       {hasAnyReviews && (
-                        <button
-                          onClick={copyBadgeToClipboard}
-                          className="inline ml-1 text-xs sm:text-sm text-gray-400 hover:text-[#0A66C2] transition-colors cursor-pointer border-0 bg-transparent p-0"
-                          title="Click to copy full headline with badge"
-                        >
-                          <span className="border-l border-gray-300 pl-1.5">
-                            {percentileTier.tier} of {userPosition}
-                          </span>
-                        </button>
+                        <div className="inline-block relative group ml-1">
+                          <button
+                            onClick={copyBadgeToClipboard}
+                            className="text-xs sm:text-sm text-gray-400 hover:text-[#0A66C2] transition-colors cursor-pointer border-0 bg-transparent p-0"
+                          >
+                            <span className="border-l border-gray-300 pl-1.5">
+                              {percentileTier.tier} of {userPosition}
+                            </span>
+                          </button>
+                          {/* Tooltip */}
+                          <div className="absolute left-0 bottom-full mb-2 w-48 p-2 bg-gray-900 text-white text-xs rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none">
+                            <p>Copy badge for LinkedIn</p>
+                            <div className="absolute -bottom-1 left-4 w-2 h-2 bg-gray-900 rotate-45"></div>
+                          </div>
+                        </div>
                       )}
                     </div>
                     <div className="flex flex-wrap items-center gap-3 text-xs text-gray-400 mb-2">
                       <span className="flex items-center gap-1">
                         <Users className="w-3 h-3" /> {scoreData?.reviews_received || 0} reviews received
+                      </span>
+                      <span className="text-gray-300">•</span>
+                      <span className="flex items-center gap-1">
+                        <CheckCircle2 className="w-3 h-3" /> {scoreData?.reviews_given || 0} reviews given
                       </span>
                     </div>
                     {/* Visible to Recruiters - More Prominent */}

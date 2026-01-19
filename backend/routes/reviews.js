@@ -81,6 +81,44 @@ async function getPool() {
 }
 
 // ============================================================================
+// GET /api/user/stats - Get user's review statistics
+// ============================================================================
+router.get('/user/stats', async (req, res) => {
+  try {
+    const { user_id } = req.query;
+
+    if (!user_id) {
+      return res.status(400).json({ success: false, error: 'user_id is required' });
+    }
+
+    const pool = await getPool();
+    const connection = await pool.getConnection();
+
+    try {
+      const [userStats] = await connection.query(
+        'SELECT reviews_given FROM user_scores WHERE user_id = ?',
+        [user_id]
+      );
+
+      if (userStats.length === 0) {
+        return res.json({ success: true, reviews_given: 0 });
+      }
+
+      res.json({
+        success: true,
+        reviews_given: userStats[0].reviews_given || 0
+      });
+    } finally {
+      connection.release();
+    }
+
+  } catch (error) {
+    console.error('Get user stats error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ============================================================================
 // 16. GET /api/session/start - Calculate skip budget and start review session
 // ============================================================================
 router.get('/session/start', async (req, res) => {
@@ -1003,17 +1041,12 @@ router.post('/review/submit', async (req, res) => {
         scoreUnlocked = true;
       }
 
-      // Get user's total reviews given (not just this session)
-      const [userStats] = await connection.query(
-        'SELECT reviews_given_count FROM users WHERE id = ?',
-        [user_id]
-      );
-
+      // Return the reviews_given from user_scores (already fetched above)
       res.json({
         success: true,
         message: 'Review submitted successfully',
         review_id: reviewId,
-        reviews_completed: userStats[0]?.reviews_given_count || 1,
+        reviews_completed: reviewerScore[0]?.reviews_given || 1,
         score_unlocked: scoreUnlocked,
         reviews_until_unlock: Math.max(0, 3 - (reviewerScore[0]?.reviews_given || 1))
       });

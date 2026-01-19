@@ -1,16 +1,18 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-19T15:02:51.514Z
+> Last updated: 2026-01-19T15:36:39.851Z
 
 ## Project Stats
-- Total memories: 114
-- Commits tracked: 114
+- Total memories: 115
+- Commits tracked: 115
 - Decisions recorded: 0
 
 ## Relevant to Current Work
 - **1/19/2026**: feat: Implement anonymous review system with token-burning architecture (backend/routes/anonymousReviews.js, backend/server.js, src/components/landing/FAQ.jsx)
 
 ## Recent Changes
+- `940c345` 1/19/2026: feat: Add 'Can't rate this' skip feature with 30% limit + fix review counter bug
+  Files: backend/routes/reviews.js, src/components/review/ReviewFormDynamic.jsx
 - `815bb7a` 1/19/2026: feat: Implement anonymous review system with token-burning architecture
   Files: backend/routes/anonymousReviews.js, backend/server.js, src/components/landing/FAQ.jsx
 - `d275675` 1/19/2026: Update PROJECT_CONTEXT.md: document colleague matching improvements and fraud detection changes
@@ -39,8 +41,6 @@
   Files: backend/routes/reviews.js, src/pages/Profile.jsx
 - `ae56b96` 1/18/2026: Add new relationship-specific soft skills to review config
   Files: src/config/reviewConfig.js
-- `311b945` 1/18/2026: Profile page redesign: percentile tiers, mobile responsiveness, consent modal update
-  Files: backend/routes/reviews.js, backend/utils/jobTitlesSystem.js, src/components/profile/ConsentModal.jsx
 
 ## Do Not Repeat
 These issues have already been solved:
