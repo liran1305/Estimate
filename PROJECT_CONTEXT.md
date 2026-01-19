@@ -305,12 +305,49 @@ FRONTEND_URL=https://estimatenow.io
 
 ---
 
+## Recent Changes Log
+
+### 2025-01-19: Colleague Matching Algorithm Improvements
+**Changes:**
+- Expanded company history from 2 to 4 companies (current + 3 previous)
+- Added 2-year recency filter for previous companies
+- Implemented smart filtering: only uses companies with colleagues in database
+- Added 70/30 weighted selection: 70% current company, 30% previous company
+
+**Impact:**
+- Users with startups/small companies now see colleagues from older companies
+- Better colleague distribution between current and previous companies
+- Prevents "no colleagues found" for users whose current company has no data
+
+**Files Modified:**
+- `backend/routes/reviews.js` - Colleague matching endpoint
+
+### 2025-01-19: Server-Side Fraud Detection
+**Changes:**
+- Moved fraud detection from client localStorage to MySQL database
+- Added `user_violations` table and columns to `users` table
+- Server checks lockout status before accepting reviews
+- 3 violations = 24-hour lockout
+
+**Impact:**
+- Fraud detection cannot be bypassed by clearing browser data
+- Complete audit trail with timestamps
+- Secure, database-backed enforcement
+
+**Files Modified:**
+- `backend/routes/fraud.js` - New fraud detection endpoints
+- `backend/routes/reviews.js` - Integrated server-side violation checks
+- `src/components/review/ReviewFormDynamic.jsx` - Removed localStorage tracking
+
+---
+
 ## Known Issues & Technical Debt
 
 1. **Schema Documentation Outdated** - `complete-schema.sql` doesn't reflect production
 2. **Old Columns Present** - technical_rating, communication_rating, etc. still in table
 3. **Score Calculation Uses Old Columns** - Needs refactoring to use new structure
 4. **No Aggregated Metrics** - user_scores table needs update for new data
+5. **Data Sync** - Some users may have companies in `work_experience` but not `company_connections`
 
 ---
 
