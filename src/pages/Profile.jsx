@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { linkedinAuth } from "@/lib/linkedinAuth";
@@ -87,6 +87,7 @@ export default function Profile() {
   const [scoreData, setScoreData] = useState(null);
   const [showConsent, setShowConsent] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [badgeCopied, setBadgeCopied] = useState(false);
 
   useEffect(() => {
     const init = async () => {
@@ -178,6 +179,18 @@ export default function Profile() {
   // Calculate total reviewers
   const totalReviewers = Object.values(reviewerBreakdown).reduce((a, b) => a + b, 0);
 
+  // Copy badge to clipboard function
+  const copyBadgeToClipboard = () => {
+    const headline = profileData?.position || user.position || 'Professional';
+    const badgeText = `${percentileTier.emoji} ${percentileTier.tier} of ${userPosition}`;
+    const fullText = `${headline} | ${badgeText}`;
+    
+    navigator.clipboard.writeText(fullText).then(() => {
+      setBadgeCopied(true);
+      setTimeout(() => setBadgeCopied(false), 2000);
+    });
+  };
+
   // Human-readable "Would Work Again" response
   const getWorkAgainVerbal = (percent) => {
     if (percent >= 90) return { emoji: '🤩', text: 'Absolutely!', subtext: 'Colleagues would love to work with you again' };
@@ -236,9 +249,23 @@ export default function Profile() {
                     <h1 className="text-lg sm:text-xl font-bold text-gray-900 mb-0.5 leading-tight">
                       {profileData?.name || user.name || 'Professional'}
                     </h1>
-                    <p className="text-xs sm:text-sm text-gray-500 mb-2 truncate">
-                      {profileData?.position || user.position || 'Professional'}
-                    </p>
+                    <div className="mb-2">
+                      <p className="text-xs sm:text-sm text-gray-500 inline">
+                        {profileData?.position || user.position || 'Professional'}
+                      </p>
+                      {/* Badge Preview - Grayed with hover-to-copy */}
+                      {hasAnyReviews && (
+                        <button
+                          onClick={copyBadgeToClipboard}
+                          className="inline ml-1 text-xs sm:text-sm text-gray-400 hover:text-[#0A66C2] transition-colors cursor-pointer border-0 bg-transparent p-0"
+                          title="Click to copy full headline with badge"
+                        >
+                          <span className="border-l border-gray-300 pl-1.5">
+                            {percentileTier.tier} of {userPosition}
+                          </span>
+                        </button>
+                      )}
+                    </div>
                     <div className="flex flex-wrap items-center gap-3 text-xs text-gray-400 mb-2">
                       <span className="flex items-center gap-1">
                         <Users className="w-3 h-3" /> {scoreData?.reviews_received || 0} reviews received

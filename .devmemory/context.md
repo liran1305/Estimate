@@ -1,20 +1,22 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-18T16:37:44.842Z
+> Last updated: 2026-01-19T09:36:33.063Z
 
 ## Project Stats
-- Total memories: 106
-- Commits tracked: 106
+- Total memories: 107
+- Commits tracked: 107
 - Decisions recorded: 0
 
 ## Relevant to Current Work
-- **1/18/2026**: Add comprehensive abuse detection system (backend/routes/reviews.js, src/components/review/ReviewFormDynamic.jsx)
-- **1/18/2026**: Improve tag button alignment: left-align text and icons (src/components/review/ReviewFormDynamic.jsx)
-- **1/18/2026**: Improve review form UI: wider layout, better organization, moved content up (src/components/review/ReviewFormDynamic.jsx, src/config/reviewConfig.js, src/pages/Review.jsx)
-- **1/18/2026**: Fix Polish button: move below textarea and use production API URL (src/components/review/ReviewFormDynamic.jsx)
-- **1/18/2026**: Add AI grammar polish feature with OpenAI integration (backend/routes/reviews.js, src/components/review/ReviewFormDynamic.jsx)
+- **1/12/2026**: Revert "Add Cloud SQL Connector for secure private connection" (backend/.env.example, backend/package.json, backend/routes/colleagues.js)
+- **1/12/2026**: Add Cloud SQL Connector for secure private connection (backend/.env.example, backend/package.json, backend/routes/colleagues.js)
+- **1/12/2026**: Add Cloud SQL integration and colleague search API (backend/.env.example, backend/database/schema.sql, backend/package.json)
+- **1/11/2026**: Add Cloudflare Turnstile invisible bot protection (.env.example, backend/.env.example, backend/server.js)
+- **1/9/2026**: Add secure backend and remove client secret from frontend (.env.example, backend/.env.example, backend/README.md)
 
 ## Recent Changes
+- `1845647` 1/18/2026: Add escalating violation warnings with 24-hour lockout
+  Files: src/components/review/ReviewFormDynamic.jsx
 - `bc0240c` 1/18/2026: Add comprehensive abuse detection system
   Files: backend/routes/reviews.js, src/components/review/ReviewFormDynamic.jsx
 - `dd4e0e8` 1/18/2026: Improve tag button alignment: left-align text and icons
@@ -43,8 +45,6 @@
   Files: src/components/review/ReviewFormDynamic.jsx
 - `c9e7b35` 1/18/2026: Add AI grammar polish feature with OpenAI integration
   Files: backend/routes/reviews.js, src/components/review/ReviewFormDynamic.jsx
-- `d5a3ab8` 1/18/2026: Add randomization and prioritize colleagues with 1-2 reviews for completion
-  Files: backend/routes/reviews.js
 
 ## Do Not Repeat
 These issues have already been solved:
