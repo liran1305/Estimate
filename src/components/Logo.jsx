@@ -11,7 +11,7 @@ export default function Logo({ className = "h-8" }) {
       />
       {/* Desktop: Show full logo */}
       <img 
-        src="/images/Estimate_logo.png" 
+        src="/images/Estimate_logo_LIGHT_00000.png" 
         alt="Estimate" 
         className={`hidden md:block ${className}`}
       />
