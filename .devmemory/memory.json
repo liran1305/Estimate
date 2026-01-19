@@ -1638,7 +1638,24 @@
       "tags": [],
       "commit_hash": "d2756757c9f49933e493bc8f58fd980e4c23ec94",
       "created_at": "2026-01-19T14:07:28.000Z"
+    },
+    {
+      "id": 114,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "feat: Implement anonymous review system with token-burning architecture",
+      "files": [
+        "backend/routes/anonymousReviews.js",
+        "backend/server.js",
+        "src/components/landing/FAQ.jsx",
+        "src/pages/PrivacyPolicy.jsx"
+      ],
+      "tags": [
+        "feat"
+      ],
+      "commit_hash": "815bb7a3702f3a506b22dd8f6ee5e0b319913046",
+      "created_at": "2026-01-19T14:46:42.000Z"
     }
   ],
-  "nextId": 114
+  "nextId": 115
 }

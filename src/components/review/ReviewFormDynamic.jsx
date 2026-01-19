@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Send, Sparkles, AlertTriangle, Clock } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { ArrowLeft, Send, Sparkles, AlertTriangle, Clock, HelpCircle } from 'lucide-react';
 import { reviewConfig, getSlidersForRelationship, getTagsForRelationship } from "@/config/reviewConfig";
 
 const getScoreColor = (score) => {
@@ -31,7 +32,7 @@ export default function ReviewFormDynamic({
   });
   
   const [scores, setScores] = useState(initialScores);
-  const [optionalSkipped, setOptionalSkipped] = useState({});
+  const [skippedQuestions, setSkippedQuestions] = useState({});
   const [selectedTags, setSelectedTags] = useState([]);
   const [workAgain, setWorkAgain] = useState(null);
   const [wouldPromote, setWouldPromote] = useState(null);
@@ -61,8 +62,10 @@ export default function ReviewFormDynamic({
   
   // Abuse detection functions
   const checkForPatterns = () => {
-    const scoreValues = Object.values(scores).filter(s => s !== null);
-    if (scoreValues.length === 0) return { valid: true };
+    const scoreValues = Object.values(scores).filter(s => s !== null && s !== undefined);
+    
+    // With 30% skip limit, at least 70% of questions must be answered
+    // No need for minimum check - the skip limit enforces this
     
     // Check if all scores are identical
     const allIdentical = scoreValues.every(s => s === scoreValues[0]);
@@ -107,8 +110,18 @@ export default function ReviewFormDynamic({
     setScores(prev => ({ ...prev, [key]: value }));
   };
 
-  const handleOptionalSkip = (key, checked) => {
-    setOptionalSkipped(prev => ({ ...prev, [key]: checked }));
+  // Calculate max allowed skips (30% of total questions, minimum 1)
+  const maxSkipsAllowed = Math.max(1, Math.floor(sliders.length * 0.3));
+  const currentSkipCount = Object.values(skippedQuestions).filter(Boolean).length;
+  const canSkipMore = currentSkipCount < maxSkipsAllowed;
+
+  const handleSkipQuestion = (key, checked) => {
+    // If trying to skip and already at max, don't allow
+    if (checked && !canSkipMore) {
+      return;
+    }
+    
+    setSkippedQuestions(prev => ({ ...prev, [key]: checked }));
     if (checked) {
       setScores(prev => ({ ...prev, [key]: null }));
     } else {
@@ -133,12 +146,20 @@ export default function ReviewFormDynamic({
       return;
     }
     
-    // Pattern-based warnings (non-blocking)
+    // Pattern-based checks
     const patternCheck = checkForPatterns();
-    if (!patternCheck.valid && patternCheck.warning && !hasAcknowledgedWarning) {
-      setPatternWarningMessage(patternCheck.message);
-      setShowPatternWarning(true);
-      return;
+    if (!patternCheck.valid) {
+      if (patternCheck.blocked) {
+        // Blocking patterns - show as warning but don't allow submit
+        setPatternWarningMessage(patternCheck.message);
+        setShowPatternWarning(true);
+        return;
+      }
+      if (patternCheck.warning && !hasAcknowledgedWarning) {
+        setPatternWarningMessage(patternCheck.message);
+        setShowPatternWarning(true);
+        return;
+      }
     }
     
     // Build the review data object
@@ -170,6 +191,7 @@ export default function ReviewFormDynamic({
     : reviewConfig.workAgainOptions.standard;
 
   return (
+    <TooltipProvider delayDuration={100}>
     <Card className="p-8 border-0 shadow-xl shadow-gray-200/50">
       {/* Profile Header */}
       <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl mb-8">
@@ -189,35 +211,36 @@ export default function ReviewFormDynamic({
 
       {/* SECTION 1: Core Skills */}
       <div className="mb-10">
-        <h3 className="text-lg font-semibold text-gray-900 mb-1">
-          Rate {colleague.name.split(' ')[0]}'s Professional Skills
-        </h3>
-        <p className="text-sm text-gray-500 mb-6">Drag sliders or tap to rate</p>
+        <div className="flex justify-between items-start mb-1">
+          <h3 className="text-lg font-semibold text-gray-900">
+            Rate {colleague.name.split(' ')[0]}'s Professional Skills
+          </h3>
+          {currentSkipCount > 0 && (
+            <span className="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded">
+              {currentSkipCount}/{maxSkipsAllowed} skipped
+            </span>
+          )}
+        </div>
+        <p className="text-sm text-gray-500 mb-6">
+          Drag sliders or tap to rate
+          {maxSkipsAllowed > 0 && <span className="text-gray-400"> • Can skip up to {maxSkipsAllowed}</span>}
+        </p>
 
         <div className="space-y-6">
           {sliders.map((slider) => (
-            <div key={slider.key}>
+            <div key={slider.key} className={skippedQuestions[slider.key] ? 'opacity-60' : ''}>
               <div className="flex justify-between items-center mb-2">
-                <div>
+                <div className="flex-1">
                   <p className="font-medium text-gray-900">{slider.label}</p>
                   <p className="text-sm text-gray-500">{slider.description}</p>
                 </div>
                 <div className="flex items-center gap-3">
-                  {slider.optional && (
-                    <label className="flex items-center gap-1 text-xs text-gray-500">
-                      <Checkbox 
-                        checked={optionalSkipped[slider.key] || false}
-                        onCheckedChange={(checked) => handleOptionalSkip(slider.key, checked)}
-                      />
-                      Not Relevant
-                    </label>
-                  )}
-                  <span className={`text-2xl font-bold ${getScoreColor(scores[slider.key] || 5)}`}>
-                    {scores[slider.key] !== null ? scores[slider.key] : '-'}
+                  <span className={`text-2xl font-bold ${skippedQuestions[slider.key] ? 'text-gray-400' : getScoreColor(scores[slider.key] || 5)}`}>
+                    {skippedQuestions[slider.key] ? '-' : (scores[slider.key] !== null ? scores[slider.key] : '-')}
                   </span>
                 </div>
               </div>
-              {!optionalSkipped[slider.key] && (
+              {!skippedQuestions[slider.key] ? (
                 <>
                   <Slider
                     value={[scores[slider.key] || 5]}
@@ -232,6 +255,38 @@ export default function ReviewFormDynamic({
                     <span>10</span>
                   </div>
                 </>
+              ) : (
+                <div className="py-3 px-4 bg-gray-50 rounded-lg border border-gray-200 text-center">
+                  <p className="text-sm text-gray-500">Skipped - won't affect their score</p>
+                </div>
+              )}
+              {!canSkipMore && !skippedQuestions[slider.key] ? (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      disabled
+                      className="mt-2 flex items-center gap-1.5 text-xs text-gray-300 cursor-not-allowed"
+                    >
+                      <HelpCircle className="w-3.5 h-3.5" />
+                      Can't rate this
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top" className="bg-gray-900 text-white">
+                    <p>Skip limit reached ({maxSkipsAllowed} max)</p>
+                  </TooltipContent>
+                </Tooltip>
+              ) : (
+                <button
+                  onClick={() => handleSkipQuestion(slider.key, !skippedQuestions[slider.key])}
+                  className={`mt-2 flex items-center gap-1.5 text-xs transition-colors ${
+                    skippedQuestions[slider.key] 
+                      ? 'text-blue-600 hover:text-blue-700' 
+                      : 'text-gray-400 hover:text-gray-600'
+                  }`}
+                >
+                  <HelpCircle className="w-3.5 h-3.5" />
+                  {skippedQuestions[slider.key] ? 'I can rate this' : "Can't rate this"}
+                </button>
               )}
             </div>
           ))}
@@ -494,7 +549,9 @@ export default function ReviewFormDynamic({
               <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
                 <AlertTriangle className="w-6 h-6 text-red-600" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900">Review Pattern Detected</h3>
+              <h3 className="text-lg font-semibold text-gray-900">
+                {checkForPatterns().blocked ? 'Action Required' : 'Review Pattern Detected'}
+              </h3>
             </div>
             <p className="text-gray-600 mb-6">
               {patternWarningMessage}
@@ -502,21 +559,24 @@ export default function ReviewFormDynamic({
             <div className="flex gap-3">
               <Button 
                 variant="outline"
-                className="flex-1"
+                className={checkForPatterns().blocked ? "w-full" : "flex-1"}
                 onClick={() => setShowPatternWarning(false)}
               >
-                Adjust Ratings
+                {checkForPatterns().blocked ? 'Go Back & Rate More' : 'Adjust Ratings'}
               </Button>
-              <Button 
-                className="flex-1 bg-gray-800 hover:bg-gray-900 text-white"
-                onClick={handleAcknowledgeWarning}
-              >
-                Submit Anyway
-              </Button>
+              {!checkForPatterns().blocked && (
+                <Button 
+                  className="flex-1 bg-gray-800 hover:bg-gray-900 text-white"
+                  onClick={handleAcknowledgeWarning}
+                >
+                  Submit Anyway
+                </Button>
+              )}
             </div>
           </div>
         </div>
       )}
     </Card>
+    </TooltipProvider>
   );
 }

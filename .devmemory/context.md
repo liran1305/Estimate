@@ -1,13 +1,18 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-19T14:45:47.616Z
+> Last updated: 2026-01-19T15:02:51.514Z
 
 ## Project Stats
-- Total memories: 113
-- Commits tracked: 113
+- Total memories: 114
+- Commits tracked: 114
 - Decisions recorded: 0
 
+## Relevant to Current Work
+- **1/19/2026**: feat: Implement anonymous review system with token-burning architecture (backend/routes/anonymousReviews.js, backend/server.js, src/components/landing/FAQ.jsx)
+
 ## Recent Changes
+- `815bb7a` 1/19/2026: feat: Implement anonymous review system with token-burning architecture
+  Files: backend/routes/anonymousReviews.js, backend/server.js, src/components/landing/FAQ.jsx
 - `d275675` 1/19/2026: Update PROJECT_CONTEXT.md: document colleague matching improvements and fraud detection changes
   Files: PROJECT_CONTEXT.md
 - `10f48f2` 1/19/2026: Smart colleague matching: expand to 4 companies with 2-year filter, skip companies with no colleagues, add 70/30 current/previous weighting
@@ -36,8 +41,6 @@
   Files: src/config/reviewConfig.js
 - `311b945` 1/18/2026: Profile page redesign: percentile tiers, mobile responsiveness, consent modal update
   Files: backend/routes/reviews.js, backend/utils/jobTitlesSystem.js, src/components/profile/ConsentModal.jsx
-- `473ce79` 1/18/2026: Simplify profile page: compact hero section with Continue Reviewing button, fix onboarding redirect for users who completed 3 reviews
-  Files: src/components/profile/WaitingState.jsx, src/pages/Onboarding.jsx, src/pages/Profile.jsx
 
 ## Do Not Repeat
 These issues have already been solved:

@@ -1003,17 +1003,17 @@ router.post('/review/submit', async (req, res) => {
         scoreUnlocked = true;
       }
 
-      // Get updated session info
-      const [updatedSession] = await connection.query(
-        'SELECT reviews_completed, skip_budget, skips_used FROM review_sessions WHERE id = ?',
-        [session_id]
+      // Get user's total reviews given (not just this session)
+      const [userStats] = await connection.query(
+        'SELECT reviews_given_count FROM users WHERE id = ?',
+        [user_id]
       );
 
       res.json({
         success: true,
         message: 'Review submitted successfully',
         review_id: reviewId,
-        reviews_completed: updatedSession[0]?.reviews_completed || 1,
+        reviews_completed: userStats[0]?.reviews_given_count || 1,
         score_unlocked: scoreUnlocked,
         reviews_until_unlock: Math.max(0, 3 - (reviewerScore[0]?.reviews_given || 1))
       });
