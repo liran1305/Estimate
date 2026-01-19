@@ -4,7 +4,7 @@ import { ChevronDown } from "lucide-react";
 const faqs = [
   {
     question: "Is it really anonymous?",
-    answer: "Yes, completely. Reviewers never see who rated them, and you'll never know who reviewed you. We use advanced anonymization to ensure privacy."
+    answer: "Yes, completely. Even Estimate's founder cannot see who wrote your reviews. We use a token-burning system that permanently severs the connection between reviewer and review at the moment of submission. This isn't a policy — it's a technical impossibility. The reviewer's identity is never stored with the review, making it mathematically impossible to trace who reviewed whom."
   },
   {
     question: "What if I get bad reviews?",

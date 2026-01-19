@@ -1,13 +1,21 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-19T10:16:03.763Z
+> Last updated: 2026-01-19T14:45:47.616Z
 
 ## Project Stats
-- Total memories: 109
-- Commits tracked: 109
+- Total memories: 113
+- Commits tracked: 113
 - Decisions recorded: 0
 
 ## Recent Changes
+- `d275675` 1/19/2026: Update PROJECT_CONTEXT.md: document colleague matching improvements and fraud detection changes
+  Files: PROJECT_CONTEXT.md
+- `10f48f2` 1/19/2026: Smart colleague matching: expand to 4 companies with 2-year filter, skip companies with no colleagues, add 70/30 current/previous weighting
+  Files: backend/routes/reviews.js
+- `04e5213` 1/19/2026: Fix: Replace insecure client-side fraud detection with server-side enforcement
+  Files: backend/database/migration-fraud-tracking.sql, backend/routes/fraud.js, backend/routes/reviews.js
+- `2b7eb93` 1/19/2026: Update to new light logo version
+  Files: public/images/Estimate_logo_LIGHT_00000 (1).png, public/images/Estimate_logo_LIGHT_00000.png, src/components/Logo.jsx
 - `d3d00a1` 1/19/2026: Update logo to light version
   Files: public/images/Estimate_logo_LIGHT_00000.png, src/components/Logo.jsx
 - `7d5743e` 1/19/2026: Add clean badge preview to profile headline
@@ -30,16 +38,8 @@
   Files: backend/routes/reviews.js, backend/utils/jobTitlesSystem.js, src/components/profile/ConsentModal.jsx
 - `473ce79` 1/18/2026: Simplify profile page: compact hero section with Continue Reviewing button, fix onboarding redirect for users who completed 3 reviews
   Files: src/components/profile/WaitingState.jsx, src/pages/Onboarding.jsx, src/pages/Profile.jsx
-- `bd6bac4` 1/18/2026: Upgrade to GPT-4o-mini for better grammar correction with lower temperature
-  Files: backend/routes/reviews.js
-- `4008fc8` 1/18/2026: Fix polish-comment route path to match frontend API call
-  Files: backend/routes/reviews.js
-- `a8d617c` 1/18/2026: Remove netlify.toml - using Vercel for frontend
-  Files: DATABASE_SCHEMA_REVIEW.md, PROJECT_CONTEXT.md, netlify.toml
-- `8978015` 1/18/2026: Add Netlify config to fix SPA routing and MIME type issues
-  Files: netlify.toml
 
 ## Do Not Repeat
 These issues have already been solved:
+- Replace insecure client-side fraud detection with server-side enforcement
 - Fix job title normalization for percentile badge
-- Fix polish-comment route path to match frontend API call

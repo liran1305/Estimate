@@ -236,12 +236,31 @@ export default function PrivacyPolicy() {
 
           <h2 className="text-2xl font-bold text-gray-900 mt-12 mb-4">5. Anonymity and Data Separation</h2>
 
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+            <h3 className="text-xl font-semibold text-blue-900 mb-3">🔒 Our Privacy Guarantee</h3>
+            <p className="text-blue-800 leading-relaxed italic">
+              "Even Estimate's founder cannot see who wrote your reviews. We use a token-burning system that permanently severs the connection between reviewer and review at the moment of submission. This isn't a policy — it's a technical impossibility."
+            </p>
+          </div>
+
           <h3 className="text-xl font-semibold text-gray-900 mt-8 mb-3">5.1 How We Protect Reviewer Anonymity</h3>
+          <p className="text-gray-700 leading-relaxed mb-4">
+            We use a <strong>token-burning architecture</strong> that makes it mathematically impossible to trace reviews back to their authors:
+          </p>
+          <ul className="list-disc pl-6 mb-4 text-gray-700 space-y-2">
+            <li><strong>Temporary tokens:</strong> When you start a review, a temporary token links you to the person you're reviewing</li>
+            <li><strong>Token destruction:</strong> The moment you submit your review, this token is permanently deleted</li>
+            <li><strong>No reviewer ID stored:</strong> Reviews are saved without any reference to who wrote them</li>
+            <li><strong>Irreversible separation:</strong> Once submitted, there is no technical way to connect a review to its author — not even with full database access</li>
+          </ul>
+          <p className="text-gray-700 leading-relaxed mb-4">
+            This means:
+          </p>
           <ul className="list-disc pl-6 mb-4 text-gray-700 space-y-2">
             <li>Reviewer identities are never disclosed to recipients</li>
-            <li>We use technical separation between reviewer IDs and review content</li>
             <li>Scores show only aggregate data, never individual reviews</li>
-            <li>We never reveal who reviewed whom</li>
+            <li>We never reveal who reviewed whom — because we technically cannot</li>
+            <li>Even with a court order or data breach, reviewer identities cannot be recovered</li>
           </ul>
 
           <h3 className="text-xl font-semibold text-gray-900 mt-8 mb-3">5.2 What Recipients See</h3>

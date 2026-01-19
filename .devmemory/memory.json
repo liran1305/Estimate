@@ -1582,7 +1582,63 @@
       "tags": [],
       "commit_hash": "d3d00a16e44357f45867dfb974cfdd9881b57c18",
       "created_at": "2026-01-19T10:12:58.000Z"
+    },
+    {
+      "id": 110,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Update to new light logo version",
+      "files": [
+        "public/images/Estimate_logo_LIGHT_00000 (1).png",
+        "public/images/Estimate_logo_LIGHT_00000.png",
+        "src/components/Logo.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "2b7eb939b5428739ce70a3a68751c8fe30fbef84",
+      "created_at": "2026-01-19T10:16:16.000Z"
+    },
+    {
+      "id": 111,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix: Replace insecure client-side fraud detection with server-side enforcement",
+      "files": [
+        "backend/database/migration-fraud-tracking.sql",
+        "backend/routes/fraud.js",
+        "backend/routes/reviews.js",
+        "backend/server.js",
+        "src/components/review/ReviewFormDynamic.jsx"
+      ],
+      "tags": [
+        "fix"
+      ],
+      "commit_hash": "04e5213ae99ca27548289e963b4ac3747033ff76",
+      "created_at": "2026-01-19T12:51:58.000Z"
+    },
+    {
+      "id": 112,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Smart colleague matching: expand to 4 companies with 2-year filter, skip companies with no colleagues, add 70/30 current/previous weighting",
+      "files": [
+        "backend/routes/reviews.js"
+      ],
+      "tags": [],
+      "commit_hash": "10f48f2ae473cdb4ed499fc74ed10d3f795e0030",
+      "created_at": "2026-01-19T14:03:49.000Z"
+    },
+    {
+      "id": 113,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Update PROJECT_CONTEXT.md: document colleague matching improvements and fraud detection changes",
+      "files": [
+        "PROJECT_CONTEXT.md"
+      ],
+      "tags": [],
+      "commit_hash": "d2756757c9f49933e493bc8f58fd980e4c23ec94",
+      "created_at": "2026-01-19T14:07:28.000Z"
     }
   ],
-  "nextId": 110
+  "nextId": 114
 }
