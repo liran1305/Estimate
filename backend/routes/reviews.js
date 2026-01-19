@@ -293,18 +293,73 @@ router.get('/colleague/next', async (req, res) => {
 
       const userProfileId = users[0].linkedin_profile_id;
 
-      // Get user's work history - ONLY current + 1 previous company
-      const [userWorkHistory] = await connection.query(`
+      // Get user's work history - up to 4 companies (current + 3 previous)
+      // We'll filter to only use companies that have colleagues in the database
+      const [allWorkHistory] = await connection.query(`
         SELECT company_name, worked_from, worked_to, is_current
         FROM company_connections 
         WHERE profile_id = ?
         ORDER BY is_current DESC, worked_to DESC
-        LIMIT 2
+        LIMIT 4
       `, [userProfileId]);
 
-      if (userWorkHistory.length === 0) {
+      if (allWorkHistory.length === 0) {
         return res.status(400).json({ success: false, error: 'No work history found for user' });
       }
+
+      // Filter previous companies to only include those within 2 years
+      const twoYearsAgo = new Date();
+      twoYearsAgo.setFullYear(twoYearsAgo.getFullYear() - 2);
+      
+      const parseEndDate = (dateStr) => {
+        if (!dateStr || dateStr === 'Present') return new Date();
+        const monthNames = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+        const parts = dateStr.toLowerCase().split(' ');
+        let year, month = 11;
+        if (parts.length === 2) {
+          const monthIndex = monthNames.findIndex(m => parts[0].startsWith(m));
+          month = monthIndex >= 0 ? monthIndex : 11;
+          year = parseInt(parts[1]);
+        } else if (parts.length === 1) {
+          year = parseInt(parts[0]);
+        }
+        if (isNaN(year)) return new Date();
+        return new Date(year, month, 28);
+      };
+      
+      const recentWorkHistory = allWorkHistory.filter(company => {
+        if (company.is_current) return true;
+        const endDate = parseEndDate(company.worked_to);
+        return endDate >= twoYearsAgo;
+      });
+
+      // Check which companies have colleagues in the database
+      const companyNamesAll = recentWorkHistory.map(w => w.company_name);
+      const [companiesWithColleagues] = await connection.query(`
+        SELECT cc.company_name, COUNT(DISTINCT cc.profile_id) as colleague_count
+        FROM company_connections cc
+        WHERE cc.company_name IN (?)
+          AND cc.profile_id != ?
+        GROUP BY cc.company_name
+        HAVING colleague_count > 0
+      `, [companyNamesAll, userProfileId]);
+
+      const companiesWithColleaguesSet = new Set(companiesWithColleagues.map(c => c.company_name));
+      
+      // Filter to only companies that have colleagues
+      const userWorkHistory = recentWorkHistory.filter(company => 
+        companiesWithColleaguesSet.has(company.company_name)
+      );
+
+      if (userWorkHistory.length === 0) {
+        return res.json({
+          success: true,
+          colleague: null,
+          message: 'No colleagues found at your recent companies (within 2 years)'
+        });
+      }
+
+      console.log(`User ${user_id}: Found ${userWorkHistory.length} companies with colleagues: ${userWorkHistory.map(w => w.company_name).join(', ')}`);
 
       // Check if there's already a pending assignment for THIS session (keeps same colleague on refresh)
       const [pendingAssignments] = await connection.query(`
@@ -478,7 +533,34 @@ router.get('/colleague/next', async (req, res) => {
       
       // Prioritize: 1-2 reviews > never-skipped > once-skipped
       const prioritizedColleagues = [...shuffledNeedsCompletion, ...shuffledNeverSkipped, ...shuffledOnceSkipped];
-      const selectedColleague = prioritizedColleagues[0];
+      
+      // ========== 70/30 WEIGHTED SELECTION: Current vs Previous Company ==========
+      // 70% chance to select from current company, 30% from previous company
+      const currentCompanyColleagues = prioritizedColleagues.filter(c => c.company_context === 'current');
+      const previousCompanyColleagues = prioritizedColleagues.filter(c => c.company_context === 'previous');
+      
+      let selectedColleague;
+      const random = Math.random();
+      
+      if (currentCompanyColleagues.length > 0 && previousCompanyColleagues.length > 0) {
+        // Both current and previous colleagues available - use 70/30 weighting
+        if (random < 0.7) {
+          // 70% chance: Select from current company
+          selectedColleague = currentCompanyColleagues[0];
+        } else {
+          // 30% chance: Select from previous company
+          selectedColleague = previousCompanyColleagues[0];
+        }
+      } else if (currentCompanyColleagues.length > 0) {
+        // Only current company colleagues available
+        selectedColleague = currentCompanyColleagues[0];
+      } else if (previousCompanyColleagues.length > 0) {
+        // Only previous company colleagues available
+        selectedColleague = previousCompanyColleagues[0];
+      } else {
+        // Fallback: Use first colleague (shouldn't happen)
+        selectedColleague = prioritizedColleagues[0];
+      }
 
       // Create assignment record with 'pending' status (so refresh returns same colleague)
       await connection.query(`
