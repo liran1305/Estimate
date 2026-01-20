@@ -489,7 +489,33 @@ router.get('/colleague/next', async (req, res) => {
         .map(a => a.colleague_id);
 
       // Find colleagues who worked at the same companies
-      const companyNames = userWorkHistory.map(w => w.company_name);
+      // Exclude non-workplace entries (self-employed, freelance, masked/redacted names)
+      const excludedCompanyPatterns = [
+        'Self-employed', 'Self employed', 'Freelance', 'Freelancer',
+        'Independent Consultant', 'Consultant', 'Independent'
+      ];
+      
+      const companyNames = userWorkHistory
+        .map(w => w.company_name)
+        .filter(name => {
+          // Exclude self-employed variants
+          if (excludedCompanyPatterns.some(pattern => 
+            name.toLowerCase().includes(pattern.toLowerCase())
+          )) return false;
+          // Exclude masked/redacted company names (only asterisks)
+          if (/^\*+(\s+\*+)*$/.test(name)) return false;
+          // Exclude very short names that are likely invalid
+          if (name.length < 2) return false;
+          return true;
+        });
+      
+      if (companyNames.length === 0) {
+        return res.json({
+          success: true,
+          colleague: null,
+          message: 'No valid companies found in work history for colleague matching'
+        });
+      }
       
       let colleagueQuery = `
         SELECT DISTINCT 
@@ -506,6 +532,7 @@ router.get('/colleague/next', async (req, res) => {
         JOIN company_connections cc ON cc.profile_id = lp.id
         WHERE cc.company_name IN (?)
           AND lp.id != ?
+          AND cc.company_name NOT REGEXP '^\\\\*+( \\\\*+)*$'
       `;
 
       const queryParams = [companyNames, userProfileId];

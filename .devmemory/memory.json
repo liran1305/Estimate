@@ -1868,7 +1868,19 @@
       ],
       "commit_hash": "4edd2c03c037b83c18795dc54917bc181f9e8bed",
       "created_at": "2026-01-20T16:10:29.000Z"
+    },
+    {
+      "id": 129,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "debug: Add comprehensive logging to track colleague assignment flow",
+      "files": [
+        "backend/routes/reviews.js"
+      ],
+      "tags": [],
+      "commit_hash": "4b5a9aecba43fb6f55f3b28cb33000477d49290c",
+      "created_at": "2026-01-20T16:19:56.000Z"
     }
   ],
-  "nextId": 129
+  "nextId": 130
 }
