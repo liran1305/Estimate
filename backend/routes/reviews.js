@@ -401,12 +401,19 @@ router.get('/colleague/next', async (req, res) => {
 
       // Check if there's already a pending assignment for this USER (persists across sessions/devices)
       // This ensures the same colleague is shown until they're skipped or reviewed
+      console.log(`[COLLEAGUE FETCH] User ${user_id}, Session ${session_id}: Checking for existing assigned colleague...`);
+      
       const [pendingAssignments] = await connection.query(`
         SELECT colleague_id, session_id as original_session_id, company_context, match_score 
         FROM review_assignments 
         WHERE user_id = ? AND status = 'assigned'
         LIMIT 1
       `, [user_id]);
+
+      console.log(`[COLLEAGUE FETCH] Found ${pendingAssignments.length} pending assignments for user ${user_id}`);
+      if (pendingAssignments.length > 0) {
+        console.log(`[COLLEAGUE FETCH] Pending assignment details:`, JSON.stringify(pendingAssignments[0]));
+      }
 
       // If there's a pending assignment, return that colleague
       if (pendingAssignments.length > 0) {
@@ -619,6 +626,8 @@ router.get('/colleague/next', async (req, res) => {
       }
 
       // Create assignment record with 'assigned' status (so refresh returns same colleague)
+      console.log(`[COLLEAGUE FETCH] Creating new assignment for user ${user_id}: colleague ${selectedColleague.id} (${selectedColleague.name})`);
+      
       await connection.query(`
         INSERT INTO review_assignments 
         (session_id, user_id, colleague_id, company_name, company_context, match_score, status)
@@ -635,6 +644,8 @@ router.get('/colleague/next', async (req, res) => {
         selectedColleague.company_context,
         selectedColleague.match_score
       ]);
+      
+      console.log(`[COLLEAGUE FETCH] Assignment created/updated successfully`);
 
       res.json({
         success: true,

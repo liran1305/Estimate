@@ -1854,7 +1854,21 @@
       ],
       "commit_hash": "f652c353d9dcf5299584842bc1a0e372edab9748",
       "created_at": "2026-01-20T15:33:54.000Z"
+    },
+    {
+      "id": 128,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "fix: Critical mobile UX improvements for review form",
+      "files": [
+        "src/components/review/ReviewFormDynamic.jsx"
+      ],
+      "tags": [
+        "fix"
+      ],
+      "commit_hash": "4edd2c03c037b83c18795dc54917bc181f9e8bed",
+      "created_at": "2026-01-20T16:10:29.000Z"
     }
   ],
-  "nextId": 128
+  "nextId": 129
 }

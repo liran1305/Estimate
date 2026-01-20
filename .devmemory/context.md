@@ -1,20 +1,22 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-20T16:01:17.638Z
+> Last updated: 2026-01-20T16:17:56.466Z
 
 ## Project Stats
-- Total memories: 127
-- Commits tracked: 127
+- Total memories: 128
+- Commits tracked: 128
 - Decisions recorded: 0
 
 ## Relevant to Current Work
+- **1/20/2026**: fix: Critical mobile UX improvements for review form (src/components/review/ReviewFormDynamic.jsx)
 - **1/19/2026**: feat: Add 'Can't rate this' skip feature with 30% limit + fix review counter bug (backend/routes/reviews.js, src/components/review/ReviewFormDynamic.jsx)
 - **1/19/2026**: Fix: Replace insecure client-side fraud detection with server-side enforcement (backend/database/migration-fraud-tracking.sql, backend/routes/fraud.js, backend/routes/reviews.js)
 - **1/18/2026**: Add escalating violation warnings with 24-hour lockout (src/components/review/ReviewFormDynamic.jsx)
 - **1/18/2026**: Add comprehensive abuse detection system (backend/routes/reviews.js, src/components/review/ReviewFormDynamic.jsx)
-- **1/18/2026**: Improve tag button alignment: left-align text and icons (src/components/review/ReviewFormDynamic.jsx)
 
 ## Recent Changes
+- `4edd2c0` 1/20/2026: fix: Critical mobile UX improvements for review form
+  Files: src/components/review/ReviewFormDynamic.jsx
 - `f652c35` 1/20/2026: feat: Improve skip button and add Continue Reviewing CTA
   Files: src/components/review/ColleagueCard.jsx, src/components/review/ReviewSuccess.jsx
 - `c33fe89` 1/20/2026: docs: Update PROJECT_CONTEXT.md with colleague persistence and GTM tracking
@@ -43,11 +45,10 @@
   Files: backend/routes/reviews.js, src/components/review/ReviewFormDynamic.jsx
 - `815bb7a` 1/19/2026: feat: Implement anonymous review system with token-burning architecture
   Files: backend/routes/anonymousReviews.js, backend/server.js, src/components/landing/FAQ.jsx
-- `d275675` 1/19/2026: Update PROJECT_CONTEXT.md: document colleague matching improvements and fraud detection changes
-  Files: PROJECT_CONTEXT.md
 
 ## Do Not Repeat
 These issues have already been solved:
+- Critical mobile UX improvements for review form
 - Persist colleague assignment across sessions/devices
 - Add sitemap.xml and robots.txt content
 - Serve sitemap.xml and robots.txt as static files
