@@ -115,6 +115,15 @@ export default function Profile() {
           const scoreRes = await fetch(`${BACKEND_API_URL}/api/score/me?user_id=${currentUser.id}`);
           const scoreApiData = await scoreRes.json();
           setScoreData(scoreApiData);
+          
+          // Track profile view in GTM
+          if (window.dataLayer) {
+            window.dataLayer.push({
+              event: 'profile_viewed',
+              has_score: scoreApiData?.overall_score ? true : false,
+              reviews_received: scoreApiData?.reviews_received || 0
+            });
+          }
         } catch (err) {
           console.error('Failed to fetch score data:', err);
           setScoreData(null);
@@ -195,6 +204,15 @@ export default function Profile() {
     const fullText = `${headline} | ${badgeText}`;
     
     navigator.clipboard.writeText(fullText).then(() => {
+      // Track badge copy in GTM
+      if (window.dataLayer) {
+        window.dataLayer.push({
+          event: 'badge_copied',
+          badge_tier: percentileTier.tier,
+          user_position: userPosition
+        });
+      }
+      
       setBadgeCopied(true);
       setTimeout(() => setBadgeCopied(false), 2000);
     });

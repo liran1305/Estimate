@@ -1791,7 +1791,24 @@
       ],
       "commit_hash": "c161e60a3089f16062a3b1fa172fa56fca3581ab",
       "created_at": "2026-01-20T14:27:01.000Z"
+    },
+    {
+      "id": 124,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "feat: Add GTM event tracking for key user actions",
+      "files": [
+        "src/pages/LinkedInAuth.jsx",
+        "src/pages/LinkedInCallback.jsx",
+        "src/pages/Profile.jsx",
+        "src/pages/Review.jsx"
+      ],
+      "tags": [
+        "feat"
+      ],
+      "commit_hash": "ffa94f96980725f41ea1aa0ed35f6a9bb6fdd48c",
+      "created_at": "2026-01-20T14:47:19.000Z"
     }
   ],
-  "nextId": 124
+  "nextId": 125
 }

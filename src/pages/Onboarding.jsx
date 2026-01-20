@@ -53,6 +53,13 @@ export default function Onboarding() {
   }, [navigate]);
 
   const handleStart = () => {
+    // Track onboarding completion in GTM
+    if (window.dataLayer) {
+      window.dataLayer.push({
+        event: 'onboarding_complete'
+      });
+    }
+    
     const updatedUser = { ...user, isOnboarded: true };
     localStorage.setItem('user', JSON.stringify(updatedUser));
     navigate(createPageUrl("Review"));

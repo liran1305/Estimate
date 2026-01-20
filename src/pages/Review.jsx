@@ -116,6 +116,14 @@ export default function Review() {
       const data = await res.json();
       
       if (data.success) {
+        // Track review skip in GTM
+        if (window.dataLayer) {
+          window.dataLayer.push({
+            event: 'review_skipped',
+            skips_remaining: data.skips_remaining
+          });
+        }
+        
         setSkipsRemaining(data.skips_remaining);
         setInteractionType('');
         await fetchNextColleague(user.id, session.id);

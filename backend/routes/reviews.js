@@ -399,16 +399,32 @@ router.get('/colleague/next', async (req, res) => {
 
       console.log(`User ${user_id}: Found ${userWorkHistory.length} companies with colleagues: ${userWorkHistory.map(w => w.company_name).join(', ')}`);
 
-      // Check if there's already a pending assignment for THIS session (keeps same colleague on refresh)
+      // Check if there's already a pending assignment for this USER (persists across sessions/devices)
+      // This ensures the same colleague is shown until they're skipped or reviewed
       const [pendingAssignments] = await connection.query(`
-        SELECT colleague_id FROM review_assignments 
-        WHERE user_id = ? AND session_id = ? AND status = 'pending'
+        SELECT colleague_id, session_id as original_session_id, company_context, match_score 
+        FROM review_assignments 
+        WHERE user_id = ? AND status = 'assigned'
         LIMIT 1
-      `, [user_id, session_id]);
+      `, [user_id]);
 
       // If there's a pending assignment, return that colleague
       if (pendingAssignments.length > 0) {
         const pendingColleagueId = pendingAssignments[0].colleague_id;
+        const originalSessionId = pendingAssignments[0].original_session_id;
+        const savedCompanyContext = pendingAssignments[0].company_context;
+        const savedMatchScore = pendingAssignments[0].match_score;
+        
+        // Update the session_id if user is on a different session (different device/reload)
+        if (originalSessionId !== session_id) {
+          await connection.query(`
+            UPDATE review_assignments 
+            SET session_id = ?
+            WHERE user_id = ? AND colleague_id = ? AND status = 'assigned'
+          `, [session_id, user_id, pendingColleagueId]);
+          console.log(`User ${user_id}: Updated pending assignment session from ${originalSessionId} to ${session_id}`);
+        }
+        
         const [colleagueData] = await connection.query(`
           SELECT 
             lp.id,
@@ -425,6 +441,7 @@ router.get('/colleague/next', async (req, res) => {
 
         if (colleagueData.length > 0) {
           const colleague = colleagueData[0];
+          console.log(`User ${user_id}: Returning existing pending colleague: ${colleague.name}`);
           return res.json({
             success: true,
             colleague: {
@@ -434,8 +451,8 @@ router.get('/colleague/next', async (req, res) => {
               position: colleague.position,
               current_company: colleague.current_company_name,
               shared_company: colleague.company_name,
-              company_context: 'Same company',
-              match_score: 1.0
+              company_context: savedCompanyContext || 'Same company',
+              match_score: savedMatchScore || 1.0
             }
           });
         }
@@ -601,14 +618,14 @@ router.get('/colleague/next', async (req, res) => {
         selectedColleague = prioritizedColleagues[0];
       }
 
-      // Create assignment record with 'pending' status (so refresh returns same colleague)
+      // Create assignment record with 'assigned' status (so refresh returns same colleague)
       await connection.query(`
         INSERT INTO review_assignments 
         (session_id, user_id, colleague_id, company_name, company_context, match_score, status)
-        VALUES (?, ?, ?, ?, ?, ?, 'pending')
+        VALUES (?, ?, ?, ?, ?, ?, 'assigned')
         ON DUPLICATE KEY UPDATE 
           session_id = VALUES(session_id),
-          status = 'pending',
+          status = 'assigned',
           assigned_at = CURRENT_TIMESTAMP
       `, [
         session_id,
