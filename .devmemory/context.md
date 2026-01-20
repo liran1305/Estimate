@@ -1,18 +1,22 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-20T14:25:19.239Z
+> Last updated: 2026-01-20T14:37:38.909Z
 
 ## Project Stats
-- Total memories: 122
-- Commits tracked: 122
+- Total memories: 123
+- Commits tracked: 123
 - Decisions recorded: 0
 
 ## Relevant to Current Work
-- **1/7/2026**: Fix favicon paths - remove spaces from folder names (index.html, public/favicons/estimate-favicon-180.png, public/favicons/estimate-favicon-32.png)
-- **1/6/2026**: Update favicons and meta tags with Estimate branding (index.html)
-- **1/6/2026**: Initial commit: Estimate professional peer review platform (README.md, components.json, eslint.config.js)
+- **1/19/2026**: feat: Complete review counter fix + UI improvements (backend/routes/reviews.js, src/components/review/ReviewSuccess.jsx, src/pages/Profile.jsx)
+- **1/18/2026**: Improve review form UI: wider layout, better organization, moved content up (src/components/review/ReviewFormDynamic.jsx, src/config/reviewConfig.js, src/pages/Review.jsx)
+- **1/18/2026**: Add relationship-specific review questions with weighted scoring (NEW_REVIEW_STRUCTURE.md, backend/database/migration-dynamic-reviews.sql, backend/database/migration-new-review-structure.sql)
+- **1/13/2026**: Add abuse detection: block users who exhaust skips 3 days in a row, cap max skips at 3/day, add Bloc (backend/routes/reviews.js, src/components/review/ColleagueCard.jsx, src/pages/Blocked.jsx)
+- **1/13/2026**: Add loading state to skip button and fix counter jumping issue (src/components/review/ColleagueCard.jsx, src/pages/Review.jsx)
 
 ## Recent Changes
+- `c161e60` 1/20/2026: feat: Add Google Tag Manager tracking
+  Files: index.html
 - `4ce4076` 1/20/2026: fix: Add sitemap.xml and robots.txt content
   Files: public/robots.txt, public/sitemap.xml
 - `080da7b` 1/20/2026: fix: Serve sitemap.xml and robots.txt as static files
@@ -41,8 +45,6 @@
   Files: public/images/Estimate_logo_LIGHT_00000 (1).png, public/images/Estimate_logo_LIGHT_00000.png, src/components/Logo.jsx
 - `d3d00a1` 1/19/2026: Update logo to light version
   Files: public/images/Estimate_logo_LIGHT_00000.png, src/components/Logo.jsx
-- `7d5743e` 1/19/2026: Add clean badge preview to profile headline
-  Files: src/pages/Profile.jsx
 
 ## Do Not Repeat
 These issues have already been solved:

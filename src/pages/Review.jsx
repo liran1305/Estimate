@@ -164,6 +164,24 @@ export default function Review() {
       
       if (data.success) {
         setReviewsGiven(data.reviews_completed);
+        
+        // Track review submission in GTM
+        if (window.dataLayer) {
+          window.dataLayer.push({
+            event: 'review_submitted',
+            review_count: data.reviews_completed,
+            interaction_type: interactionType
+          });
+          
+          // Track score unlock milestone (3 reviews)
+          if (data.score_unlocked) {
+            window.dataLayer.push({
+              event: 'score_unlocked',
+              reviews_given: data.reviews_completed
+            });
+          }
+        }
+        
         setIsSubmitting(false);
         setStep('success');
       } else {

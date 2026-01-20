@@ -21,6 +21,13 @@ export default function LinkedInAuth() {
 
   // Show verification step
   const handleAllow = () => {
+    // Track LinkedIn auth start in GTM
+    if (window.dataLayer) {
+      window.dataLayer.push({
+        event: 'linkedin_auth_start'
+      });
+    }
+    
     setShowVerification(true);
     setVerificationError(null);
   };

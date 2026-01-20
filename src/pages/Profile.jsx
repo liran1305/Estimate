@@ -139,6 +139,15 @@ export default function Profile() {
     const updatedUser = { ...user, recruitment_consent: value };
     localStorage.setItem('user', JSON.stringify(updatedUser));
     setUser(updatedUser);
+    
+    // Track recruiter consent change in GTM
+    if (window.dataLayer) {
+      window.dataLayer.push({
+        event: value ? 'recruiter_consent_enabled' : 'recruiter_consent_disabled',
+        reviews_received: scoreData?.reviews_received || 0
+      });
+    }
+    
     setIsUpdating(false);
     setShowConsent(false);
   };

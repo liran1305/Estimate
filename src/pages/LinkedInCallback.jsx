@@ -31,6 +31,14 @@ export default function LinkedInCallback() {
       try {
         const user = await linkedinAuth.handleCallback(code, state);
         
+        // Track successful LinkedIn authentication in GTM
+        if (window.dataLayer) {
+          window.dataLayer.push({
+            event: 'linkedin_auth_complete',
+            is_onboarded: user.isOnboarded
+          });
+        }
+        
         if (user.isOnboarded) {
           navigate(createPageUrl("Review"));
         } else {
