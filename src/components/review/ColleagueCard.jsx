@@ -48,17 +48,47 @@ export default function ColleagueCard({
   return (
     <div className="space-y-6">
       <Card className="p-8 border-0 shadow-xl shadow-gray-200/50">
-        <div className="flex items-center gap-5 mb-8">
-          <img 
-            src={colleague.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(colleague.name)}&background=0A66C2&color=fff&size=80`}
-            alt={colleague.name}
-            className="w-20 h-20 rounded-2xl object-cover"
-          />
-          <div>
-            <h2 className="text-xl font-bold text-gray-900">{colleague.name}</h2>
-            <p className="text-gray-500">{colleague.job_title}</p>
-            <p className="text-gray-400 text-sm">at {colleague.company}</p>
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-5">
+            <img 
+              src={colleague.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(colleague.name)}&background=0A66C2&color=fff&size=80`}
+              alt={colleague.name}
+              className="w-20 h-20 rounded-2xl object-cover"
+            />
+            <div>
+              <h2 className="text-xl font-bold text-gray-900">{colleague.name}</h2>
+              <p className="text-gray-500">{colleague.job_title}</p>
+              <p className="text-gray-400 text-sm">at {colleague.company}</p>
+            </div>
           </div>
+          
+          <TooltipProvider delayDuration={0}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button 
+                  onClick={skipsRemaining <= 0 ? onBackToProfile : onSkip}
+                  className="flex flex-col items-center justify-center gap-1.5 text-[#0A66C2] hover:text-[#004182] font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed px-4 py-3 rounded-xl hover:bg-[#0A66C2]/5 min-w-[80px] active:scale-95"
+                  disabled={isSkipping}
+                >
+                  {isSkipping ? (
+                    <Loader2 className="w-6 h-6 animate-spin" />
+                  ) : (
+                    <RefreshCw className="w-6 h-6" />
+                  )}
+                  <span className="text-xs whitespace-nowrap font-semibold">
+                    {skipsRemaining <= 0 ? 'No Skips' : `Skip (${skipsRemaining})`}
+                  </span>
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="left" className="max-w-xs bg-gray-900 text-white">
+                <p className="text-sm">
+                  {skipsRemaining <= 0 
+                    ? "You've used all your daily skips. Click to return to your profile and come back tomorrow for fresh skips." 
+                    : "Skip this colleague if you don't have sufficient interaction"}
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
 
         <div className="mb-6">
@@ -86,38 +116,7 @@ export default function ColleagueCard({
           </RadioGroup>
         </div>
 
-        <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-          <TooltipProvider delayDuration={0}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button 
-                  onClick={skipsRemaining <= 0 ? onBackToProfile : onSkip}
-                  className="flex items-center gap-2 text-gray-500 hover:text-gray-700 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  disabled={isSkipping}
-                >
-                  {isSkipping ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : skipsRemaining > 0 ? (
-                    <RefreshCw className="w-4 h-4" />
-                  ) : null}
-                  {skipsRemaining <= 0 ? 'Try again tomorrow' : 'Insufficient interaction'}
-                  {totalSkips > 0 && (
-                    <span className="ml-1 text-xs bg-gray-100 px-2 py-0.5 rounded-full">
-                      {totalSkips - skipsRemaining}/{totalSkips}
-                    </span>
-                  )}
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="top" className="max-w-xs bg-gray-900 text-white">
-                <p className="text-sm">
-                  {skipsRemaining <= 0 
-                    ? "You've used all your daily skips. Click to return to your profile and come back tomorrow for fresh skips." 
-                    : "Skip this colleague if you don't have sufficient interaction"}
-                </p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          
+        <div className="flex justify-end pt-4 border-t border-gray-100">
           <Button 
             className="bg-[#0A66C2] hover:bg-[#004182] h-12 px-6 rounded-xl font-medium"
             disabled={!interactionType}

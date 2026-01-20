@@ -1,10 +1,10 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-20T15:17:12.287Z
+> Last updated: 2026-01-20T15:33:17.173Z
 
 ## Project Stats
-- Total memories: 125
-- Commits tracked: 125
+- Total memories: 126
+- Commits tracked: 126
 - Decisions recorded: 0
 
 ## Relevant to Current Work
@@ -15,6 +15,8 @@
 - **1/18/2026**: Add relationship-specific review questions with weighted scoring (NEW_REVIEW_STRUCTURE.md, backend/database/migration-dynamic-reviews.sql, backend/database/migration-new-review-structure.sql)
 
 ## Recent Changes
+- `c33fe89` 1/20/2026: docs: Update PROJECT_CONTEXT.md with colleague persistence and GTM tracking
+  Files: PROJECT_CONTEXT.md
 - `ae33b3a` 1/20/2026: fix: Persist colleague assignment across sessions/devices
   Files: backend/routes/reviews.js, src/pages/Onboarding.jsx, src/pages/Profile.jsx
 - `ffa94f9` 1/20/2026: feat: Add GTM event tracking for key user actions
@@ -43,8 +45,6 @@
   Files: PROJECT_CONTEXT.md
 - `10f48f2` 1/19/2026: Smart colleague matching: expand to 4 companies with 2-year filter, skip companies with no colleagues, add 70/30 current/previous weighting
   Files: backend/routes/reviews.js
-- `04e5213` 1/19/2026: Fix: Replace insecure client-side fraud detection with server-side enforcement
-  Files: backend/database/migration-fraud-tracking.sql, backend/routes/fraud.js, backend/routes/reviews.js
 
 ## Do Not Repeat
 These issues have already been solved:
@@ -52,4 +52,3 @@ These issues have already been solved:
 - Add sitemap.xml and robots.txt content
 - Serve sitemap.xml and robots.txt as static files
 - Correct 70/30 company distribution in colleague matching
-- Replace insecure client-side fraud detection with server-side enforcement

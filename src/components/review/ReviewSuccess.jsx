@@ -43,13 +43,26 @@ export default function ReviewSuccess({ completedCount, onNextReview, onGoToProf
         </p>
 
         {isUnlocked ? (
-          <Button 
-            className="w-full bg-[#0A66C2] hover:bg-[#004182] h-14 rounded-xl font-medium text-base"
-            onClick={onGoToProfile}
-          >
-            <User className="w-5 h-5 mr-2" />
-            Go to Profile
-          </Button>
+          <>
+            <Button 
+              className="w-full bg-[#0A66C2] hover:bg-[#004182] h-14 rounded-xl font-medium text-base mb-3"
+              onClick={onNextReview}
+            >
+              Continue Reviewing
+              <img src="/images/right-arrow.png" alt="Arrow" className="w-5 h-5 ml-2 brightness-0 invert" />
+            </Button>
+            <p className="text-sm text-gray-400 mb-6 px-4">
+              More reviews help us grow faster and increase recruiter engagement with our platform
+            </p>
+            <Button 
+              variant="outline"
+              className="w-full border-[#0A66C2] text-[#0A66C2] hover:bg-[#0A66C2]/5 h-14 rounded-xl font-medium text-base"
+              onClick={onGoToProfile}
+            >
+              <User className="w-5 h-5 mr-2" />
+              Go to Profile
+            </Button>
+          </>
         ) : (
           <Button 
             className="w-full bg-[#0A66C2] hover:bg-[#004182] h-14 rounded-xl font-medium text-base"
