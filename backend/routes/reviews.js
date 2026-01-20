@@ -536,7 +536,8 @@ router.get('/colleague/next', async (req, res) => {
       // Score and rank colleagues by overlap months (most overlap first)
       const scoredColleagues = colleaguesWithOverlap.map(colleague => {
         const userCompany = userWorkHistory.find(w => w.company_name === colleague.company_name);
-        const companyContext = (colleague.is_current && userCompany?.is_current) ? 'current' : 'previous';
+        // Mark as 'current' if it's the user's current company (regardless of colleague's current status)
+        const companyContext = userCompany?.is_current ? 'current' : 'previous';
         const reviewsGiven = reviewCountMap[colleague.id] || 0;
         
         return {

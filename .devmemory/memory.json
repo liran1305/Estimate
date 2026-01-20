@@ -1688,7 +1688,23 @@
       ],
       "commit_hash": "42d7a55bd4928cad5ac56b8de2f5880794d8a661",
       "created_at": "2026-01-19T15:37:05.000Z"
+    },
+    {
+      "id": 117,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "feat: Add email notifications for new reviews",
+      "files": [
+        "backend/package.json",
+        "backend/routes/anonymousReviews.js",
+        "backend/services/emailService.js"
+      ],
+      "tags": [
+        "feat"
+      ],
+      "commit_hash": "c03efaaef0f3c449a7a11616a24deec2d9bc5d65",
+      "created_at": "2026-01-20T13:55:44.000Z"
     }
   ],
-  "nextId": 117
+  "nextId": 118
 }

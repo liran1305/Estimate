@@ -1,10 +1,10 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-20T13:54:05.757Z
+> Last updated: 2026-01-20T14:00:27.276Z
 
 ## Project Stats
-- Total memories: 116
-- Commits tracked: 116
+- Total memories: 117
+- Commits tracked: 117
 - Decisions recorded: 0
 
 ## Relevant to Current Work
@@ -15,6 +15,8 @@
 - **1/9/2026**: Add secure backend and remove client secret from frontend (.env.example, backend/.env.example, backend/README.md)
 
 ## Recent Changes
+- `c03efaa` 1/20/2026: feat: Add email notifications for new reviews
+  Files: backend/package.json, backend/routes/anonymousReviews.js, backend/services/emailService.js
 - `42d7a55` 1/19/2026: feat: Complete review counter fix + UI improvements
   Files: backend/routes/reviews.js, src/components/review/ReviewSuccess.jsx, src/pages/Profile.jsx
 - `940c345` 1/19/2026: feat: Add 'Can't rate this' skip feature with 30% limit + fix review counter bug
@@ -43,10 +45,7 @@
   Files: src/components/review/ReviewFormDynamic.jsx, src/config/reviewConfig.js, src/pages/Review.jsx
 - `19cc7f3` 1/18/2026: Improve mobile UI: logo icon and score circle
   Files: src/components/Logo.jsx, src/pages/Profile.jsx
-- `96405d7` 1/18/2026: Fix job title normalization for percentile badge
-  Files: backend/routes/reviews.js, src/pages/Profile.jsx
 
 ## Do Not Repeat
 These issues have already been solved:
 - Replace insecure client-side fraud detection with server-side enforcement
-- Fix job title normalization for percentile badge
