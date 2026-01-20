@@ -18,6 +18,7 @@ const router = express.Router();
 const mysql = require('mysql2/promise');
 const crypto = require('crypto');
 const { v4: uuidv4 } = require('uuid');
+const { sendNewReviewNotification, sendScoreUnlockedNotification, sendTestEmail } = require('../services/emailService');
 
 let pool;
 
@@ -358,6 +359,47 @@ router.post('/review/submit', async (req, res) => {
 
       await connection.commit();
 
+      // 12. Send email notification to reviewee (if they have an account)
+      // This happens AFTER commit to not block the response
+      try {
+        const [revieweeUser] = await connection.query(`
+          SELECT u.email, u.full_name, us.reviews_received
+          FROM users u
+          LEFT JOIN user_scores us ON us.user_id = u.id
+          WHERE u.linkedin_profile_id = ?
+        `, [reviewee_id]);
+
+        if (revieweeUser.length > 0 && revieweeUser[0].email) {
+          const reviewCount = (revieweeUser[0].reviews_received || 0) + 1;
+          sendNewReviewNotification(
+            revieweeUser[0].email,
+            revieweeUser[0].full_name,
+            reviewCount
+          ).catch(err => console.error('[EMAIL] Async send failed:', err));
+        }
+      } catch (emailErr) {
+        console.error('[EMAIL] Failed to send review notification:', emailErr);
+        // Don't fail the request if email fails
+      }
+
+      // 13. Send score unlocked email to reviewer if they just hit 3 reviews
+      if (profileUnlocked && reviewsGiven === 3) {
+        try {
+          const [reviewerUser] = await connection.query(
+            'SELECT email, full_name FROM users WHERE id = ?',
+            [reviewer_id]
+          );
+          if (reviewerUser.length > 0 && reviewerUser[0].email) {
+            sendScoreUnlockedNotification(
+              reviewerUser[0].email,
+              reviewerUser[0].full_name
+            ).catch(err => console.error('[EMAIL] Async send failed:', err));
+          }
+        } catch (emailErr) {
+          console.error('[EMAIL] Failed to send unlock notification:', emailErr);
+        }
+      }
+
       res.json({
         success: true,
         message: 'Review submitted anonymously',
@@ -474,5 +516,24 @@ router.post('/counters/reset-daily', async (req, res) => {
 });
 
 // ❌ REMOVED: /limits/cleanup endpoint (daily_limits tables no longer exist)
+
+// ============================================================================
+// Test email endpoint (development only)
+// ============================================================================
+router.post('/test-email', async (req, res) => {
+  const { email, name } = req.body;
+  
+  if (!email) {
+    return res.status(400).json({ success: false, error: 'Email is required' });
+  }
+  
+  try {
+    const result = await sendTestEmail(email, name || 'Test User');
+    res.json({ success: result.success, message: 'Test email sent', result });
+  } catch (error) {
+    console.error('Test email error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
 
 module.exports = router;
