@@ -43,10 +43,28 @@ export default function ColleagueCard({
   skipsRemaining,
   totalSkips,
   isSkipping,
-  onBackToProfile
+  onBackToProfile,
+  companySkips // Per-company skip info: { company_name, skips_remaining, initial_budget, daily_refresh }
 }) {
   return (
     <div className="space-y-6">
+      {/* Company Context Banner */}
+      {companySkips && (
+        <div className="flex items-center justify-between px-4 py-3 bg-blue-50 rounded-xl border border-blue-100">
+          <div className="flex items-center gap-2">
+            <span className="text-blue-600 text-sm font-medium">
+              📍 Reviewing colleagues from
+            </span>
+            <span className="text-blue-800 font-semibold">
+              {companySkips.company_name}
+            </span>
+          </div>
+          <span className="text-blue-600 text-sm">
+            {companySkips.skips_remaining} skips left
+          </span>
+        </div>
+      )}
+      
       <Card className="p-8 border-0 shadow-xl shadow-gray-200/50">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-5">
@@ -83,8 +101,8 @@ export default function ColleagueCard({
               <TooltipContent side="left" className="max-w-xs bg-gray-900 text-white">
                 <p className="text-sm">
                   {skipsRemaining <= 0 
-                    ? "You've used all your daily skips. Click to return to your profile and come back tomorrow for fresh skips." 
-                    : "Skip this colleague if you don't have sufficient interaction"}
+                    ? `No skips remaining for ${companySkips?.company_name || colleague.company}. Come back tomorrow for +${companySkips?.daily_refresh || 3} more skips!` 
+                    : `${skipsRemaining} skips remaining for ${companySkips?.company_name || colleague.company} colleagues`}
                 </p>
               </TooltipContent>
             </Tooltip>

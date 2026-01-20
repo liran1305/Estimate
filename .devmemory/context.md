@@ -1,13 +1,15 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-20T16:34:49.644Z
+> Last updated: 2026-01-20T17:43:42.878Z
 
 ## Project Stats
-- Total memories: 129
-- Commits tracked: 129
+- Total memories: 130
+- Commits tracked: 130
 - Decisions recorded: 0
 
 ## Recent Changes
+- `16594be` 1/20/2026: feat: Exclude non-workplace entries from colleague matching
+  Files: backend/routes/reviews.js
 - `4b5a9ae` 1/20/2026: debug: Add comprehensive logging to track colleague assignment flow
   Files: backend/routes/reviews.js
 - `4edd2c0` 1/20/2026: fix: Critical mobile UX improvements for review form
@@ -36,8 +38,6 @@
   Files: backend/package.json, backend/routes/anonymousReviews.js, backend/services/emailService.js
 - `42d7a55` 1/19/2026: feat: Complete review counter fix + UI improvements
   Files: backend/routes/reviews.js, src/components/review/ReviewSuccess.jsx, src/pages/Profile.jsx
-- `940c345` 1/19/2026: feat: Add 'Can't rate this' skip feature with 30% limit + fix review counter bug
-  Files: backend/routes/reviews.js, src/components/review/ReviewFormDynamic.jsx
 
 ## Do Not Repeat
 These issues have already been solved:

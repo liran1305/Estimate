@@ -145,13 +145,20 @@ CREATE TABLE review_sessions (
 );
 ```
 
-**Skip Budget Logic:**
-- 1-10 employees: 3 skips
-- 11-50 employees: 5 skips
-- 51-200 employees: 8 skips
-- 201-1000 employees: 10 skips
-- 1000+ employees: 13 skips
-- **+3 skip refresh** only if previous day's skips were fully exhausted
+**Skip Budget Logic (Per-Company):**
+Skips are now tracked **per company**, not per session. Each company the user worked at has its own skip budget.
+
+**Initial Budget Formula:** `3 + (employees / 100)`, max 30 skips
+- 50 employees: 3 skips
+- 500 employees: 8 skips
+- 1194 employees (Wix): 14 skips
+- 3000+ employees: 30 skips (capped)
+
+**Daily Refresh:**
+- Companies with < 1000 employees: +3 skips per day
+- Companies with ≥ 1000 employees: +5 skips per day
+
+**Auto-Switch:** When user exhausts all skips for one company, system automatically shows colleagues from the next available company.
 
 ---
 
@@ -185,6 +192,36 @@ CREATE TABLE review_assignments (
 - ✅ **First skip:** `skip_count = 1` → Colleague goes to back of queue
 - ✅ **Second skip:** `skip_count = 2` → Colleague permanently excluded for that user
 - ✅ **Never-skipped colleagues** have priority over once-skipped colleagues
+
+---
+
+### 6b. `user_company_skips` - Per-Company Skip Tracking (NEW)
+**Purpose:** Track skip usage per user per company, with daily refresh logic
+
+```sql
+CREATE TABLE user_company_skips (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id VARCHAR(255) NOT NULL,
+  company_name VARCHAR(255) NOT NULL,
+  initial_budget INT NOT NULL DEFAULT 3,    -- Based on company size: 3 + (employees/100), max 30
+  skips_used INT DEFAULT 0,
+  daily_refresh INT DEFAULT 3,              -- <1000 employees: 3, >=1000 employees: 5
+  last_refresh_date DATE,                   -- Track when daily refresh was applied
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY unique_user_company (user_id, company_name),
+  INDEX idx_user (user_id),
+  INDEX idx_company (company_name),
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+```
+
+**How It Works:**
+1. When user first sees a colleague from Company X, a record is created with initial_budget based on company size
+2. Each skip decrements from that company's budget
+3. Daily refresh adds +3 (small companies) or +5 (large companies) to the budget
+4. When a company's skips are exhausted, system auto-switches to next available company
+5. When ALL companies are exhausted, user sees "Come back tomorrow" message
 
 ---
 

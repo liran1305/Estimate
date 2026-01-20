@@ -25,6 +25,7 @@ export default function Review() {
   const [scores, setScores] = useState({});
   const [notRelevant, setNotRelevant] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [companySkips, setCompanySkips] = useState(null); // Per-company skip info
 
   useEffect(() => {
     const init = async () => {
@@ -89,6 +90,17 @@ export default function Review() {
         photo_url: data.colleague.avatar,
         overlap_months: data.colleague.overlap_months
       });
+      
+      // Update per-company skip info
+      if (data.company_skips) {
+        setCompanySkips(data.company_skips);
+        setSkipsRemaining(data.company_skips.skips_remaining);
+      }
+    } else if (data.all_companies_exhausted) {
+      // All companies have no skips remaining
+      setCurrentColleague(null);
+      setCompanySkips(null);
+      setSkipsRemaining(0);
     } else {
       setCurrentColleague(null);
     }
@@ -120,11 +132,18 @@ export default function Review() {
         if (window.dataLayer) {
           window.dataLayer.push({
             event: 'review_skipped',
-            skips_remaining: data.skips_remaining
+            skips_remaining: data.skips_remaining,
+            company_name: data.company_name
           });
         }
         
         setSkipsRemaining(data.skips_remaining);
+        if (companySkips) {
+          setCompanySkips({
+            ...companySkips,
+            skips_remaining: data.skips_remaining
+          });
+        }
         setInteractionType('');
         await fetchNextColleague(user.id, session.id);
       }
@@ -302,6 +321,7 @@ export default function Review() {
                 totalSkips={session?.skip_budget || 0}
                 isSkipping={isSkipping}
                 onBackToProfile={() => navigate(createPageUrl("Profile"))}
+                companySkips={companySkips}
               />
             </motion.div>
           )}

@@ -160,20 +160,23 @@ router.get('/session/start', async (req, res) => {
       `, [linkedinProfileId]);
 
       // Calculate base skip budget based on largest company size
-      // Formula: 3 base + 1 per 100 employees (max 13)
+      // Formula: 3 base + 1 per 100 employees (max 30 for 3000+ employees)
       let baseSkipBudget = 3; // Minimum
       
       for (const company of workHistory) {
-        // Try to get company size from companies table
+        // Try to get company size from companies table (uses employees_in_db)
         const [companyData] = await connection.query(
-          'SELECT employee_count FROM companies WHERE name = ? LIMIT 1',
+          'SELECT employees_in_db, skip_allowance FROM companies WHERE name = ? LIMIT 1',
           [company.company_name]
         );
 
-        if (companyData.length > 0 && companyData[0].employee_count) {
-          const employeeCount = companyData[0].employee_count;
-          // Calculate skips: 3 base + 1 per 100 employees, max 13
-          const companySkips = Math.min(3 + Math.floor(employeeCount / 100), 13);
+        if (companyData.length > 0 && companyData[0].skip_allowance) {
+          // Use pre-calculated skip_allowance from companies table
+          baseSkipBudget = Math.max(baseSkipBudget, companyData[0].skip_allowance);
+        } else if (companyData.length > 0 && companyData[0].employees_in_db) {
+          // Fallback: Calculate if skip_allowance not set
+          const employeeCount = companyData[0].employees_in_db;
+          const companySkips = Math.min(3 + Math.floor(employeeCount / 100), 30);
           baseSkipBudget = Math.max(baseSkipBudget, companySkips);
         }
       }
@@ -449,6 +452,10 @@ router.get('/colleague/next', async (req, res) => {
         if (colleagueData.length > 0) {
           const colleague = colleagueData[0];
           console.log(`User ${user_id}: Returning existing pending colleague: ${colleague.name}`);
+          
+          // Get per-company skip info
+          const companySkips = await getOrCreateCompanySkips(connection, user_id, colleague.company_name);
+          
           return res.json({
             success: true,
             colleague: {
@@ -460,6 +467,12 @@ router.get('/colleague/next', async (req, res) => {
               shared_company: colleague.company_name,
               company_context: savedCompanyContext || 'Same company',
               match_score: savedMatchScore || 1.0
+            },
+            company_skips: {
+              company_name: colleague.company_name,
+              skips_remaining: companySkips.skips_remaining,
+              initial_budget: companySkips.initial_budget,
+              daily_refresh: companySkips.daily_refresh
             }
           });
         }
@@ -489,10 +502,15 @@ router.get('/colleague/next', async (req, res) => {
         .map(a => a.colleague_id);
 
       // Find colleagues who worked at the same companies
-      // Exclude non-workplace entries (self-employed, freelance, masked/redacted names)
+      // Exclude non-workplace entries (self-employed, freelance, masked/redacted names, military 300+)
       const excludedCompanyPatterns = [
         'Self-employed', 'Self employed', 'Freelance', 'Freelancer',
-        'Independent Consultant', 'Consultant', 'Independent'
+        'Independent Consultant', 'Consultant', 'Independent',
+        // Military organizations (300+ employees only)
+        'Israel Defense Forces', 'Israeli Air Force', 'I.D.F', 'IDF',
+        'Israeli Military Intelligence - Unit 8200', 'Israeli Military Intelligence',
+        'IAF - Israeli Air Force', 'Unit 8200 - Israeli Intelligence Corps',
+        'IDF - Israel Defense Forces', 'Israel Defense Forces - Military Intelligence'
       ];
       
       const companyNames = userWorkHistory
@@ -624,10 +642,36 @@ router.get('/colleague/next', async (req, res) => {
       // Prioritize: 1-2 reviews > never-skipped > once-skipped
       const prioritizedColleagues = [...shuffledNeedsCompletion, ...shuffledNeverSkipped, ...shuffledOnceSkipped];
       
+      // ========== FILTER BY COMPANIES WITH AVAILABLE SKIPS ==========
+      // Get unique companies from prioritized colleagues
+      const uniqueCompanies = [...new Set(prioritizedColleagues.map(c => c.company_name))];
+      
+      // Check skip availability for each company
+      const companySkipStatus = {};
+      for (const companyName of uniqueCompanies) {
+        const skipInfo = await getOrCreateCompanySkips(connection, user_id, companyName);
+        companySkipStatus[companyName] = skipInfo;
+      }
+      
+      // Filter colleagues to only include those from companies with skips remaining
+      const colleaguesWithSkips = prioritizedColleagues.filter(c => 
+        companySkipStatus[c.company_name]?.skips_remaining > 0
+      );
+      
+      // If no colleagues have skips remaining, return no skips message
+      if (colleaguesWithSkips.length === 0) {
+        return res.json({
+          success: true,
+          colleague: null,
+          message: 'No skips remaining for any company. Come back tomorrow for more skips!',
+          all_companies_exhausted: true
+        });
+      }
+      
       // ========== 70/30 WEIGHTED SELECTION: Current vs Previous Company ==========
       // 70% chance to select from current company, 30% from previous company
-      const currentCompanyColleagues = prioritizedColleagues.filter(c => c.company_context === 'current');
-      const previousCompanyColleagues = prioritizedColleagues.filter(c => c.company_context === 'previous');
+      const currentCompanyColleagues = colleaguesWithSkips.filter(c => c.company_context === 'current');
+      const previousCompanyColleagues = colleaguesWithSkips.filter(c => c.company_context === 'previous');
       
       let selectedColleague;
       const random = Math.random();
@@ -648,8 +692,8 @@ router.get('/colleague/next', async (req, res) => {
         // Only previous company colleagues available
         selectedColleague = previousCompanyColleagues[0];
       } else {
-        // Fallback: Use first colleague (shouldn't happen)
-        selectedColleague = prioritizedColleagues[0];
+        // Fallback: Use first colleague with skips
+        selectedColleague = colleaguesWithSkips[0];
       }
 
       // Create assignment record with 'assigned' status (so refresh returns same colleague)
@@ -674,6 +718,9 @@ router.get('/colleague/next', async (req, res) => {
       
       console.log(`[COLLEAGUE FETCH] Assignment created/updated successfully`);
 
+      // Get per-company skip info for the selected colleague's company
+      const companySkips = await getOrCreateCompanySkips(connection, user_id, selectedColleague.company_name);
+
       res.json({
         success: true,
         colleague: {
@@ -685,6 +732,12 @@ router.get('/colleague/next', async (req, res) => {
           shared_company: selectedColleague.company_name,
           company_context: selectedColleague.company_context,
           match_score: selectedColleague.match_score
+        },
+        company_skips: {
+          company_name: selectedColleague.company_name,
+          skips_remaining: companySkips.skips_remaining,
+          initial_budget: companySkips.initial_budget,
+          daily_refresh: companySkips.daily_refresh
         }
       });
 
@@ -699,7 +752,80 @@ router.get('/colleague/next', async (req, res) => {
 });
 
 // ============================================================================
-// 18. POST /api/colleague/skip - Use a skip
+// HELPER: Get or create user's per-company skip record with daily refresh
+// ============================================================================
+async function getOrCreateCompanySkips(connection, user_id, company_name) {
+  // Get company info for skip calculations
+  const [companyInfo] = await connection.query(
+    'SELECT employees_in_db, skip_allowance, daily_refresh FROM companies WHERE name = ? LIMIT 1',
+    [company_name]
+  );
+  
+  // Calculate skip allowance based on company size
+  let initialBudget = 3; // Default minimum
+  let dailyRefresh = 3;  // Default for small companies
+  
+  if (companyInfo.length > 0 && companyInfo[0].employees_in_db) {
+    const employees = companyInfo[0].employees_in_db;
+    initialBudget = companyInfo[0].skip_allowance || Math.min(3 + Math.floor(employees / 100), 30);
+    dailyRefresh = companyInfo[0].daily_refresh || (employees >= 1000 ? 5 : 3);
+  }
+  
+  // Check if user already has a skip record for this company
+  const [existingRecord] = await connection.query(
+    'SELECT * FROM user_company_skips WHERE user_id = ? AND company_name = ?',
+    [user_id, company_name]
+  );
+  
+  const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+  
+  if (existingRecord.length === 0) {
+    // Create new record with initial budget
+    await connection.query(`
+      INSERT INTO user_company_skips (user_id, company_name, initial_budget, skips_used, daily_refresh, last_refresh_date)
+      VALUES (?, ?, ?, 0, ?, ?)
+    `, [user_id, company_name, initialBudget, dailyRefresh, today]);
+    
+    return {
+      initial_budget: initialBudget,
+      skips_used: 0,
+      daily_refresh: dailyRefresh,
+      skips_remaining: initialBudget,
+      last_refresh_date: today
+    };
+  }
+  
+  const record = existingRecord[0];
+  let skipsUsed = record.skips_used;
+  let totalBudget = record.initial_budget;
+  
+  // Check if daily refresh should be applied
+  if (record.last_refresh_date && record.last_refresh_date !== today) {
+    // Apply daily refresh - add to budget, don't reset
+    const daysSinceRefresh = Math.floor((new Date(today) - new Date(record.last_refresh_date)) / (24 * 60 * 60 * 1000));
+    const refreshAmount = daysSinceRefresh * record.daily_refresh;
+    
+    // Update the record with refreshed budget
+    await connection.query(`
+      UPDATE user_company_skips 
+      SET initial_budget = initial_budget + ?, last_refresh_date = ?
+      WHERE user_id = ? AND company_name = ?
+    `, [refreshAmount, today, user_id, company_name]);
+    
+    totalBudget += refreshAmount;
+  }
+  
+  return {
+    initial_budget: totalBudget,
+    skips_used: skipsUsed,
+    daily_refresh: record.daily_refresh,
+    skips_remaining: totalBudget - skipsUsed,
+    last_refresh_date: today
+  };
+}
+
+// ============================================================================
+// 18. POST /api/colleague/skip - Use a skip (Per-Company)
 // ============================================================================
 router.post('/colleague/skip', async (req, res) => {
   try {
@@ -716,24 +842,29 @@ router.post('/colleague/skip', async (req, res) => {
     const connection = await pool.getConnection();
 
     try {
-      // Get session info
-      const [sessions] = await connection.query(
-        'SELECT skip_budget, skips_used FROM review_sessions WHERE id = ? AND user_id = ? AND status = "active"',
-        [session_id, user_id]
-      );
+      // Get the colleague's shared company to determine which company's skips to use
+      const [colleagueInfo] = await connection.query(`
+        SELECT ra.company_name 
+        FROM review_assignments ra
+        WHERE ra.user_id = ? AND ra.colleague_id = ? AND ra.status = 'assigned'
+        LIMIT 1
+      `, [user_id, colleague_id]);
 
-      if (sessions.length === 0) {
-        return res.status(404).json({ success: false, error: 'Active session not found' });
+      if (colleagueInfo.length === 0) {
+        return res.status(404).json({ success: false, error: 'No active assignment found for this colleague' });
       }
 
-      const session = sessions[0];
-      const skipsRemaining = session.skip_budget - session.skips_used;
+      const companyName = colleagueInfo[0].company_name;
+      
+      // Get per-company skip info (with daily refresh logic)
+      const companySkips = await getOrCreateCompanySkips(connection, user_id, companyName);
 
-      if (skipsRemaining <= 0) {
+      if (companySkips.skips_remaining <= 0) {
         return res.status(400).json({ 
           success: false, 
-          error: 'No skips remaining',
-          skips_remaining: 0
+          error: `No skips remaining for ${companyName}`,
+          skips_remaining: 0,
+          company_name: companyName
         });
       }
 
@@ -748,17 +879,18 @@ router.post('/colleague/skip', async (req, res) => {
           actioned_at = CURRENT_TIMESTAMP
       `, [session_id, user_id, colleague_id]);
 
-      // Increment skips used
+      // Increment skips used for this company
       await connection.query(`
-        UPDATE review_sessions 
+        UPDATE user_company_skips 
         SET skips_used = skips_used + 1
-        WHERE id = ?
-      `, [session_id]);
+        WHERE user_id = ? AND company_name = ?
+      `, [user_id, companyName]);
 
       res.json({
         success: true,
         message: 'Colleague skipped',
-        skips_remaining: skipsRemaining - 1
+        skips_remaining: companySkips.skips_remaining - 1,
+        company_name: companyName
       });
 
     } finally {

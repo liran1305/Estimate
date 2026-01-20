@@ -1880,7 +1880,21 @@
       "tags": [],
       "commit_hash": "4b5a9aecba43fb6f55f3b28cb33000477d49290c",
       "created_at": "2026-01-20T16:19:56.000Z"
+    },
+    {
+      "id": 130,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "feat: Exclude non-workplace entries from colleague matching",
+      "files": [
+        "backend/routes/reviews.js"
+      ],
+      "tags": [
+        "feat"
+      ],
+      "commit_hash": "16594bea2e097f1cc8d032e5bf4b49c48b19b19d",
+      "created_at": "2026-01-20T16:35:42.000Z"
     }
   ],
-  "nextId": 130
+  "nextId": 131
 }
