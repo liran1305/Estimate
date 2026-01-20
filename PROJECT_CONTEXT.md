@@ -239,10 +239,30 @@ Find colleagues with 3+ months time overlap
   ↓
 Exclude already reviewed colleagues
   ↓
-Prioritize current company colleagues
+Prioritize current company colleagues (70/30 weighting)
   ↓
 Return random colleague from pool
 ```
+
+### 4. Colleague Persistence (CRITICAL)
+```
+User requests next colleague
+  ↓
+Check review_assignments for status='assigned' by user_id
+  ↓
+If found → Return same colleague (update session_id if different device)
+  ↓
+If not found → Select new colleague and create 'assigned' record
+  ↓
+Colleague persists until user skips or submits review
+```
+
+**review_assignments.status values (Single Source of Truth):**
+- `'assigned'` = Currently shown to user, waiting for action
+- `'skipped'` = User skipped this colleague
+- `'reviewed'` = User submitted a review for this colleague
+
+**Key behavior:** Same colleague shown across page reloads, different devices, and GTM preview mode until explicitly skipped or reviewed.
 
 ---
 
@@ -306,6 +326,47 @@ FRONTEND_URL=https://estimatenow.io
 ---
 
 ## Recent Changes Log
+
+### 2025-01-20: Colleague Persistence Fix (CRITICAL)
+**Changes:**
+- Fixed colleague assignment to persist across sessions/devices
+- Check for `status='assigned'` by `user_id` only (not session_id)
+- Update session_id when user returns from different device
+- Same colleague shown until explicitly skipped or reviewed
+
+**Impact:**
+- Users no longer see different colleagues on page reload
+- Consistent experience across devices (phone, desktop)
+- GTM preview mode no longer causes colleague changes
+
+**Files Modified:**
+- `backend/routes/reviews.js` - Colleague next endpoint
+
+### 2025-01-20: GTM Event Tracking
+**Changes:**
+- Added Google Tag Manager (GTM-PSNC2B5F)
+- Added GA4 tracking (G-C8PFEN67G1)
+- Implemented 9 custom events for user journey tracking
+
+**Events:**
+- `linkedin_auth_start`, `linkedin_auth_complete`
+- `review_submitted`, `review_skipped`, `score_unlocked`
+- `profile_viewed`, `onboarding_complete`
+- `recruiter_consent_enabled`, `recruiter_consent_disabled`
+- `badge_copied`
+
+**Files Modified:**
+- `index.html` - GTM script
+- `src/pages/Review.jsx`, `Profile.jsx`, `LinkedInAuth.jsx`, `LinkedInCallback.jsx`, `Onboarding.jsx`
+
+### 2025-01-20: SEO Setup
+**Changes:**
+- Added `sitemap.xml` with public pages
+- Added `robots.txt` to block private pages
+- Updated `_redirects` to serve static files
+
+**Files Modified:**
+- `public/sitemap.xml`, `public/robots.txt`, `public/_redirects`
 
 ### 2025-01-19: Colleague Matching Algorithm Improvements
 **Changes:**
