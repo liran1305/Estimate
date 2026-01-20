@@ -1,17 +1,22 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-20T14:11:26.191Z
+> Last updated: 2026-01-20T14:25:19.239Z
 
 ## Project Stats
-- Total memories: 120
-- Commits tracked: 120
+- Total memories: 122
+- Commits tracked: 122
 - Decisions recorded: 0
 
 ## Relevant to Current Work
-- **1/20/2026**: feat: Add sitemap.xml and robots.txt for SEO (public/robots.txt, public/sitemap.xml)
-- **1/20/2026**: feat: Add sitemap.xml and robots.txt for SEO (public/robots.txt, public/sitemap.xml)
+- **1/7/2026**: Fix favicon paths - remove spaces from folder names (index.html, public/favicons/estimate-favicon-180.png, public/favicons/estimate-favicon-32.png)
+- **1/6/2026**: Update favicons and meta tags with Estimate branding (index.html)
+- **1/6/2026**: Initial commit: Estimate professional peer review platform (README.md, components.json, eslint.config.js)
 
 ## Recent Changes
+- `4ce4076` 1/20/2026: fix: Add sitemap.xml and robots.txt content
+  Files: public/robots.txt, public/sitemap.xml
+- `080da7b` 1/20/2026: fix: Serve sitemap.xml and robots.txt as static files
+  Files: public/_redirects
 - `58727fe` 1/20/2026: feat: Add sitemap.xml and robots.txt for SEO
   Files: public/robots.txt, public/sitemap.xml
 - `8e6e092` 1/20/2026: feat: Add sitemap.xml and robots.txt for SEO
@@ -38,12 +43,10 @@
   Files: public/images/Estimate_logo_LIGHT_00000.png, src/components/Logo.jsx
 - `7d5743e` 1/19/2026: Add clean badge preview to profile headline
   Files: src/pages/Profile.jsx
-- `1845647` 1/18/2026: Add escalating violation warnings with 24-hour lockout
-  Files: src/components/review/ReviewFormDynamic.jsx
-- `bc0240c` 1/18/2026: Add comprehensive abuse detection system
-  Files: backend/routes/reviews.js, src/components/review/ReviewFormDynamic.jsx
 
 ## Do Not Repeat
 These issues have already been solved:
+- Add sitemap.xml and robots.txt content
+- Serve sitemap.xml and robots.txt as static files
 - Correct 70/30 company distribution in colleague matching
 - Replace insecure client-side fraud detection with server-side enforcement

@@ -1748,7 +1748,36 @@
       ],
       "commit_hash": "58727fe72aa646c60c12230e5f5b5355a4c5496e",
       "created_at": "2026-01-20T14:05:44.000Z"
+    },
+    {
+      "id": 121,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "fix: Serve sitemap.xml and robots.txt as static files",
+      "files": [
+        "public/_redirects"
+      ],
+      "tags": [
+        "fix"
+      ],
+      "commit_hash": "080da7bd73460b1cbe72aa094cb14245ea974eb9",
+      "created_at": "2026-01-20T14:15:50.000Z"
+    },
+    {
+      "id": 122,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "fix: Add sitemap.xml and robots.txt content",
+      "files": [
+        "public/robots.txt",
+        "public/sitemap.xml"
+      ],
+      "tags": [
+        "fix"
+      ],
+      "commit_hash": "4ce4076e08ebb7ac2265d62b22426fd42133928c",
+      "created_at": "2026-01-20T14:19:28.000Z"
     }
   ],
-  "nextId": 121
+  "nextId": 123
 }
