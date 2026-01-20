@@ -174,7 +174,8 @@ export default function Review() {
     setIsSubmitting(true);
     
     try {
-      const res = await fetch(`${BACKEND_API_URL}/api/review/submit`, {
+      // Step 1: Create anonymous review token
+      const tokenRes = await fetch(`${BACKEND_API_URL}/api/anonymous/token/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -182,7 +183,25 @@ export default function Review() {
           session_id: session.id,
           colleague_id: currentColleague.id,
           company_name: currentColleague.company,
-          interaction_type: interactionType,
+          company_context: 'previous',
+          interaction_type: interactionType
+        })
+      });
+      
+      const tokenData = await tokenRes.json();
+      
+      if (!tokenData.success) {
+        alert(tokenData.error || 'Failed to create review token');
+        setIsSubmitting(false);
+        return;
+      }
+      
+      // Step 2: Submit review with token (untraceable - token is burned after submission)
+      const res = await fetch(`${BACKEND_API_URL}/api/anonymous/review/submit`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          token: tokenData.token,
           ...reviewData
         })
       });
@@ -190,21 +209,21 @@ export default function Review() {
       const data = await res.json();
       
       if (data.success) {
-        setReviewsGiven(data.reviews_completed);
+        setReviewsGiven(data.reviews_given);
         
         // Track review submission in GTM
         if (window.dataLayer) {
           window.dataLayer.push({
             event: 'review_submitted',
-            review_count: data.reviews_completed,
+            review_count: data.reviews_given,
             interaction_type: interactionType
           });
           
           // Track score unlock milestone (3 reviews)
-          if (data.score_unlocked) {
+          if (data.profile_unlocked) {
             window.dataLayer.push({
               event: 'score_unlocked',
-              reviews_given: data.reviews_completed
+              reviews_given: data.reviews_given
             });
           }
         }

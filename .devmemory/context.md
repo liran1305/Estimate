@@ -1,13 +1,22 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-20T17:43:42.878Z
+> Last updated: 2026-01-20T18:16:06.053Z
 
 ## Project Stats
-- Total memories: 130
-- Commits tracked: 130
+- Total memories: 131
+- Commits tracked: 131
 - Decisions recorded: 0
 
+## Relevant to Current Work
+- **1/20/2026**: feat: Exclude military organizations from colleague matching (DATA_STRUCTURES.md, backend/database/migration-company-stats.sql, backend/routes/reviews.js)
+- **1/20/2026**: feat: Exclude non-workplace entries from colleague matching (backend/routes/reviews.js)
+- **1/20/2026**: debug: Add comprehensive logging to track colleague assignment flow (backend/routes/reviews.js)
+- **1/20/2026**: fix: Persist colleague assignment across sessions/devices (backend/routes/reviews.js, src/pages/Onboarding.jsx, src/pages/Profile.jsx)
+- **1/20/2026**: fix: Correct 70/30 company distribution in colleague matching (backend/routes/reviews.js)
+
 ## Recent Changes
+- `89c55a4` 1/20/2026: feat: Exclude military organizations from colleague matching
+  Files: DATA_STRUCTURES.md, backend/database/migration-company-stats.sql, backend/routes/reviews.js
 - `16594be` 1/20/2026: feat: Exclude non-workplace entries from colleague matching
   Files: backend/routes/reviews.js
 - `4b5a9ae` 1/20/2026: debug: Add comprehensive logging to track colleague assignment flow
@@ -36,8 +45,6 @@
   Files: backend/routes/reviews.js
 - `c03efaa` 1/20/2026: feat: Add email notifications for new reviews
   Files: backend/package.json, backend/routes/anonymousReviews.js, backend/services/emailService.js
-- `42d7a55` 1/19/2026: feat: Complete review counter fix + UI improvements
-  Files: backend/routes/reviews.js, src/components/review/ReviewSuccess.jsx, src/pages/Profile.jsx
 
 ## Do Not Repeat
 These issues have already been solved:

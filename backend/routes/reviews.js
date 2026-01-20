@@ -407,7 +407,7 @@ router.get('/colleague/next', async (req, res) => {
       console.log(`[COLLEAGUE FETCH] User ${user_id}, Session ${session_id}: Checking for existing assigned colleague...`);
       
       const [pendingAssignments] = await connection.query(`
-        SELECT colleague_id, session_id as original_session_id, company_context, match_score 
+        SELECT colleague_id, session_id as original_session_id, company_name, company_context, match_score 
         FROM review_assignments 
         WHERE user_id = ? AND status = 'assigned'
         LIMIT 1
@@ -435,26 +435,27 @@ router.get('/colleague/next', async (req, res) => {
           console.log(`User ${user_id}: Updated pending assignment session from ${originalSessionId} to ${session_id}`);
         }
         
+        // Get the saved company_name from the assignment (this is the shared company)
+        const savedCompanyName = pendingAssignments[0].company_name;
+        
         const [colleagueData] = await connection.query(`
           SELECT 
             lp.id,
             lp.name,
             lp.avatar,
             lp.position,
-            lp.current_company_name,
-            cc.company_name
+            lp.current_company_name
           FROM linkedin_profiles lp
-          JOIN company_connections cc ON cc.profile_id = lp.id
           WHERE lp.id = ?
           LIMIT 1
         `, [pendingColleagueId]);
 
         if (colleagueData.length > 0) {
           const colleague = colleagueData[0];
-          console.log(`User ${user_id}: Returning existing pending colleague: ${colleague.name}`);
+          console.log(`User ${user_id}: Returning existing pending colleague: ${colleague.name} from ${savedCompanyName}`);
           
-          // Get per-company skip info
-          const companySkips = await getOrCreateCompanySkips(connection, user_id, colleague.company_name);
+          // Get per-company skip info using the saved company name from the assignment
+          const companySkips = await getOrCreateCompanySkips(connection, user_id, savedCompanyName);
           
           return res.json({
             success: true,
@@ -464,12 +465,12 @@ router.get('/colleague/next', async (req, res) => {
               avatar: colleague.avatar,
               position: colleague.position,
               current_company: colleague.current_company_name,
-              shared_company: colleague.company_name,
+              shared_company: savedCompanyName,
               company_context: savedCompanyContext || 'Same company',
               match_score: savedMatchScore || 1.0
             },
             company_skips: {
-              company_name: colleague.company_name,
+              company_name: savedCompanyName,
               skips_remaining: companySkips.skips_remaining,
               initial_budget: companySkips.initial_budget,
               daily_refresh: companySkips.daily_refresh

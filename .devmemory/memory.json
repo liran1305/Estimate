@@ -1894,7 +1894,25 @@
       ],
       "commit_hash": "16594bea2e097f1cc8d032e5bf4b49c48b19b19d",
       "created_at": "2026-01-20T16:35:42.000Z"
+    },
+    {
+      "id": 131,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "feat: Exclude military organizations from colleague matching",
+      "files": [
+        "DATA_STRUCTURES.md",
+        "backend/database/migration-company-stats.sql",
+        "backend/routes/reviews.js",
+        "src/components/review/ColleagueCard.jsx",
+        "src/pages/Review.jsx"
+      ],
+      "tags": [
+        "feat"
+      ],
+      "commit_hash": "89c55a4e7be966599bb1dece7b7171e3d69aae59",
+      "created_at": "2026-01-20T17:45:21.000Z"
     }
   ],
-  "nextId": 131
+  "nextId": 132
 }

@@ -331,7 +331,13 @@ router.post('/review/submit', async (req, res) => {
         `, [session_id]);
       }
 
-      // ❌ REMOVED: review_assignments update (was leaking who reviewed whom!)
+      // Update review_assignments status to 'reviewed' so same colleague isn't shown again
+      // This is safe - it only marks the assignment complete, doesn't link to the anonymous review
+      await connection.query(`
+        UPDATE review_assignments 
+        SET status = 'reviewed', actioned_at = CURRENT_TIMESTAMP
+        WHERE user_id = ? AND colleague_id = ? AND status = 'assigned'
+      `, [reviewer_id, reviewee_id]);
 
       // 10. 🔥🔥🔥 BURN THE TOKEN 🔥🔥🔥
       await connection.query(
@@ -341,13 +347,13 @@ router.post('/review/submit', async (req, res) => {
 
       console.log(`🔥 [ANON] Token BURNED. Review ${reviewId} is now untraceable.`);
 
-      // 11. Check if reviewer unlocked their profile
+      // 11. Check if reviewer unlocked their profile (read from user_scores table)
       const [reviewerData] = await connection.query(
-        'SELECT reviews_given_count FROM users WHERE id = ?',
+        'SELECT reviews_given, score_unlocked FROM user_scores WHERE user_id = ?',
         [reviewer_id]
       );
 
-      const reviewsGiven = reviewerData[0]?.reviews_given_count || 0;
+      const reviewsGiven = reviewerData[0]?.reviews_given || 0;
       const profileUnlocked = reviewsGiven >= 3;
 
       if (profileUnlocked && reviewsGiven === 3) {
@@ -363,7 +369,7 @@ router.post('/review/submit', async (req, res) => {
       // This happens AFTER commit to not block the response
       try {
         const [revieweeUser] = await connection.query(`
-          SELECT u.email, u.full_name, us.reviews_received
+          SELECT u.email, u.name, us.reviews_received
           FROM users u
           LEFT JOIN user_scores us ON us.user_id = u.id
           WHERE u.linkedin_profile_id = ?
@@ -373,7 +379,7 @@ router.post('/review/submit', async (req, res) => {
           const reviewCount = (revieweeUser[0].reviews_received || 0) + 1;
           sendNewReviewNotification(
             revieweeUser[0].email,
-            revieweeUser[0].full_name,
+            revieweeUser[0].name,
             reviewCount
           ).catch(err => console.error('[EMAIL] Async send failed:', err));
         }
