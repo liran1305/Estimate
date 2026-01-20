@@ -192,17 +192,17 @@ export default function ReviewFormDynamic({
 
   return (
     <TooltipProvider delayDuration={100}>
-    <Card className="p-8 border-0 shadow-xl shadow-gray-200/50">
+    <Card className="p-4 sm:p-8 border-0 shadow-xl shadow-gray-200/50">
       {/* Profile Header */}
-      <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl mb-8">
+      <div className="flex items-center gap-3 p-3 sm:p-4 bg-gray-50 rounded-xl mb-6 sm:mb-8">
         <img 
           src={colleague.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(colleague.name)}&background=0A66C2&color=fff&size=80`}
           alt={colleague.name}
-          className="w-20 h-20 rounded-full object-cover"
+          className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover flex-shrink-0"
         />
-        <div>
-          <h2 className="font-semibold text-gray-900">{colleague.name}</h2>
-          <p className="text-sm text-gray-500">{colleague.job_title}</p>
+        <div className="min-w-0 flex-1">
+          <h2 className="font-semibold text-gray-900 truncate">{colleague.name}</h2>
+          <p className="text-sm text-gray-500 truncate">{colleague.job_title}</p>
           <span className="inline-block mt-1 px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded-full">
             {relationshipConfig.label}
           </span>
@@ -241,7 +241,7 @@ export default function ReviewFormDynamic({
                 </div>
               </div>
               {!skippedQuestions[slider.key] ? (
-                <>
+                <div className="py-2">
                   <Slider
                     value={[scores[slider.key] || 5]}
                     onValueChange={(value) => handleScoreChange(slider.key, value[0])}
@@ -254,7 +254,7 @@ export default function ReviewFormDynamic({
                     <span>1</span>
                     <span>10</span>
                   </div>
-                </>
+                </div>
               ) : (
                 <div className="py-3 px-4 bg-gray-50 rounded-lg border border-gray-200 text-center">
                   <p className="text-sm text-gray-500">Skipped - won't affect their score</p>
@@ -278,13 +278,13 @@ export default function ReviewFormDynamic({
               ) : (
                 <button
                   onClick={() => handleSkipQuestion(slider.key, !skippedQuestions[slider.key])}
-                  className={`mt-2 flex items-center gap-1.5 text-xs transition-colors ${
+                  className={`mt-2 py-2 min-h-[44px] flex items-center gap-1.5 text-sm transition-colors ${
                     skippedQuestions[slider.key] 
                       ? 'text-blue-600 hover:text-blue-700' 
                       : 'text-gray-400 hover:text-gray-600'
                   }`}
                 >
-                  <HelpCircle className="w-3.5 h-3.5" />
+                  <HelpCircle className="w-4 h-4" />
                   {skippedQuestions[slider.key] ? 'I can rate this' : "Can't rate this"}
                 </button>
               )}
@@ -305,19 +305,19 @@ export default function ReviewFormDynamic({
           Select up to {relationshipConfig.maxTags} strengths <span className="text-amber-600">({selectedTags.length} selected)</span>
         </p>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+        <div className="flex flex-wrap gap-2">
           {tags.map((tag) => (
             <button
               key={tag.id}
               onClick={() => handleTagClick(tag.id)}
-              className={`px-4 py-2.5 rounded-lg border-2 text-sm font-medium transition-all flex items-center gap-2 justify-start ${
+              className={`px-4 py-3 rounded-xl border-2 text-sm font-medium transition-all flex items-center gap-2 ${
                 selectedTags.includes(tag.id)
                   ? 'bg-blue-50 border-blue-400'
                   : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50'
               }`}
             >
-              <span className="text-base">{tag.emoji}</span>
-              <span>{tag.label}</span>
+              <span className="text-lg flex-shrink-0">{tag.emoji}</span>
+              <span className="whitespace-nowrap">{tag.label}</span>
             </button>
           ))}
         </div>
@@ -338,7 +338,7 @@ export default function ReviewFormDynamic({
             </h3>
             <p className="text-sm text-gray-500 mb-4">Be honest - this stays anonymous</p>
 
-            <div className={`grid gap-2 ${workAgainOptions.length === 5 ? 'grid-cols-5' : 'grid-cols-4'}`}>
+            <div className={`grid gap-2 ${workAgainOptions.length === 5 ? 'grid-cols-2 sm:grid-cols-5' : 'grid-cols-2 sm:grid-cols-4'}`}>
               {workAgainOptions.map((option) => (
                 <button
                   key={option.value}
@@ -350,7 +350,7 @@ export default function ReviewFormDynamic({
                   }`}
                 >
                   <div className="text-2xl mb-1">{option.emoji}</div>
-                  <div className="text-xs text-gray-600">{option.label}</div>
+                  <div className="text-xs text-gray-600 break-words">{option.label}</div>
                 </button>
               ))}
             </div>
@@ -513,7 +513,7 @@ export default function ReviewFormDynamic({
       {/* Time Warning Modal */}
       {showTimeWarning && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl">
+          <div className="bg-white rounded-xl p-4 sm:p-6 max-w-md w-full shadow-2xl mx-4">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 rounded-full flex items-center justify-center bg-amber-100">
                 <Clock className="w-6 h-6 text-amber-600" />
@@ -544,7 +544,7 @@ export default function ReviewFormDynamic({
       {/* Pattern Warning Modal */}
       {showPatternWarning && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl">
+          <div className="bg-white rounded-xl p-4 sm:p-6 max-w-md w-full shadow-2xl mx-4">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
                 <AlertTriangle className="w-6 h-6 text-red-600" />

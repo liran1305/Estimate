@@ -1,20 +1,22 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-20T15:33:17.173Z
+> Last updated: 2026-01-20T16:01:17.638Z
 
 ## Project Stats
-- Total memories: 126
-- Commits tracked: 126
+- Total memories: 127
+- Commits tracked: 127
 - Decisions recorded: 0
 
 ## Relevant to Current Work
-- **1/20/2026**: fix: Persist colleague assignment across sessions/devices (backend/routes/reviews.js, src/pages/Onboarding.jsx, src/pages/Profile.jsx)
-- **1/20/2026**: feat: Add GTM event tracking for key user actions (src/pages/LinkedInAuth.jsx, src/pages/LinkedInCallback.jsx, src/pages/Profile.jsx)
-- **1/19/2026**: feat: Complete review counter fix + UI improvements (backend/routes/reviews.js, src/components/review/ReviewSuccess.jsx, src/pages/Profile.jsx)
-- **1/18/2026**: Improve review form UI: wider layout, better organization, moved content up (src/components/review/ReviewFormDynamic.jsx, src/config/reviewConfig.js, src/pages/Review.jsx)
-- **1/18/2026**: Add relationship-specific review questions with weighted scoring (NEW_REVIEW_STRUCTURE.md, backend/database/migration-dynamic-reviews.sql, backend/database/migration-new-review-structure.sql)
+- **1/19/2026**: feat: Add 'Can't rate this' skip feature with 30% limit + fix review counter bug (backend/routes/reviews.js, src/components/review/ReviewFormDynamic.jsx)
+- **1/19/2026**: Fix: Replace insecure client-side fraud detection with server-side enforcement (backend/database/migration-fraud-tracking.sql, backend/routes/fraud.js, backend/routes/reviews.js)
+- **1/18/2026**: Add escalating violation warnings with 24-hour lockout (src/components/review/ReviewFormDynamic.jsx)
+- **1/18/2026**: Add comprehensive abuse detection system (backend/routes/reviews.js, src/components/review/ReviewFormDynamic.jsx)
+- **1/18/2026**: Improve tag button alignment: left-align text and icons (src/components/review/ReviewFormDynamic.jsx)
 
 ## Recent Changes
+- `f652c35` 1/20/2026: feat: Improve skip button and add Continue Reviewing CTA
+  Files: src/components/review/ColleagueCard.jsx, src/components/review/ReviewSuccess.jsx
 - `c33fe89` 1/20/2026: docs: Update PROJECT_CONTEXT.md with colleague persistence and GTM tracking
   Files: PROJECT_CONTEXT.md
 - `ae33b3a` 1/20/2026: fix: Persist colleague assignment across sessions/devices
@@ -43,8 +45,6 @@
   Files: backend/routes/anonymousReviews.js, backend/server.js, src/components/landing/FAQ.jsx
 - `d275675` 1/19/2026: Update PROJECT_CONTEXT.md: document colleague matching improvements and fraud detection changes
   Files: PROJECT_CONTEXT.md
-- `10f48f2` 1/19/2026: Smart colleague matching: expand to 4 companies with 2-year filter, skip companies with no colleagues, add 70/30 current/previous weighting
-  Files: backend/routes/reviews.js
 
 ## Do Not Repeat
 These issues have already been solved:
