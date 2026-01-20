@@ -1,20 +1,23 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-20T14:00:27.276Z
+> Last updated: 2026-01-20T14:11:26.191Z
 
 ## Project Stats
-- Total memories: 117
-- Commits tracked: 117
+- Total memories: 120
+- Commits tracked: 120
 - Decisions recorded: 0
 
 ## Relevant to Current Work
-- **1/12/2026**: Revert "Add Cloud SQL Connector for secure private connection" (backend/.env.example, backend/package.json, backend/routes/colleagues.js)
-- **1/12/2026**: Add Cloud SQL Connector for secure private connection (backend/.env.example, backend/package.json, backend/routes/colleagues.js)
-- **1/12/2026**: Add Cloud SQL integration and colleague search API (backend/.env.example, backend/database/schema.sql, backend/package.json)
-- **1/11/2026**: Add Cloudflare Turnstile invisible bot protection (.env.example, backend/.env.example, backend/server.js)
-- **1/9/2026**: Add secure backend and remove client secret from frontend (.env.example, backend/.env.example, backend/README.md)
+- **1/20/2026**: feat: Add sitemap.xml and robots.txt for SEO (public/robots.txt, public/sitemap.xml)
+- **1/20/2026**: feat: Add sitemap.xml and robots.txt for SEO (public/robots.txt, public/sitemap.xml)
 
 ## Recent Changes
+- `58727fe` 1/20/2026: feat: Add sitemap.xml and robots.txt for SEO
+  Files: public/robots.txt, public/sitemap.xml
+- `8e6e092` 1/20/2026: feat: Add sitemap.xml and robots.txt for SEO
+  Files: public/robots.txt, public/sitemap.xml
+- `2643adb` 1/20/2026: fix: Correct 70/30 company distribution in colleague matching
+  Files: backend/routes/reviews.js
 - `c03efaa` 1/20/2026: feat: Add email notifications for new reviews
   Files: backend/package.json, backend/routes/anonymousReviews.js, backend/services/emailService.js
 - `42d7a55` 1/19/2026: feat: Complete review counter fix + UI improvements
@@ -39,13 +42,8 @@
   Files: src/components/review/ReviewFormDynamic.jsx
 - `bc0240c` 1/18/2026: Add comprehensive abuse detection system
   Files: backend/routes/reviews.js, src/components/review/ReviewFormDynamic.jsx
-- `dd4e0e8` 1/18/2026: Improve tag button alignment: left-align text and icons
-  Files: src/components/review/ReviewFormDynamic.jsx
-- `96a1a91` 1/18/2026: Improve review form UI: wider layout, better organization, moved content up
-  Files: src/components/review/ReviewFormDynamic.jsx, src/config/reviewConfig.js, src/pages/Review.jsx
-- `19cc7f3` 1/18/2026: Improve mobile UI: logo icon and score circle
-  Files: src/components/Logo.jsx, src/pages/Profile.jsx
 
 ## Do Not Repeat
 These issues have already been solved:
+- Correct 70/30 company distribution in colleague matching
 - Replace insecure client-side fraud detection with server-side enforcement

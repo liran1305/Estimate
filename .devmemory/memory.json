@@ -1704,7 +1704,51 @@
       ],
       "commit_hash": "c03efaaef0f3c449a7a11616a24deec2d9bc5d65",
       "created_at": "2026-01-20T13:55:44.000Z"
+    },
+    {
+      "id": 118,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "fix: Correct 70/30 company distribution in colleague matching",
+      "files": [
+        "backend/routes/reviews.js"
+      ],
+      "tags": [
+        "fix"
+      ],
+      "commit_hash": "2643adbd7a39ffa40829a0085e4a9a41fcd60d40",
+      "created_at": "2026-01-20T14:01:50.000Z"
+    },
+    {
+      "id": 119,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "feat: Add sitemap.xml and robots.txt for SEO",
+      "files": [
+        "public/robots.txt",
+        "public/sitemap.xml"
+      ],
+      "tags": [
+        "feat"
+      ],
+      "commit_hash": "8e6e0921c3954a705d7c32a04c449d56c6608121",
+      "created_at": "2026-01-20T14:03:30.000Z"
+    },
+    {
+      "id": 120,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "feat: Add sitemap.xml and robots.txt for SEO",
+      "files": [
+        "public/robots.txt",
+        "public/sitemap.xml"
+      ],
+      "tags": [
+        "feat"
+      ],
+      "commit_hash": "58727fe72aa646c60c12230e5f5b5355a4c5496e",
+      "created_at": "2026-01-20T14:05:44.000Z"
     }
   ],
-  "nextId": 118
+  "nextId": 121
 }
