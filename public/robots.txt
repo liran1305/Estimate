@@ -1,0 +1,12 @@
+# Estimate - robots.txt
+User-agent: *
+Allow: /
+Disallow: /Profile
+Disallow: /Review
+Disallow: /Onboarding
+Disallow: /LinkedInAuth
+Disallow: /auth/
+Disallow: /Blocked
+
+# Sitemap
+Sitemap: https://estimatenow.io/sitemap.xml
