@@ -315,7 +315,8 @@ router.post('/review/submit', async (req, res) => {
         WHERE id = ?
       `, [reviewee_id]);
 
-      // 8. Update user_scores for reviewer
+      // 8. Update user_scores for reviewer (reviews_given)
+      // Note: reviews_received and overall_score for REVIEWEE are handled by database triggers
       await connection.query(`
         INSERT INTO user_scores (user_id, reviews_given)
         VALUES (?, 1)

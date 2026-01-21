@@ -1212,19 +1212,40 @@ router.post('/review/submit', async (req, res) => {
         ON DUPLICATE KEY UPDATE reviews_given = reviews_given + 1
       `, [user_id]);
 
-      // Update user_scores for reviewee (reviews_received)
+      // Update user_scores for reviewee (reviews_received) and recalculate overall_score
       const [revieweeUser] = await connection.query(
         'SELECT id FROM users WHERE linkedin_profile_id = ? LIMIT 1',
         [colleague_id]
       );
       
       if (revieweeUser.length > 0) {
-        // User has an account - update their user_scores
+        // User has an account - update their user_scores with correct count and score
+        // Count ALL reviews from both tables using linkedin_profile_id
+        const [reviewCount] = await connection.query(`
+          SELECT 
+            (SELECT COUNT(*) FROM reviews WHERE reviewee_id = ?) +
+            (SELECT COUNT(*) FROM anonymous_reviews WHERE reviewee_id = ?) as total_reviews
+        `, [colleague_id, colleague_id]);
+        
+        // Calculate average score from all reviews
+        const [avgScore] = await connection.query(`
+          SELECT AVG(score) as avg_score FROM (
+            SELECT overall_score as score FROM reviews WHERE reviewee_id = ?
+            UNION ALL
+            SELECT overall_score as score FROM anonymous_reviews WHERE reviewee_id = ?
+          ) as all_reviews
+        `, [colleague_id, colleague_id]);
+        
+        const totalReviews = reviewCount[0]?.total_reviews || 1;
+        const calculatedScore = avgScore[0]?.avg_score || overall_score;
+        
         await connection.query(`
-          INSERT INTO user_scores (user_id, linkedin_profile_id, reviews_received)
-          VALUES (?, ?, 1)
-          ON DUPLICATE KEY UPDATE reviews_received = reviews_received + 1
-        `, [revieweeUser[0].id, colleague_id]);
+          INSERT INTO user_scores (user_id, linkedin_profile_id, reviews_received, overall_score)
+          VALUES (?, ?, ?, ?)
+          ON DUPLICATE KEY UPDATE 
+            reviews_received = ?,
+            overall_score = ?
+        `, [revieweeUser[0].id, colleague_id, totalReviews, calculatedScore, totalReviews, calculatedScore]);
       } else {
         // User hasn't logged in yet - update linkedin_profiles.reviews_received_count
         // This tracks reviews for users before they create an account
