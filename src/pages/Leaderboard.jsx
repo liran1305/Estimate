@@ -13,9 +13,13 @@ import {
   Users, 
   ChevronRight,
   Linkedin,
-  Star
+  Star,
+  Share2,
+  Download,
+  Copy
 } from "lucide-react";
 import { motion } from "framer-motion";
+import html2canvas from 'html2canvas';
 
 const BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:3001';
 
@@ -23,6 +27,9 @@ const BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhos
 const ProfileHexagon = ({ user, size = 'md', currentUser }) => {
   const isCurrentUser = currentUser && user.userId === currentUser.id;
   const isPublic = user.isPublic || isCurrentUser;
+  
+  // Use original photo URL - browser can display it even with CORS
+  const imageUrl = user.photoUrl;
   
   // All hexagons same size - larger like Favikon
   const s = { width: 140, height: 161, circleSize: 100, borderWidth: 5 };
@@ -83,12 +90,13 @@ const ProfileHexagon = ({ user, size = 'md', currentUser }) => {
         <g clipPath={`url(#${clipId})`}>
           {isPublic && user.photoUrl ? (
             <image
-              href={user.photoUrl}
+              href={imageUrl}
               x="0"
               y="0"
               width="100"
               height="115"
               preserveAspectRatio="xMidYMid slice"
+              crossOrigin="anonymous"
             />
           ) : (
             <>
@@ -188,6 +196,10 @@ export default function Leaderboard() {
   const [currentUser, setCurrentUser] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [showAutocomplete, setShowAutocomplete] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [shareImage, setShareImage] = useState(null);
+  const [shareText, setShareText] = useState('');
+  const [isCopied, setIsCopied] = useState(false);
 
   // Get current user on mount
   useEffect(() => {
@@ -265,6 +277,10 @@ export default function Leaderboard() {
       const data = await res.json();
       
       if (data.success) {
+        // Debug: Log current user's leaderboard entry
+        const myEntry = data.leaderboard.find(u => u.isCurrentUser);
+        console.log('My leaderboard entry:', myEntry);
+        console.log('Current user ID:', userId);
         setLeaderboard(data.leaderboard);
       }
     } catch (err) {
@@ -273,6 +289,92 @@ export default function Leaderboard() {
     } finally {
       setIsLoadingLeaderboard(false);
     }
+  };
+
+  const handleSharePosition = async () => {
+    const userPosition = leaderboard.find(u => u.userId === currentUser?.id);
+    if (!userPosition) return;
+
+    // Generate share text first
+    const percentile = Math.round((1 - (userPosition.rank - 1) / 10) * 100);
+    const text = `🎯 Ranked #${userPosition.rank} among ${selectedCategoryData?.name || 'professionals'} on Estimate!
+
+Based on anonymous peer reviews from colleagues I've worked with, I'm in the top ${percentile}% of ${selectedCategoryData?.name || 'my field'}.
+
+My score: ${userPosition.score}/10 ⭐
+
+Estimate uses anonymous peer feedback to help professionals understand their true market value. No politics, just honest colleague reviews.
+
+Check out your ranking: estimatenow.io
+
+#${selectedCategoryData?.name?.replace(/\s+/g, '')} #PeerReview #CareerGrowth #ProfessionalDevelopment`;
+
+    setShareText(text);
+
+    // Wait for all images to load before capturing screenshot
+    const leaderboardElement = document.getElementById('leaderboard-hexagons');
+    if (leaderboardElement) {
+      try {
+        // Wait for all images in the leaderboard to load
+        const images = leaderboardElement.querySelectorAll('image');
+        await Promise.all(
+          Array.from(images).map(img => {
+            return new Promise((resolve) => {
+              if (img.href && img.href.baseVal) {
+                const image = new Image();
+                image.crossOrigin = 'anonymous';
+                image.onload = () => resolve();
+                image.onerror = () => resolve(); // Resolve even on error to not block
+                image.src = img.href.baseVal;
+              } else {
+                resolve();
+              }
+            });
+          })
+        );
+
+        // Add small delay to ensure rendering is complete
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        const canvas = await html2canvas(leaderboardElement, {
+          backgroundColor: '#ffffff',
+          scale: 2,
+          logging: false,
+          allowTaint: true
+        });
+        const imageDataUrl = canvas.toDataURL('image/png');
+        setShareImage(imageDataUrl);
+      } catch (err) {
+        console.error('Failed to capture screenshot:', err);
+      }
+    }
+
+    // Open modal after screenshot is captured
+    setShowShareModal(true);
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(shareText);
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 2000);
+  };
+
+  const downloadImage = () => {
+    if (shareImage) {
+      const link = document.createElement('a');
+      link.download = 'my-leaderboard-position.png';
+      link.href = shareImage;
+      link.click();
+    }
+  };
+
+  const shareOnLinkedIn = () => {
+    // LinkedIn share URL with pre-filled text
+    const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://estimatenow.io')}`;
+    window.open(linkedInUrl, '_blank', 'width=600,height=600');
+    
+    // Copy text to clipboard so user can paste it
+    copyToClipboard();
   };
 
   const selectedCategoryData = categories.find(c => c.key === selectedCategory);
@@ -414,7 +516,7 @@ export default function Leaderboard() {
         ) : (
           <Card className="p-8 bg-white border border-gray-200">
             {/* Honeycomb Hexagonal Grid Layout - All same size, wider */}
-            <div className="flex flex-col items-center" style={{ paddingBottom: '60px' }}>
+            <div id="leaderboard-hexagons" className="flex flex-col items-center" style={{ paddingBottom: '60px' }}>
               {/* Row 1: #1 (centered) */}
               <div className="flex justify-center" style={{ marginBottom: '-35px', zIndex: 40 }}>
                 {leaderboard.filter(u => u.rank === 1).map(user => (
@@ -461,6 +563,22 @@ export default function Leaderboard() {
                 </div>
               </div>
             </div>
+
+            {/* Share Button - Disabled until user has enough reviews */}
+            {currentUser && leaderboard.some(u => u.userId === currentUser.id) && (
+              <div className="mt-6 flex justify-center">
+                <div title="You don't have enough reviews to share your position yet">
+                  <Button 
+                    disabled
+                    className="bg-gray-400 text-white cursor-not-allowed opacity-60"
+                    size="lg"
+                  >
+                    <Share2 className="w-5 h-5 mr-2" />
+                    Share Your Position
+                  </Button>
+                </div>
+              </div>
+            )}
           </Card>
         )}
 
@@ -492,6 +610,65 @@ export default function Leaderboard() {
         </div>
         {/* End Two Column Layout */}
       </div>
+
+      {/* Share Modal */}
+      {showShareModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setShowShareModal(false)}>
+          <Card className="max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-2xl font-bold text-gray-900">Share Your Position</h3>
+                <Button variant="ghost" size="sm" onClick={() => setShowShareModal(false)}>✕</Button>
+              </div>
+
+              {/* Screenshot Preview */}
+              {shareImage && (
+                <div className="mb-6 border border-gray-200 rounded-lg overflow-hidden">
+                  <img src={shareImage} alt="Leaderboard Position" className="w-full" />
+                </div>
+              )}
+
+              {/* Editable Share Text */}
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Share Text (editable)
+                </label>
+                <textarea
+                  value={shareText}
+                  onChange={(e) => setShareText(e.target.value)}
+                  className="w-full h-64 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0A66C2] focus:border-transparent"
+                  placeholder="Edit your share text..."
+                />
+              </div>
+
+              {/* Action Buttons */}
+              <div className="space-y-3">
+                {/* Primary: Share on LinkedIn */}
+                <Button onClick={shareOnLinkedIn} className="w-full bg-[#0A66C2] hover:bg-[#004182] text-white" size="lg">
+                  <Linkedin className="w-5 h-5 mr-2" />
+                  Share on LinkedIn
+                </Button>
+                
+                {/* Secondary: Copy and Download */}
+                <div className="flex gap-3">
+                  <Button onClick={copyToClipboard} variant="outline" className="flex-1">
+                    <Copy className="w-4 h-4 mr-2" />
+                    {isCopied ? 'Copied!' : 'Copy Text'}
+                  </Button>
+                  <Button onClick={downloadImage} variant="outline" className="flex-1">
+                    <Download className="w-4 h-4 mr-2" />
+                    Download Image
+                  </Button>
+                </div>
+              </div>
+
+              <p className="mt-4 text-sm text-gray-500 text-center">
+                Click "Share on LinkedIn" to post directly, or copy text and download image for other platforms
+              </p>
+            </div>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }
