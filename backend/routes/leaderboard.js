@@ -209,35 +209,59 @@ router.get('/:titleKey', async (req, res) => {
                normalized.canonical === foundTitle.canonical;
       });
 
-      // Calculate ranks for real users
-      const rankedUsers = titleUsers.map((user, index) => ({
-        ...user,
-        rank: index + 1,
-        isPlaceholder: false
-      }));
-
-      // Generate placeholder profiles to fill out the leaderboard (for visual structure)
-      const PLACEHOLDER_COUNT = 10;
+      // Generate realistic placeholder profiles distributed around real users
+      const TOTAL_LEADERBOARD_SIZE = 10;
       const placeholderProfiles = [];
       
-      for (let i = 1; i <= PLACEHOLDER_COUNT; i++) {
-        // Check if this rank is already taken by a real user
-        const existingUser = rankedUsers.find(u => u.rank === i);
-        if (!existingUser) {
-          placeholderProfiles.push({
-            rank: i,
-            isPlaceholder: true,
-            score: (10 - (i * 0.3)).toFixed(1), // Decreasing scores
-            reviewsCount: Math.floor(Math.random() * 5) + 3,
-            name: 'Private Profile',
-            photoUrl: null,
-            isPublic: false
-          });
-        }
+      // Create a pool of all profiles (real + placeholders) with realistic scores
+      const allProfiles = [];
+      
+      // Add real users with their actual scores
+      titleUsers.forEach(user => {
+        allProfiles.push({
+          ...user,
+          isPlaceholder: false,
+          score: parseFloat(user.overall_score).toFixed(1),
+          reviewsCount: user.reviews_received || 0
+        });
+      });
+      
+      // Generate placeholders to fill to 10 total
+      const placeholdersNeeded = Math.max(0, TOTAL_LEADERBOARD_SIZE - titleUsers.length);
+      
+      // Determine score range based on real users or use default range
+      let maxScore = titleUsers.length > 0 ? Math.max(...titleUsers.map(u => parseFloat(u.overall_score))) : 9.0;
+      let minScore = titleUsers.length > 0 ? Math.min(...titleUsers.map(u => parseFloat(u.overall_score))) : 7.0;
+      
+      // Extend range to create competitive environment
+      maxScore = Math.min(10.0, maxScore + 1.5); // Add some higher scores above real users
+      minScore = Math.max(6.0, minScore - 1.0); // Add some lower scores below real users
+      
+      // Generate placeholder scores distributed across the range
+      for (let i = 0; i < placeholdersNeeded; i++) {
+        // Distribute scores across the range with slight randomness
+        const position = i / Math.max(1, placeholdersNeeded - 1);
+        const baseScore = maxScore - (position * (maxScore - minScore));
+        const randomVariation = (Math.random() - 0.5) * 0.4; // ±0.2 variation
+        const score = Math.max(6.0, Math.min(10.0, baseScore + randomVariation));
+        
+        allProfiles.push({
+          isPlaceholder: true,
+          score: score.toFixed(1),
+          reviewsCount: Math.floor(Math.random() * 5) + 3,
+          name: 'Private Profile',
+          photoUrl: null,
+          isPublic: false,
+          overall_score: score
+        });
       }
-
-      // Merge real users with placeholders and sort by rank
-      const allRanked = [...rankedUsers, ...placeholderProfiles].sort((a, b) => a.rank - b.rank);
+      
+      // Sort all profiles by score (descending) and assign ranks
+      allProfiles.sort((a, b) => parseFloat(b.score) - parseFloat(a.score));
+      const allRanked = allProfiles.map((profile, index) => ({
+        ...profile,
+        rank: index + 1
+      }));
 
       // Apply pagination
       const paginatedUsers = allRanked.slice(
@@ -305,7 +329,7 @@ router.get('/:titleKey', async (req, res) => {
           categoryName: foundCategory.category
         },
         leaderboard,
-        realUserCount: rankedUsers.length,
+        realUserCount: allRanked.filter(u => !u.isPlaceholder).length,
         pagination: {
           total: allRanked.length,
           limit: parseInt(limit),

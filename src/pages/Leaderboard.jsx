@@ -91,7 +91,21 @@ const ProfileHexagon = ({ user, size = 'md', currentUser }) => {
               preserveAspectRatio="xMidYMid slice"
             />
           ) : (
-            <rect x="0" y="0" width="100" height="115" fill="#4b5563" />
+            <>
+              {/* Blurred realistic fake profile for private profiles */}
+              {/* Uses local fake profile images - randomly selected based on rank */}
+              <image
+                href={`/images/fake-profile-images/download (${((user.rank - 1) % 10) + 1}).png`}
+                x="0"
+                y="0"
+                width="100"
+                height="115"
+                preserveAspectRatio="xMidYMid slice"
+                style={{ filter: 'blur(8px)' }}
+              />
+              {/* Dark overlay */}
+              <rect x="0" y="0" width="100" height="115" fill="rgba(0,0,0,0.3)" />
+            </>
           )}
 
           {(!isPublic || !user.photoUrl) && (
@@ -107,7 +121,7 @@ const ProfileHexagon = ({ user, size = 'md', currentUser }) => {
                 }}
               >
                 <div xmlns="http://www.w3.org/1999/xhtml" style={{ marginTop: '4px' }}>
-                  <Lock style={{ width: '26px', height: '26px', color: '#d1d5db' }} />
+                  <Lock style={{ width: '26px', height: '26px', color: '#ffffff' }} />
                 </div>
               </div>
             </foreignObject>

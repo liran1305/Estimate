@@ -1,16 +1,18 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-21T11:11:46.203Z
+> Last updated: 2026-01-21T11:45:17.989Z
 
 ## Project Stats
-- Total memories: 135
-- Commits tracked: 135
+- Total memories: 136
+- Commits tracked: 136
 - Decisions recorded: 0
 
 ## Relevant to Current Work
 - **1/21/2026**: Production Release: Score fix (0-10 scale), skip budget cap enforcement, leaderboard UI improvements (PROJECT_CONTEXT.md, backend/routes/leaderboard.js, backend/routes/reviews.js)
 
 ## Recent Changes
+- `36671f1` 1/21/2026: Production Release: Score fixes, skip budget cap, review count sync, leaderboard UI
+  Files: backend/routes/reviews.js, backend/server.js
 - `04821d6` 1/21/2026: Production Release: Score fix (0-10 scale), skip budget cap enforcement, leaderboard UI improvements, dropdown menu
   Files: PROJECT_CONTEXT.md, backend/routes/leaderboard.js, backend/routes/reviews.js
 - `cc598d8` 1/21/2026: fix: Generate unsubscribe tokens for new users during signup
@@ -39,8 +41,6 @@
   Files: index.html
 - `4ce4076` 1/20/2026: fix: Add sitemap.xml and robots.txt content
   Files: public/robots.txt, public/sitemap.xml
-- `080da7b` 1/20/2026: fix: Serve sitemap.xml and robots.txt as static files
-  Files: public/_redirects
 
 ## Do Not Repeat
 These issues have already been solved:
@@ -48,4 +48,3 @@ These issues have already been solved:
 - Critical mobile UX improvements for review form
 - Persist colleague assignment across sessions/devices
 - Add sitemap.xml and robots.txt content
-- Serve sitemap.xml and robots.txt as static files

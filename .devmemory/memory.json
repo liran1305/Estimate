@@ -1986,7 +1986,22 @@
       ],
       "commit_hash": "04821d6ecefd6e29edd05c8bb6e460642db9d2ed",
       "created_at": "2026-01-21T09:57:48.000Z"
+    },
+    {
+      "id": 136,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Production Release: Score fixes, skip budget cap, review count sync, leaderboard UI",
+      "files": [
+        "backend/routes/reviews.js",
+        "backend/server.js"
+      ],
+      "tags": [
+        "ui"
+      ],
+      "commit_hash": "36671f1f18bad6a3050cce3a241799976ebee958",
+      "created_at": "2026-01-21T11:18:21.000Z"
     }
   ],
-  "nextId": 136
+  "nextId": 137
 }
