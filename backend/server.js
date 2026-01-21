@@ -404,9 +404,12 @@ app.post('/api/auth/linkedin/callback', async (req, res) => {
     } else {
       // Create new user
       userId = uuidv4();
+      const crypto = require('crypto');
+      const unsubscribeToken = crypto.createHash('md5').update(userId + profile.email + Date.now()).digest('hex');
+      
       await connection.query(`
-        INSERT INTO users (id, linkedin_profile_id, email, name, avatar, profile_match_method, profile_match_confidence, can_use_platform)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO users (id, linkedin_profile_id, email, name, avatar, profile_match_method, profile_match_confidence, can_use_platform, unsubscribe_token, email_notifications, email_new_reviews, email_score_unlocked, email_marketing)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, TRUE, TRUE, TRUE, FALSE)
       `, [
         userId,
         linkedinProfileId,
@@ -415,7 +418,8 @@ app.post('/api/auth/linkedin/callback', async (req, res) => {
         profile.picture,
         matchMethod,
         matchConfidence,
-        linkedinProfileId ? true : false
+        linkedinProfileId ? true : false,
+        unsubscribeToken
       ]);
     }
 
