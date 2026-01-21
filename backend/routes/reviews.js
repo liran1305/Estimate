@@ -1212,18 +1212,28 @@ router.post('/review/submit', async (req, res) => {
         ON DUPLICATE KEY UPDATE reviews_given = reviews_given + 1
       `, [user_id]);
 
-      // Update user_scores for reviewee (reviews_received) - only if they have a user account
+      // Update user_scores for reviewee (reviews_received)
       const [revieweeUser] = await connection.query(
         'SELECT id FROM users WHERE linkedin_profile_id = ? LIMIT 1',
         [colleague_id]
       );
       
       if (revieweeUser.length > 0) {
+        // User has an account - update their user_scores
         await connection.query(`
           INSERT INTO user_scores (user_id, linkedin_profile_id, reviews_received)
           VALUES (?, ?, 1)
           ON DUPLICATE KEY UPDATE reviews_received = reviews_received + 1
         `, [revieweeUser[0].id, colleague_id]);
+      } else {
+        // User hasn't logged in yet - update linkedin_profiles.reviews_received_count
+        // This tracks reviews for users before they create an account
+        // When they sign up, we'll sync this to user_scores
+        await connection.query(`
+          UPDATE linkedin_profiles 
+          SET reviews_received_count = COALESCE(reviews_received_count, 0) + 1
+          WHERE id = ?
+        `, [colleague_id]);
       }
 
       // Check if reviewer has unlocked their score (3 reviews given)
@@ -1326,7 +1336,7 @@ router.get('/score/me', async (req, res) => {
         return res.json({
           success: true,
           score_unlocked: true,
-          reviews_received: 0,
+          reviews_received: scoreData.reviews_received || 0,
           reviews_given: scoreData.reviews_given,
           message: 'Your score is unlocked but you have not received any reviews yet'
         });

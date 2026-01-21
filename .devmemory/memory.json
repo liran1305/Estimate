@@ -1966,7 +1966,27 @@
       ],
       "commit_hash": "cc598d8ccaf73e54bdc107e8cdf7a8021f252fa2",
       "created_at": "2026-01-21T06:58:32.000Z"
+    },
+    {
+      "id": 135,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Production Release: Score fix (0-10 scale), skip budget cap enforcement, leaderboard UI improvements, dropdown menu",
+      "files": [
+        "PROJECT_CONTEXT.md",
+        "backend/routes/leaderboard.js",
+        "backend/routes/reviews.js",
+        "backend/server.js",
+        "src/pages/Layout.jsx",
+        "src/pages/Leaderboard.jsx",
+        "src/pages/index.jsx"
+      ],
+      "tags": [
+        "ui"
+      ],
+      "commit_hash": "04821d6ecefd6e29edd05c8bb6e460642db9d2ed",
+      "created_at": "2026-01-21T09:57:48.000Z"
     }
   ],
-  "nextId": 135
+  "nextId": 136
 }

@@ -423,6 +423,37 @@ app.post('/api/auth/linkedin/callback', async (req, res) => {
         linkedinProfileId ? true : false,
         unsubscribeToken
       ]);
+      
+      // Sync any reviews received before signup to user_scores
+      // Check if this user received reviews before creating an account
+      if (linkedinProfileId) {
+        const [profileData] = await connection.query(
+          'SELECT reviews_received_count FROM linkedin_profiles WHERE id = ?',
+          [linkedinProfileId]
+        );
+        
+        const reviewsReceivedBeforeSignup = profileData.length > 0 ? (profileData[0].reviews_received_count || 0) : 0;
+        
+        // Also count actual reviews in reviews table to be sure
+        const [actualReviews] = await connection.query(
+          'SELECT COUNT(*) as count FROM reviews WHERE reviewee_id = ?',
+          [linkedinProfileId]
+        );
+        const actualReviewCount = actualReviews[0].count || 0;
+        
+        // Use the higher of the two counts (in case of any sync issues)
+        const reviewsReceived = Math.max(reviewsReceivedBeforeSignup, actualReviewCount);
+        
+        if (reviewsReceived > 0) {
+          await connection.query(`
+            INSERT INTO user_scores (user_id, linkedin_profile_id, reviews_received)
+            VALUES (?, ?, ?)
+            ON DUPLICATE KEY UPDATE 
+              linkedin_profile_id = VALUES(linkedin_profile_id),
+              reviews_received = GREATEST(reviews_received, VALUES(reviews_received))
+          `, [userId, linkedinProfileId, reviewsReceived]);
+        }
+      }
     }
 
     // Store OAuth token

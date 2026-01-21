@@ -1,13 +1,18 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-21T09:56:15.820Z
+> Last updated: 2026-01-21T11:11:46.203Z
 
 ## Project Stats
-- Total memories: 134
-- Commits tracked: 134
+- Total memories: 135
+- Commits tracked: 135
 - Decisions recorded: 0
 
+## Relevant to Current Work
+- **1/21/2026**: Production Release: Score fix (0-10 scale), skip budget cap enforcement, leaderboard UI improvements (PROJECT_CONTEXT.md, backend/routes/leaderboard.js, backend/routes/reviews.js)
+
 ## Recent Changes
+- `04821d6` 1/21/2026: Production Release: Score fix (0-10 scale), skip budget cap enforcement, leaderboard UI improvements, dropdown menu
+  Files: PROJECT_CONTEXT.md, backend/routes/leaderboard.js, backend/routes/reviews.js
 - `cc598d8` 1/21/2026: fix: Generate unsubscribe tokens for new users during signup
   Files: backend/server.js
 - `dabff6b` 1/21/2026: feat: Complete GDPR-compliant email unsubscribe system with Privacy Policy updates
@@ -36,8 +41,6 @@
   Files: public/robots.txt, public/sitemap.xml
 - `080da7b` 1/20/2026: fix: Serve sitemap.xml and robots.txt as static files
   Files: public/_redirects
-- `58727fe` 1/20/2026: feat: Add sitemap.xml and robots.txt for SEO
-  Files: public/robots.txt, public/sitemap.xml
 
 ## Do Not Repeat
 These issues have already been solved:
