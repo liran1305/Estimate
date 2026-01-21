@@ -274,6 +274,30 @@ Colleague persists until user skips or submits review
 3. **Dynamic Review Form** - Frontend adapts to relationship type
 4. **New Database Columns** - scores (JSON), strength_tags, would_work_again, would_promote, overall_score
 5. **BI Analytics Endpoints** - `/api/analytics/*` for tracking user engagement
+6. **GDPR Email Unsubscribe System** - Email preferences, unsubscribe page, GTM tracking
+7. **Leaderboard/Top Performers** - Rankings by job category with privacy controls
+
+### 🏆 Leaderboard Feature (January 2026)
+**Routes:** `/Leaderboard`, `/top-performers`
+
+**API Endpoints:**
+- `GET /api/leaderboard/categories` - Get all job categories with user counts
+- `GET /api/leaderboard/:categoryKey` - Get ranked users for a category
+- `GET /api/leaderboard/user/:userId/rank` - Get specific user's rank
+
+**Privacy Logic:**
+- Users with `recruiter_consent = 1` → Full profile visible (name, photo, company)
+- Users with `recruiter_consent = 0` → "Private Profile" (only rank & score shown)
+
+**Requirements to appear:**
+- Minimum 3 reviews received
+- Score unlocked (given 3+ reviews)
+- Valid overall score
+
+**Uses existing:**
+- `backend/utils/jobTitlesSystem.js` for job categories (15+ categories, 100+ titles)
+- `user_scores.recruiter_consent` for privacy
+- `user_scores.overall_score` for ranking
 
 ### ⚠️ Pending
 1. **Profile Page Update** - Display aggregated scores, top tags, work-again average

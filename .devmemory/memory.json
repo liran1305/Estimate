@@ -1928,7 +1928,45 @@
       ],
       "commit_hash": "0346391c31ab1205c67c18c6a7ede53462301437",
       "created_at": "2026-01-20T18:23:25.000Z"
+    },
+    {
+      "id": 133,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "feat: Complete GDPR-compliant email unsubscribe system with Privacy Policy updates",
+      "files": [
+        "GDPR_COMPLIANCE_CHECKLIST.md",
+        "GDPR_EMAIL_SYSTEM.md",
+        "backend/routes/anonymousReviews.js",
+        "backend/routes/emailPreferences.js",
+        "backend/server.js",
+        "backend/services/emailService.js",
+        "public/sitemap.xml",
+        "src/components/ui/checkbox.jsx",
+        "src/pages/PrivacyPolicy.jsx",
+        "src/pages/Unsubscribe.jsx",
+        "src/pages/index.jsx"
+      ],
+      "tags": [
+        "feat"
+      ],
+      "commit_hash": "dabff6bd7f9d8efb7922473e7fc3efc050fa0ad4",
+      "created_at": "2026-01-21T06:51:12.000Z"
+    },
+    {
+      "id": 134,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "fix: Generate unsubscribe tokens for new users during signup",
+      "files": [
+        "backend/server.js"
+      ],
+      "tags": [
+        "fix"
+      ],
+      "commit_hash": "cc598d8ccaf73e54bdc107e8cdf7a8021f252fa2",
+      "created_at": "2026-01-21T06:58:32.000Z"
     }
   ],
-  "nextId": 133
+  "nextId": 135
 }

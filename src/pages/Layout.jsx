@@ -11,17 +11,19 @@ import {
   DropdownMenuItem, 
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
-import { Users, User, LogOut, ChevronDown } from "lucide-react";
+import { Users, User, LogOut, ChevronDown, Trophy } from "lucide-react";
 
 const publicPages = ['Landing', 'LinkedInAuth', 'LinkedInCallback'];
 const blockedOnlyPage = 'Blocked';
+const BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:3001';
 
 export default function Layout({ children, currentPageName }) {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasReceivedReviews, setHasReceivedReviews] = useState(false);
 
   useEffect(() => {
-    const checkAuth = () => {
+    const checkAuth = async () => {
       const currentUser = linkedinAuth.getCurrentUser();
       if (currentUser) {
         setUser(currentUser);
@@ -36,6 +38,16 @@ export default function Layout({ children, currentPageName }) {
         if (!currentUser.is_blocked && currentPageName === blockedOnlyPage) {
           window.location.href = createPageUrl("Profile");
           return;
+        }
+
+        // Check if user has received reviews to enable Leaderboard access
+        try {
+          const response = await fetch(`${BACKEND_API_URL}/api/score/me?user_id=${currentUser.id}`);
+          const data = await response.json();
+          setHasReceivedReviews((data?.reviews_received || 0) > 0);
+        } catch (error) {
+          console.error('Failed to fetch review count:', error);
+          setHasReceivedReviews(false);
         }
       }
       setIsLoading(false);
@@ -77,6 +89,11 @@ export default function Layout({ children, currentPageName }) {
                         <Users className="w-4 h-4 mr-2" />
                         Review
                       </>
+                    ) : currentPageName === 'Leaderboard' ? (
+                      <>
+                        <Trophy className="w-4 h-4 mr-2" />
+                        Leaderboard
+                      </>
                     ) : (
                       <>
                         <User className="w-4 h-4 mr-2" />
@@ -99,6 +116,14 @@ export default function Layout({ children, currentPageName }) {
                       Profile
                     </DropdownMenuItem>
                   </Link>
+                  {hasReceivedReviews && (
+                    <Link to={createPageUrl("Leaderboard")}>
+                      <DropdownMenuItem className={currentPageName === 'Leaderboard' ? 'bg-gray-100' : ''}>
+                        <Trophy className="w-4 h-4 mr-2" />
+                        Leaderboard
+                      </DropdownMenuItem>
+                    </Link>
+                  )}
                 </DropdownMenuContent>
               </DropdownMenu>
               

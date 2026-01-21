@@ -798,30 +798,41 @@ async function getOrCreateCompanySkips(connection, user_id, company_name) {
   
   const record = existingRecord[0];
   let skipsUsed = record.skips_used;
-  let totalBudget = record.initial_budget;
+  let currentBudget = record.initial_budget;
+  
+  // Get the maximum cap for this company (skip_allowance)
+  const maxCap = initialBudget; // This is the company's skip_allowance calculated above
   
   // Check if daily refresh should be applied
   if (record.last_refresh_date && record.last_refresh_date !== today) {
-    // Apply daily refresh - add to budget, don't reset
+    // Calculate unused skips from previous period
+    const unusedSkips = currentBudget - skipsUsed;
+    
+    // Calculate days since last refresh
     const daysSinceRefresh = Math.floor((new Date(today) - new Date(record.last_refresh_date)) / (24 * 60 * 60 * 1000));
     const refreshAmount = daysSinceRefresh * record.daily_refresh;
     
-    // Update the record with refreshed budget
+    // New budget = unused skips + daily refresh, but capped at company maximum
+    const newBudget = Math.min(unusedSkips + refreshAmount, maxCap);
+    
+    // Update budget and reset skips_used counter for new period
     await connection.query(`
       UPDATE user_company_skips 
-      SET initial_budget = initial_budget + ?, last_refresh_date = ?
+      SET initial_budget = ?, skips_used = 0, last_refresh_date = ?
       WHERE user_id = ? AND company_name = ?
-    `, [refreshAmount, today, user_id, company_name]);
+    `, [newBudget, today, user_id, company_name]);
     
-    totalBudget += refreshAmount;
+    currentBudget = newBudget;
+    skipsUsed = 0; // Reset counter for new period
   }
   
   return {
-    initial_budget: totalBudget,
+    initial_budget: currentBudget,
     skips_used: skipsUsed,
     daily_refresh: record.daily_refresh,
-    skips_remaining: totalBudget - skipsUsed,
-    last_refresh_date: today
+    skips_remaining: currentBudget - skipsUsed,
+    last_refresh_date: today,
+    max_cap: maxCap // Include max cap for debugging/display
   };
 }
 
@@ -1405,12 +1416,11 @@ router.get('/score/me', async (req, res) => {
         categoryAverages[key] = data.count > 0 ? (data.sum / data.count).toFixed(1) : 0;
       }
 
-      // Calculate overall score (convert from 0-10 scale to 0-5 scale for DB constraint)
-      const overallScoreRaw = count > 0 ? overallSum / count : 0;
-      const overallScore = overallScoreRaw / 2; // Convert 0-10 to 0-5 scale
+      // Calculate overall score (0-10 scale)
+      const overallScore = count > 0 ? overallSum / count : 0;
 
       // Convert to display score (0-100 scale)
-      const displayScore = Math.round((overallScoreRaw / 10) * 100);
+      const displayScore = Math.round((overallScore / 10) * 100);
 
       // Determine badge
       let badge = 'none';
@@ -1445,7 +1455,7 @@ router.get('/score/me', async (req, res) => {
         : 0;
 
       // Calculate percentile tier based on overall score
-      const percentileTier = calculatePercentileTier(overallScoreRaw);
+      const percentileTier = calculatePercentileTier(overallScore);
       
       // Get user's position/role for display - normalize to canonical job title
       const rawPosition = scoreData.position || 'Professional';
@@ -1458,7 +1468,7 @@ router.get('/score/me', async (req, res) => {
         success: true,
         score_unlocked: true,
         score: {
-          overall: overallScoreRaw.toFixed(1),  // Return 0-10 scale for display
+          overall: overallScore.toFixed(1),  // Return 0-10 scale for display
           display: displayScore,
           ...categoryAverages
         },

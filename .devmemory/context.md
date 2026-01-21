@@ -1,18 +1,17 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-21T06:46:17.791Z
+> Last updated: 2026-01-21T09:56:15.820Z
 
 ## Project Stats
-- Total memories: 132
-- Commits tracked: 132
+- Total memories: 134
+- Commits tracked: 134
 - Decisions recorded: 0
 
-## Relevant to Current Work
-- **1/19/2026**: feat: Implement anonymous review system with token-burning architecture (backend/routes/anonymousReviews.js, backend/server.js, src/components/landing/FAQ.jsx)
-- **1/9/2026**: Update Privacy Policy with comprehensive GDPR-compliant content (src/pages/PrivacyPolicy.jsx)
-- **1/9/2026**: Add comprehensive legal pages - TOS, Privacy Policy, and Disclaimer (src/components/landing/Footer.jsx, src/pages/Disclaimer.jsx, src/pages/LinkedInAuth.jsx)
-
 ## Recent Changes
+- `cc598d8` 1/21/2026: fix: Generate unsubscribe tokens for new users during signup
+  Files: backend/server.js
+- `dabff6b` 1/21/2026: feat: Complete GDPR-compliant email unsubscribe system with Privacy Policy updates
+  Files: GDPR_COMPLIANCE_CHECKLIST.md, GDPR_EMAIL_SYSTEM.md, backend/routes/anonymousReviews.js
 - `0346391` 1/20/2026: feat: Switch to anonymous review system and fix company display
   Files: backend/routes/anonymousReviews.js, backend/routes/reviews.js, src/pages/Review.jsx
 - `89c55a4` 1/20/2026: feat: Exclude military organizations from colleague matching
@@ -39,15 +38,11 @@
   Files: public/_redirects
 - `58727fe` 1/20/2026: feat: Add sitemap.xml and robots.txt for SEO
   Files: public/robots.txt, public/sitemap.xml
-- `8e6e092` 1/20/2026: feat: Add sitemap.xml and robots.txt for SEO
-  Files: public/robots.txt, public/sitemap.xml
-- `2643adb` 1/20/2026: fix: Correct 70/30 company distribution in colleague matching
-  Files: backend/routes/reviews.js
 
 ## Do Not Repeat
 These issues have already been solved:
+- Generate unsubscribe tokens for new users during signup
 - Critical mobile UX improvements for review form
 - Persist colleague assignment across sessions/devices
 - Add sitemap.xml and robots.txt content
 - Serve sitemap.xml and robots.txt as static files
-- Correct 70/30 company distribution in colleague matching
