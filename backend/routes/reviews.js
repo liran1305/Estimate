@@ -348,9 +348,9 @@ router.get('/colleague/next', async (req, res) => {
         return res.status(400).json({ success: false, error: 'No work history found for user' });
       }
 
-      // Filter previous companies to only include those within 2 years
-      const twoYearsAgo = new Date();
-      twoYearsAgo.setFullYear(twoYearsAgo.getFullYear() - 2);
+      // Filter previous companies to only include those within 5 years
+      const fiveYearsAgo = new Date();
+      fiveYearsAgo.setFullYear(fiveYearsAgo.getFullYear() - 5);
       
       const parseEndDate = (dateStr) => {
         if (!dateStr || dateStr === 'Present') return new Date();
@@ -371,7 +371,7 @@ router.get('/colleague/next', async (req, res) => {
       const recentWorkHistory = allWorkHistory.filter(company => {
         if (company.is_current) return true;
         const endDate = parseEndDate(company.worked_to);
-        return endDate >= twoYearsAgo;
+        return endDate >= fiveYearsAgo;
       });
 
       // Check which companies have colleagues in the database
@@ -396,7 +396,7 @@ router.get('/colleague/next', async (req, res) => {
         return res.json({
           success: true,
           colleague: null,
-          message: 'No colleagues found at your recent companies (within 2 years)'
+          message: 'No colleagues found at your recent companies (within 5 years)'
         });
       }
 

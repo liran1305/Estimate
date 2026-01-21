@@ -448,15 +448,14 @@ app.post('/api/auth/linkedin/callback', async (req, res) => {
         // Use the higher of the two counts (in case of any sync issues)
         const reviewsReceived = Math.max(reviewsReceivedBeforeSignup, actualReviewCount);
         
-        if (reviewsReceived > 0) {
-          await connection.query(`
-            INSERT INTO user_scores (user_id, linkedin_profile_id, reviews_received)
-            VALUES (?, ?, ?)
-            ON DUPLICATE KEY UPDATE 
-              linkedin_profile_id = VALUES(linkedin_profile_id),
-              reviews_received = GREATEST(reviews_received, VALUES(reviews_received))
-          `, [userId, linkedinProfileId, reviewsReceived]);
-        }
+        // Always create user_scores entry for new users (so they appear in analytics)
+        await connection.query(`
+          INSERT INTO user_scores (user_id, linkedin_profile_id, reviews_received, reviews_given)
+          VALUES (?, ?, ?, 0)
+          ON DUPLICATE KEY UPDATE 
+            linkedin_profile_id = VALUES(linkedin_profile_id),
+            reviews_received = GREATEST(reviews_received, VALUES(reviews_received))
+        `, [userId, linkedinProfileId, reviewsReceived]);
       }
     }
 
