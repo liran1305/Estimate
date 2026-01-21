@@ -18,7 +18,7 @@ export default function PrivacyPolicy() {
         <div className="prose prose-gray max-w-none">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">Privacy Policy</h1>
           <p className="text-gray-500 mb-8"><strong>Estimate — Anonymous Peer Review Platform</strong></p>
-          <p className="text-sm text-gray-400 mb-12"><em>Last Updated: January 2025</em></p>
+          <p className="text-sm text-gray-400 mb-12"><em>Last Updated: January 21, 2026</em></p>
 
           <hr className="my-8" />
 
@@ -36,6 +36,11 @@ export default function PrivacyPolicy() {
           <p className="text-gray-700 leading-relaxed mb-4">Website: https://estimatenow.io</p>
           <p className="text-gray-700 leading-relaxed mb-4">
             For EU/EEA users, Estimate Ltd. acts as the data controller for your personal data.
+          </p>
+          
+          <h3 className="text-xl font-semibold text-gray-900 mt-8 mb-3">2.1 Data Protection Officer</h3>
+          <p className="text-gray-700 leading-relaxed mb-4">
+            Based on our current scale of operations and the nature of our processing activities, we are not required to appoint a Data Protection Officer under GDPR Article 37. However, all data protection inquiries should be directed to <a href="mailto:privacy@estimatenow.io" className="text-[#0A66C2] hover:underline">privacy@estimatenow.io</a>.
           </p>
 
           <h2 className="text-2xl font-bold text-gray-900 mt-12 mb-4">3. Data We Collect</h2>
@@ -93,6 +98,12 @@ export default function PrivacyPolicy() {
             <li>Employment dates</li>
             <li>Office locations</li>
           </ul>
+          <p className="text-gray-700 leading-relaxed mb-4">
+            <strong>Legal basis:</strong> We process this publicly available professional data under legitimate interest (GDPR Article 6(1)(f)) to enable colleague matching. We have conducted a Legitimate Interest Assessment (LIA) balancing our business interests against individual privacy rights.
+          </p>
+          <p className="text-gray-700 leading-relaxed mb-4">
+            <strong>Your right to object:</strong> If you find your professional information in our database and wish to be removed from colleague matching, contact <a href="mailto:privacy@estimatenow.io" className="text-[#0A66C2] hover:underline">privacy@estimatenow.io</a>.
+          </p>
 
           <h3 className="text-xl font-semibold text-gray-900 mt-8 mb-3">3.3 Data You Provide</h3>
           <div className="overflow-x-auto mb-6">
@@ -231,8 +242,44 @@ export default function PrivacyPolicy() {
             <li>Gaming behavior</li>
           </ul>
           <p className="text-gray-700 leading-relaxed mb-4">
-            This analysis is automated but may be reviewed by staff for flagged cases.
+            This analysis is automated but may be reviewed by staff for flagged cases. For fraud prevention, we temporarily track daily review counts per user. This data is automatically deleted after 7 days and cannot be used to identify who reviewed whom.
           </p>
+
+          <h3 className="text-xl font-semibold text-gray-900 mt-8 mb-3">4.4 Automated Decision-Making (GDPR Article 22)</h3>
+          <p className="text-gray-700 leading-relaxed mb-4">
+            Your professional score is calculated automatically based on peer reviews. This automated profiling:
+          </p>
+          <ul className="list-disc pl-6 mb-4 text-gray-700 space-y-2">
+            <li>Uses weighted algorithms to aggregate review scores</li>
+            <li>Does not involve human review for standard calculations</li>
+            <li>May influence third-party decisions if you share your score with recruiters</li>
+            <li>Affects your professional reputation on the platform</li>
+          </ul>
+          <p className="text-gray-700 leading-relaxed mb-4">
+            <strong>Your rights under GDPR Article 22:</strong>
+          </p>
+          <ul className="list-disc pl-6 mb-4 text-gray-700 space-y-2">
+            <li>Request human review of your score calculation</li>
+            <li>Contest decisions based solely on automated processing</li>
+            <li>Express your point of view regarding the score</li>
+            <li>Obtain an explanation of the logic involved</li>
+          </ul>
+          <p className="text-gray-700 leading-relaxed mb-4">
+            To request human review or contest your score calculation, contact <a href="mailto:privacy@estimatenow.io" className="text-[#0A66C2] hover:underline">privacy@estimatenow.io</a>.
+          </p>
+
+          <h3 className="text-xl font-semibold text-gray-900 mt-8 mb-3">4.5 Privacy by Design and Data Minimization</h3>
+          <p className="text-gray-700 leading-relaxed mb-4">
+            Estimate is built with privacy as a core architectural principle (GDPR Article 25):
+          </p>
+          <ul className="list-disc pl-6 mb-4 text-gray-700 space-y-2">
+            <li><strong>Token-burning architecture:</strong> Makes reviewer tracing technically impossible</li>
+            <li><strong>Data minimization:</strong> We only collect what's necessary for the service</li>
+            <li><strong>Anonymization by default:</strong> Reviews are separated from identities at submission</li>
+            <li><strong>No advertising tracking:</strong> We don't use advertising cookies or sell data</li>
+            <li><strong>Encryption:</strong> All data is encrypted in transit and at rest</li>
+            <li><strong>Access controls:</strong> Strict limits on who can access personal data</li>
+          </ul>
 
           <h2 className="text-2xl font-bold text-gray-900 mt-12 mb-4">5. Anonymity and Data Separation</h2>
 
@@ -399,10 +446,13 @@ export default function PrivacyPolicy() {
           <ul className="list-disc pl-6 mb-4 text-gray-700 space-y-2">
             <li>Your profile is removed within 30 days</li>
             <li>Reviews you received are deleted</li>
-            <li>Reviews you submitted remain (fully anonymized)</li>
+            <li>Reviews you submitted cannot be deleted because they contain no reference to your identity. After submission, there is no technical way to identify which reviews you wrote.</li>
             <li>Your score is deleted</li>
             <li>Aggregate statistics may be retained</li>
           </ul>
+          <p className="text-gray-700 leading-relaxed mb-4">
+            <strong>Important:</strong> The anonymized reviews you submitted remain in the system because our token-burning architecture makes it technically impossible to identify which reviews belong to you. This protects reviewer anonymity but means submitted reviews cannot be deleted upon account closure.
+          </p>
 
           <h3 className="text-xl font-semibold text-gray-900 mt-8 mb-3">7.3 Inactive Accounts</h3>
           <p className="text-gray-700 leading-relaxed mb-4">
@@ -525,17 +575,91 @@ export default function PrivacyPolicy() {
             <li>Additional technical safeguards</li>
           </ul>
 
-          <h2 className="text-2xl font-bold text-gray-900 mt-12 mb-4">11. Children's Privacy</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mt-12 mb-4">11. Email Communications and Preferences</h2>
+
+          <h3 className="text-xl font-semibold text-gray-900 mt-8 mb-3">11.1 Types of Emails We Send</h3>
+          <p className="text-gray-700 leading-relaxed mb-4">We may send you the following types of emails:</p>
+          <div className="overflow-x-auto mb-6">
+            <table className="min-w-full border-collapse border border-gray-300">
+              <thead>
+                <tr className="bg-gray-50">
+                  <th className="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-900">Email Type</th>
+                  <th className="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-900">Description</th>
+                  <th className="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-900">Can Unsubscribe?</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="border border-gray-300 px-4 py-2 text-gray-700">New Review Notifications</td>
+                  <td className="border border-gray-300 px-4 py-2 text-gray-700">When a colleague reviews you</td>
+                  <td className="border border-gray-300 px-4 py-2 text-gray-700">✅ Yes</td>
+                </tr>
+                <tr>
+                  <td className="border border-gray-300 px-4 py-2 text-gray-700">Score Unlocked</td>
+                  <td className="border border-gray-300 px-4 py-2 text-gray-700">When you complete 3 reviews</td>
+                  <td className="border border-gray-300 px-4 py-2 text-gray-700">✅ Yes</td>
+                </tr>
+                <tr>
+                  <td className="border border-gray-300 px-4 py-2 text-gray-700">Account & Security</td>
+                  <td className="border border-gray-300 px-4 py-2 text-gray-700">Login alerts, password resets</td>
+                  <td className="border border-gray-300 px-4 py-2 text-gray-700">❌ No (essential)</td>
+                </tr>
+                <tr>
+                  <td className="border border-gray-300 px-4 py-2 text-gray-700">Marketing & Updates</td>
+                  <td className="border border-gray-300 px-4 py-2 text-gray-700">Product updates, tips</td>
+                  <td className="border border-gray-300 px-4 py-2 text-gray-700">✅ Yes (opt-in only)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 className="text-xl font-semibold text-gray-900 mt-8 mb-3">11.2 Managing Email Preferences</h3>
+          <p className="text-gray-700 leading-relaxed mb-4">
+            You have full control over which emails you receive. You can:
+          </p>
+          <ul className="list-disc pl-6 mb-4 text-gray-700 space-y-2">
+            <li>Unsubscribe from specific email types</li>
+            <li>Unsubscribe from all non-essential emails</li>
+            <li>Update your preferences at any time</li>
+            <li>Resubscribe if you change your mind</li>
+          </ul>
+
+          <h3 className="text-xl font-semibold text-gray-900 mt-8 mb-3">11.3 How to Unsubscribe</h3>
+          <p className="text-gray-700 leading-relaxed mb-4">
+            Every email we send includes an unsubscribe link at the bottom. Click it to:
+          </p>
+          <ul className="list-disc pl-6 mb-4 text-gray-700 space-y-2">
+            <li>View your current email preferences</li>
+            <li>Turn off specific email types</li>
+            <li>Unsubscribe from all emails with one click</li>
+          </ul>
+          <p className="text-gray-700 leading-relaxed mb-4">
+            Your preferences are saved immediately and respected for all future emails.
+          </p>
+
+          <h3 className="text-xl font-semibold text-gray-900 mt-8 mb-3">11.4 GDPR Compliance</h3>
+          <p className="text-gray-700 leading-relaxed mb-4">
+            Our email system is fully GDPR-compliant:
+          </p>
+          <ul className="list-disc pl-6 mb-4 text-gray-700 space-y-2">
+            <li>One-click unsubscribe in every email</li>
+            <li>Granular control over email types</li>
+            <li>Your preferences are honored immediately</li>
+            <li>No emails sent after unsubscribe (except essential security emails)</li>
+            <li>Secure, unique unsubscribe links</li>
+          </ul>
+
+          <h2 className="text-2xl font-bold text-gray-900 mt-12 mb-4">12. Children's Privacy</h2>
           <p className="text-gray-700 leading-relaxed mb-4">
             Estimate is not intended for anyone under 18. We do not knowingly collect data from minors. If we discover such data, we will delete it promptly.
           </p>
 
-          <h2 className="text-2xl font-bold text-gray-900 mt-12 mb-4">12. Third-Party Links</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mt-12 mb-4">13. Third-Party Links</h2>
           <p className="text-gray-700 leading-relaxed mb-4">
             The Service may contain links to third-party websites. We are not responsible for their privacy practices.
           </p>
 
-          <h2 className="text-2xl font-bold text-gray-900 mt-12 mb-4">13. Changes to This Policy</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mt-12 mb-4">14. Changes to This Policy</h2>
           <p className="text-gray-700 leading-relaxed mb-4">
             We may update this Privacy Policy periodically. We will notify you of material changes via:
           </p>
@@ -548,13 +672,13 @@ export default function PrivacyPolicy() {
             Continued use after changes constitutes acceptance.
           </p>
 
-          <h2 className="text-2xl font-bold text-gray-900 mt-12 mb-4">14. Contact Us</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mt-12 mb-4">15. Contact Us</h2>
           <p className="text-gray-700 leading-relaxed mb-2"><strong>Estimate Ltd.</strong></p>
           <p className="text-gray-700 leading-relaxed mb-2"><strong>Privacy Inquiries:</strong> privacy@estimatenow.io</p>
           <p className="text-gray-700 leading-relaxed mb-2"><strong>General Inquiries:</strong> support@estimatenow.io</p>
           <p className="text-gray-700 leading-relaxed mb-8"><strong>Data Protection Requests:</strong> privacy@estimatenow.io</p>
 
-          <h2 className="text-2xl font-bold text-gray-900 mt-12 mb-4">15. Supervisory Authority</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mt-12 mb-4">16. Supervisory Authority</h2>
           <p className="text-gray-700 leading-relaxed mb-4">
             If you are in the EU/EEA and believe we have violated your data protection rights, you have the right to lodge a complaint with your local data protection authority.
           </p>

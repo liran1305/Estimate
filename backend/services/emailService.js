@@ -15,7 +15,7 @@ const FRONTEND_URL = process.env.FRONTEND_URL || 'https://estimatenow.io';
 /**
  * Send email notification when someone receives a new review
  */
-async function sendNewReviewNotification(recipientEmail, recipientName, reviewCount) {
+async function sendNewReviewNotification(recipientEmail, recipientName, reviewCount, unsubscribeToken) {
   if (!process.env.SENDGRID_API_KEY) {
     console.log('[EMAIL] SendGrid not configured, skipping email');
     return { success: false, reason: 'SendGrid not configured' };
@@ -24,6 +24,42 @@ async function sendNewReviewNotification(recipientEmail, recipientName, reviewCo
   if (!recipientEmail) {
     console.log('[EMAIL] No recipient email provided');
     return { success: false, reason: 'No recipient email' };
+  }
+
+  if (!unsubscribeToken) {
+    console.log('[EMAIL] No unsubscribe token provided');
+    return { success: false, reason: 'No unsubscribe token' };
+  }
+
+  // Check email preferences before sending
+  try {
+    const mysql = require('mysql2/promise');
+    const connection = await mysql.createConnection({
+      host: process.env.CLOUD_SQL_HOST,
+      user: process.env.CLOUD_SQL_USER,
+      password: process.env.CLOUD_SQL_PASSWORD,
+      database: process.env.CLOUD_SQL_DATABASE,
+      port: process.env.CLOUD_SQL_PORT || 3306
+    });
+
+    const [users] = await connection.query(
+      'SELECT email_notifications, email_new_reviews FROM users WHERE email = ?',
+      [recipientEmail]
+    );
+
+    await connection.end();
+
+    if (users.length > 0) {
+      const user = users[0];
+      // Check if user has unsubscribed from new review notifications
+      if (!user.email_notifications || !user.email_new_reviews) {
+        console.log(`[EMAIL] User ${recipientEmail} has unsubscribed from new review notifications`);
+        return { success: false, reason: 'User has unsubscribed' };
+      }
+    }
+  } catch (error) {
+    console.error('[EMAIL] Error checking preferences:', error.message);
+    // Continue sending email if preference check fails (fail open)
   }
 
   const firstName = recipientName?.split(' ')[0] || 'there';
@@ -107,8 +143,12 @@ async function sendNewReviewNotification(recipientEmail, recipientName, reviewCo
               <p style="margin: 0 0 8px 0; font-size: 12px; color: #9CA3AF;">
                 Estimate — Anonymous Professional Peer Reviews
               </p>
-              <p style="margin: 0; font-size: 12px; color: #9CA3AF;">
+              <p style="margin: 0 0 8px 0; font-size: 12px; color: #9CA3AF;">
                 <a href="${FRONTEND_URL}" style="color: #0A66C2; text-decoration: none;">estimatenow.io</a>
+              </p>
+              <p style="margin: 0; font-size: 11px; color: #9CA3AF;">
+                <a href="${FRONTEND_URL}/unsubscribe/${unsubscribeToken}" style="color: #9CA3AF; text-decoration: underline;">Unsubscribe</a> | 
+                <a href="${FRONTEND_URL}/privacy" style="color: #9CA3AF; text-decoration: underline;">Privacy Policy</a>
               </p>
             </td>
           </tr>
@@ -119,7 +159,7 @@ async function sendNewReviewNotification(recipientEmail, recipientName, reviewCo
 </body>
 </html>
     `,
-    text: `Hey ${firstName}! A colleague just reviewed you on Estimate. You now have ${reviewCount} review${reviewCount !== 1 ? 's' : ''} from your professional network. View your score at ${FRONTEND_URL}/profile`
+    text: `Hey ${firstName}! A colleague just reviewed you on Estimate. You now have ${reviewCount} review${reviewCount !== 1 ? 's' : ''} from your professional network. View your score at ${FRONTEND_URL}/profile\n\nUnsubscribe: ${FRONTEND_URL}/unsubscribe/${unsubscribeToken}`
   };
 
   try {
@@ -138,7 +178,7 @@ async function sendNewReviewNotification(recipientEmail, recipientName, reviewCo
 /**
  * Send email notification when user unlocks their score (3 reviews given)
  */
-async function sendScoreUnlockedNotification(recipientEmail, recipientName) {
+async function sendScoreUnlockedNotification(recipientEmail, recipientName, unsubscribeToken) {
   if (!process.env.SENDGRID_API_KEY) {
     console.log('[EMAIL] SendGrid not configured, skipping email');
     return { success: false, reason: 'SendGrid not configured' };
@@ -147,6 +187,42 @@ async function sendScoreUnlockedNotification(recipientEmail, recipientName) {
   if (!recipientEmail) {
     console.log('[EMAIL] No recipient email provided');
     return { success: false, reason: 'No recipient email' };
+  }
+
+  if (!unsubscribeToken) {
+    console.log('[EMAIL] No unsubscribe token provided');
+    return { success: false, reason: 'No unsubscribe token' };
+  }
+
+  // Check email preferences before sending
+  try {
+    const mysql = require('mysql2/promise');
+    const connection = await mysql.createConnection({
+      host: process.env.CLOUD_SQL_HOST,
+      user: process.env.CLOUD_SQL_USER,
+      password: process.env.CLOUD_SQL_PASSWORD,
+      database: process.env.CLOUD_SQL_DATABASE,
+      port: process.env.CLOUD_SQL_PORT || 3306
+    });
+
+    const [users] = await connection.query(
+      'SELECT email_notifications, email_score_unlocked FROM users WHERE email = ?',
+      [recipientEmail]
+    );
+
+    await connection.end();
+
+    if (users.length > 0) {
+      const user = users[0];
+      // Check if user has unsubscribed from score unlocked notifications
+      if (!user.email_notifications || !user.email_score_unlocked) {
+        console.log(`[EMAIL] User ${recipientEmail} has unsubscribed from score unlocked notifications`);
+        return { success: false, reason: 'User has unsubscribed' };
+      }
+    }
+  } catch (error) {
+    console.error('[EMAIL] Error checking preferences:', error.message);
+    // Continue sending email if preference check fails (fail open)
   }
 
   const firstName = recipientName?.split(' ')[0] || 'there';

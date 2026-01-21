@@ -51,11 +51,13 @@ const reviewsRouter = require('./routes/reviews');
 const adminRouter = require('./routes/admin');
 const fraudRouter = require('./routes/fraud');
 const anonymousReviewsRouter = require('./routes/anonymousReviews');
+const emailPreferencesRouter = require('./routes/emailPreferences');
 app.use('/api/colleagues', colleaguesRouter);
 app.use('/api', reviewsRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/fraud', fraudRouter);
 app.use('/api/anonymous', anonymousReviewsRouter);
+app.use('/api/email-preferences', emailPreferencesRouter);
 
 // Check table structure
 app.get('/api/table-info/:tableName', async (req, res) => {

@@ -369,19 +369,25 @@ router.post('/review/submit', async (req, res) => {
       // This happens AFTER commit to not block the response
       try {
         const [revieweeUser] = await connection.query(`
-          SELECT u.email, u.name, us.reviews_received
+          SELECT u.email, u.name, u.email_notifications, u.email_new_reviews, u.unsubscribe_token, us.reviews_received
           FROM users u
           LEFT JOIN user_scores us ON us.user_id = u.id
           WHERE u.linkedin_profile_id = ?
         `, [reviewee_id]);
 
         if (revieweeUser.length > 0 && revieweeUser[0].email) {
-          const reviewCount = (revieweeUser[0].reviews_received || 0) + 1;
-          sendNewReviewNotification(
-            revieweeUser[0].email,
-            revieweeUser[0].name,
-            reviewCount
-          ).catch(err => console.error('[EMAIL] Async send failed:', err));
+          // Check if user has email notifications enabled
+          if (revieweeUser[0].email_notifications && revieweeUser[0].email_new_reviews) {
+            const reviewCount = (revieweeUser[0].reviews_received || 0) + 1;
+            sendNewReviewNotification(
+              revieweeUser[0].email,
+              revieweeUser[0].name,
+              reviewCount,
+              revieweeUser[0].unsubscribe_token
+            ).catch(err => console.error('[EMAIL] Async send failed:', err));
+          } else {
+            console.log(`[EMAIL] User ${revieweeUser[0].email} has unsubscribed from new review notifications`);
+          }
         }
       } catch (emailErr) {
         console.error('[EMAIL] Failed to send review notification:', emailErr);
@@ -392,14 +398,20 @@ router.post('/review/submit', async (req, res) => {
       if (profileUnlocked && reviewsGiven === 3) {
         try {
           const [reviewerUser] = await connection.query(
-            'SELECT email, full_name FROM users WHERE id = ?',
+            'SELECT email, name, email_notifications, email_score_unlocked, unsubscribe_token FROM users WHERE id = ?',
             [reviewer_id]
           );
           if (reviewerUser.length > 0 && reviewerUser[0].email) {
-            sendScoreUnlockedNotification(
-              reviewerUser[0].email,
-              reviewerUser[0].full_name
-            ).catch(err => console.error('[EMAIL] Async send failed:', err));
+            // Check if user has email notifications enabled
+            if (reviewerUser[0].email_notifications && reviewerUser[0].email_score_unlocked) {
+              sendScoreUnlockedNotification(
+                reviewerUser[0].email,
+                reviewerUser[0].name,
+                reviewerUser[0].unsubscribe_token
+              ).catch(err => console.error('[EMAIL] Async send failed:', err));
+            } else {
+              console.log(`[EMAIL] User ${reviewerUser[0].email} has unsubscribed from score unlock notifications`);
+            }
           }
         } catch (emailErr) {
           console.error('[EMAIL] Failed to send unlock notification:', emailErr);

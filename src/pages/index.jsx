@@ -14,6 +14,7 @@ const PrivacyPolicy = React.lazy(() => import("./PrivacyPolicy"));
 const Disclaimer = React.lazy(() => import("./Disclaimer"));
 const LinkedInCallback = React.lazy(() => import("./LinkedInCallback"));
 const Blocked = React.lazy(() => import("./Blocked"));
+const Unsubscribe = React.lazy(() => import("./Unsubscribe"));
 
 // Minimal loading fallback
 const PageLoader = () => (
@@ -79,6 +80,7 @@ function PagesContent() {
                     <Route path="/Disclaimer" element={<Disclaimer />} />
                     <Route path="/auth/linkedin/callback" element={<LinkedInCallback />} />
                     <Route path="/Blocked" element={<Blocked />} />
+                    <Route path="/unsubscribe/:token" element={<Unsubscribe />} />
                 </Routes>
             </Suspense>
         </Layout>
