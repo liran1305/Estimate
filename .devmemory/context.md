@@ -1,13 +1,15 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-21T12:21:26.370Z
+> Last updated: 2026-01-21T12:56:34.527Z
 
 ## Project Stats
-- Total memories: 137
-- Commits tracked: 137
+- Total memories: 138
+- Commits tracked: 138
 - Decisions recorded: 0
 
 ## Recent Changes
+- `217e8d0` 1/21/2026: Leaderboard share feature: disabled button with tooltip
+  Files: package.json, src/pages/Leaderboard.jsx
 - `32a6c0c` 1/21/2026: Production Release v2: Realistic leaderboard, blurred fake profiles, review count fixes
   Files: backend/routes/leaderboard.js, public/images/fake-profile-images/download (1).png, public/images/fake-profile-images/download (10).png
 - `36671f1` 1/21/2026: Production Release: Score fixes, skip budget cap, review count sync, leaderboard UI
@@ -36,8 +38,6 @@
   Files: backend/routes/reviews.js, src/pages/Onboarding.jsx, src/pages/Profile.jsx
 - `ffa94f9` 1/20/2026: feat: Add GTM event tracking for key user actions
   Files: src/pages/LinkedInAuth.jsx, src/pages/LinkedInCallback.jsx, src/pages/Profile.jsx
-- `c161e60` 1/20/2026: feat: Add Google Tag Manager tracking
-  Files: index.html
 
 ## Do Not Repeat
 These issues have already been solved:

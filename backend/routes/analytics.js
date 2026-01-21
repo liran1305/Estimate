@@ -253,7 +253,7 @@ router.get('/users', async (req, res) => {
     const [results] = await connection.query(`
       SELECT 
         u.id as user_id,
-        u.full_name,
+        u.name,
         u.email,
         COALESCE(us.reviews_given, 0) as reviews_given,
         COALESCE(us.reviews_received, 0) as reviews_received,

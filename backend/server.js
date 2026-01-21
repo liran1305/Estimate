@@ -53,6 +53,7 @@ const fraudRouter = require('./routes/fraud');
 const anonymousReviewsRouter = require('./routes/anonymousReviews');
 const emailPreferencesRouter = require('./routes/emailPreferences');
 const leaderboardRouter = require('./routes/leaderboard');
+const dataValidationRouter = require('./routes/dataValidation');
 app.use('/api/colleagues', colleaguesRouter);
 app.use('/api', reviewsRouter);
 app.use('/api/admin', adminRouter);
@@ -60,6 +61,7 @@ app.use('/api/fraud', fraudRouter);
 app.use('/api/anonymous', anonymousReviewsRouter);
 app.use('/api/email-preferences', emailPreferencesRouter);
 app.use('/api/leaderboard', leaderboardRouter);
+app.use('/api/data-validation', dataValidationRouter);
 
 // Check table structure
 app.get('/api/table-info/:tableName', async (req, res) => {

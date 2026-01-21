@@ -2024,7 +2024,20 @@
       "tags": [],
       "commit_hash": "32a6c0c94380f96a08504c75b66d268d6bbdb91c",
       "created_at": "2026-01-21T11:47:01.000Z"
+    },
+    {
+      "id": 138,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Leaderboard share feature: disabled button with tooltip",
+      "files": [
+        "package.json",
+        "src/pages/Leaderboard.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "217e8d0878cc0acd3a9421e017d747e41618170f",
+      "created_at": "2026-01-21T12:21:44.000Z"
     }
   ],
-  "nextId": 138
+  "nextId": 139
 }
