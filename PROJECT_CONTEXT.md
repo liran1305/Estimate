@@ -1,6 +1,6 @@
 # Estimate Platform - Project Context
 
-**Last Updated:** January 18, 2026
+**Last Updated:** January 21, 2026
 
 ---
 
@@ -194,7 +194,7 @@ const questionWeights = {
 - **Session:** express-session with MySQL store
 
 ### Infrastructure
-- **Frontend Hosting:** Netlify
+- **Frontend Hosting:** Render (NOT Netlify)
 - **Backend Hosting:** Render
 - **Database:** Google Cloud SQL (MySQL 8.0)
 - **Domain:** estimatenow.io
@@ -350,6 +350,71 @@ FRONTEND_URL=https://estimatenow.io
 ---
 
 ## Recent Changes Log
+
+### 2026-01-21: Database Triggers for Auto-Sync (CRITICAL)
+**Problem Solved:**
+- `user_scores.reviews_received` and `overall_score` were getting out of sync with actual review records
+- Manual SQL fixes were required to correct data inconsistencies
+
+**Solution Implemented:**
+1. **Database Triggers** - 4 triggers auto-sync data on every INSERT/DELETE:
+   - `after_review_insert` - Updates reviewee's count & score when review added to `reviews` table
+   - `after_review_delete` - Recalculates when review deleted from `reviews` table
+   - `after_anonymous_review_insert` - Updates when review added to `anonymous_reviews` table
+   - `after_anonymous_review_delete` - Recalculates when review deleted from `anonymous_reviews` table
+
+2. **What Triggers Do:**
+   - Find the `user_id` from `linkedin_profile_id`
+   - Count ALL reviews from BOTH `reviews` + `anonymous_reviews` tables
+   - Calculate AVG(`overall_score`) from all reviews
+   - Update `user_scores` with correct `reviews_received` and `overall_score`
+
+3. **Collation Fix:**
+   - Triggers use `COLLATE utf8mb4_unicode_ci` to handle mismatched collations between tables
+
+**Data Flow (Anonymous Review Submission):**
+```
+User submits review
+  ↓
+INSERT INTO anonymous_reviews (reviewee_id = linkedin_profile_id)
+  ↓
+🔥 TRIGGER after_anonymous_review_insert FIRES AUTOMATICALLY:
+  - Counts reviews from BOTH tables
+  - Calculates AVG(overall_score)
+  - Updates user_scores.reviews_received and user_scores.overall_score
+  ↓
+Code updates (separate from trigger):
+  - users.reviews_given_count (reviewer)
+  - linkedin_profiles.reviews_received_count (reviewee)
+  - user_scores.reviews_given (reviewer)
+  ↓
+✅ Data always in sync!
+```
+
+**Files Created:**
+- `backend/database/triggers-fixed/01-drop-all-triggers.sql`
+- `backend/database/triggers-fixed/02-trigger-review-insert.sql`
+- `backend/database/triggers-fixed/03-trigger-review-delete.sql`
+- `backend/database/triggers-fixed/04-trigger-anonymous-insert.sql`
+- `backend/database/triggers-fixed/05-trigger-anonymous-delete.sql`
+
+**Files Modified:**
+- `backend/routes/reviews.js` - Added comment noting triggers handle reviewee sync
+- `backend/routes/anonymousReviews.js` - Added comment noting triggers handle reviewee sync
+- `backend/routes/dataValidation.js` - NEW: Data validation endpoint
+- `backend/routes/analytics.js` - Fixed column name (`name` not `full_name`)
+- `backend/server.js` - Added dataValidation router
+
+**Data Validation Endpoints:**
+- `GET /api/data-validation/check` - Check if data is consistent
+- `POST /api/data-validation/sync` - Manual sync if needed (admin only)
+
+**Key Insight:**
+- Reviews are stored with `linkedin_profile_id` as `reviewee_id` (NOT `user_id`)
+- Both `reviews` table (legacy) and `anonymous_reviews` table (current) contain review data
+- All new reviews go through `anonymousReviews.js` → `anonymous_reviews` table
+
+---
 
 ### 2025-01-20: Colleague Persistence Fix (CRITICAL)
 **Changes:**

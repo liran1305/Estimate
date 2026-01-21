@@ -2073,7 +2073,22 @@
       ],
       "commit_hash": "e50759e8f41bc3aedcce91a9fdbc1fad1bc5c059",
       "created_at": "2026-01-21T13:08:03.000Z"
+    },
+    {
+      "id": 141,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix dataValidation.js - use local getPool instead of missing config/database",
+      "files": [
+        "backend/routes/dataValidation.js"
+      ],
+      "tags": [
+        "database",
+        "config"
+      ],
+      "commit_hash": "69076ba799968490d89f40a0f9132952d85786c8",
+      "created_at": "2026-01-21T13:11:42.000Z"
     }
   ],
-  "nextId": 141
+  "nextId": 142
 }

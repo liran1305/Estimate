@@ -437,10 +437,12 @@ app.post('/api/auth/linkedin/callback', async (req, res) => {
         const reviewsReceivedBeforeSignup = profileData.length > 0 ? (profileData[0].reviews_received_count || 0) : 0;
         
         // Also count actual reviews in reviews table to be sure
-        const [actualReviews] = await connection.query(
-          'SELECT COUNT(*) as count FROM reviews WHERE reviewee_id = ?',
-          [linkedinProfileId]
-        );
+        // Count from BOTH reviews and anonymous_reviews tables
+        const [actualReviews] = await connection.query(`
+          SELECT 
+            (SELECT COUNT(*) FROM reviews WHERE reviewee_id = ?) +
+            (SELECT COUNT(*) FROM anonymous_reviews WHERE reviewee_id = ?) as count
+        `, [linkedinProfileId, linkedinProfileId]);
         const actualReviewCount = actualReviews[0].count || 0;
         
         // Use the higher of the two counts (in case of any sync issues)
