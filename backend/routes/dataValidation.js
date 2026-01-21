@@ -1,10 +1,27 @@
 const express = require('express');
 const router = express.Router();
-const { getPool } = require('../config/database');
+const mysql = require('mysql2/promise');
+
+let pool;
+
+function getPool() {
+  if (!pool) {
+    pool = mysql.createPool({
+      host: process.env.CLOUD_SQL_HOST,
+      user: process.env.CLOUD_SQL_USER,
+      password: process.env.CLOUD_SQL_PASSWORD,
+      database: process.env.CLOUD_SQL_DATABASE,
+      port: process.env.CLOUD_SQL_PORT || 3306,
+      waitForConnections: true,
+      connectionLimit: 10,
+    });
+  }
+  return pool;
+}
 
 // GET /api/data-validation/check - Check data consistency
 router.get('/check', async (req, res) => {
-  const pool = await getPool();
+  const pool = getPool();
   const connection = await pool.getConnection();
 
   try {
@@ -85,7 +102,7 @@ router.get('/check', async (req, res) => {
 
 // POST /api/data-validation/sync - Auto-sync review counts (admin only)
 router.post('/sync', async (req, res) => {
-  const pool = await getPool();
+  const pool = getPool();
   const connection = await pool.getConnection();
 
   try {

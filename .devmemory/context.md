@@ -1,19 +1,22 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-21T13:04:48.196Z
+> Last updated: 2026-01-21T13:11:19.629Z
 
 ## Project Stats
-- Total memories: 139
-- Commits tracked: 139
+- Total memories: 140
+- Commits tracked: 140
 - Decisions recorded: 0
 
 ## Relevant to Current Work
+- **1/21/2026**: Fix at source: Database triggers auto-sync review counts (backend/routes/anonymousReviews.js, backend/routes/reviews.js)
 - **1/21/2026**: feat: Complete GDPR-compliant email unsubscribe system with Privacy Policy updates (GDPR_COMPLIANCE_CHECKLIST.md, GDPR_EMAIL_SYSTEM.md, backend/routes/anonymousReviews.js)
 - **1/20/2026**: feat: Switch to anonymous review system and fix company display (backend/routes/anonymousReviews.js, backend/routes/reviews.js, src/pages/Review.jsx)
 - **1/20/2026**: feat: Add email notifications for new reviews (backend/package.json, backend/routes/anonymousReviews.js, backend/services/emailService.js)
 - **1/19/2026**: feat: Implement anonymous review system with token-burning architecture (backend/routes/anonymousReviews.js, backend/server.js, src/components/landing/FAQ.jsx)
 
 ## Recent Changes
+- `e50759e` 1/21/2026: Fix at source: Database triggers auto-sync review counts
+  Files: backend/routes/anonymousReviews.js, backend/routes/reviews.js
 - `a57428f` 1/21/2026: Add data validation system and fix review count sync
   Files: backend/database/find-actual-reviews.sql, backend/database/fix-reviews-received-counts.sql, backend/database/full-data-investigation.sql
 - `217e8d0` 1/21/2026: Leaderboard share feature: disabled button with tooltip
@@ -42,11 +45,9 @@
   Files: src/components/review/ColleagueCard.jsx, src/components/review/ReviewSuccess.jsx
 - `c33fe89` 1/20/2026: docs: Update PROJECT_CONTEXT.md with colleague persistence and GTM tracking
   Files: PROJECT_CONTEXT.md
-- `ae33b3a` 1/20/2026: fix: Persist colleague assignment across sessions/devices
-  Files: backend/routes/reviews.js, src/pages/Onboarding.jsx, src/pages/Profile.jsx
 
 ## Do Not Repeat
 These issues have already been solved:
+- Fix at source: Database triggers auto-sync review counts
 - Generate unsubscribe tokens for new users during signup
 - Critical mobile UX improvements for review form
-- Persist colleague assignment across sessions/devices
