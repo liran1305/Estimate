@@ -1,20 +1,22 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-21T15:03:41.082Z
+> Last updated: 2026-01-22T12:59:58.500Z
 
 ## Project Stats
-- Total memories: 142
-- Commits tracked: 142
+- Total memories: 143
+- Commits tracked: 143
 - Decisions recorded: 0
 
 ## Relevant to Current Work
-- **1/21/2026**: Fix server.js to count reviews from BOTH tables (PROJECT_CONTEXT.md, backend/server.js)
-- **1/21/2026**: Add data validation system and fix review count sync (backend/database/find-actual-reviews.sql, backend/database/fix-reviews-received-counts.sql, backend/database/full-data-investigation.sql)
-- **1/21/2026**: Production Release: Score fixes, skip budget cap, review count sync, leaderboard UI (backend/routes/reviews.js, backend/server.js)
-- **1/21/2026**: Production Release: Score fix (0-10 scale), skip budget cap enforcement, leaderboard UI improvements (PROJECT_CONTEXT.md, backend/routes/leaderboard.js, backend/routes/reviews.js)
-- **1/21/2026**: fix: Generate unsubscribe tokens for new users during signup (backend/server.js)
+- **1/14/2026**: Fix mobile OAuth: Make Cloudflare Turnstile verification visible (src/components/landing/HeroSection.jsx, src/components/landing/QuoteSection.jsx, src/lib/turnstile.js)
+- **1/14/2026**: Add dynamic typewriter hero titles with animation (DATA_FIELD_AUDIT.md, src/components/landing/HeroSection.jsx, src/components/landing/TypewriterTitle.jsx)
+- **1/13/2026**: Update Onboarding: wider card, user name greeting, bigger anonymous icon, replace all arrows with ne (src/components/landing/HeroSection.jsx, src/components/review/ColleagueCard.jsx, src/components/review/ReviewSuccess.jsx)
+- **1/7/2026**: Major UX improvements based on CPO/Senior UX analysis (src/components/landing/FAQ.jsx, src/components/landing/HeroSection.jsx, src/components/landing/HowItWorks.jsx)
+- **1/6/2026**: Add Logo component with local images and update header spacing (public/images/Estimate_logo.png, public/images/Simon_Sinek.png, src/components/Logo.jsx)
 
 ## Recent Changes
+- `012372b` 1/21/2026: Fix user_scores creation and extend company history to 5 years
+  Files: backend/routes/reviews.js, backend/server.js
 - `44557c4` 1/21/2026: Fix server.js to count reviews from BOTH tables
   Files: PROJECT_CONTEXT.md, backend/server.js
 - `69076ba` 1/21/2026: Fix dataValidation.js - use local getPool instead of missing config/database
@@ -43,13 +45,11 @@
   Files: backend/routes/reviews.js
 - `4b5a9ae` 1/20/2026: debug: Add comprehensive logging to track colleague assignment flow
   Files: backend/routes/reviews.js
-- `4edd2c0` 1/20/2026: fix: Critical mobile UX improvements for review form
-  Files: src/components/review/ReviewFormDynamic.jsx
 
 ## Do Not Repeat
 These issues have already been solved:
+- Fix user_scores creation and extend company history to 5 years
 - Fix server.js to count reviews from BOTH tables
 - Fix dataValidation.js - use local getPool instead of missing config/database
 - Fix at source: Database triggers auto-sync review counts
 - Generate unsubscribe tokens for new users during signup
-- Critical mobile UX improvements for review form

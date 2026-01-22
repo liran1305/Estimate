@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Linkedin, Building2, Shield, Lock, Eye } from "lucide-react";
+import { Linkedin, Building2, Shield, Lock, Eye, Users, Unlock, Share2, UserX, Glasses } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import WaitlistModal from "@/components/landing/WaitlistModal";
@@ -13,28 +13,48 @@ export default function HeroSection() {
   return (
     <>
       <section className="pt-32 pb-20 px-6">
-        <div className="max-w-4xl mx-auto text-center">
+        <div className="max-w-6xl mx-auto text-center">
           <TypewriterTitle />
-          <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-8 mt-6">
+          <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-8 mt-6">
             A peer-verified reputation layer for hiring - helping great talent get discovered and helping recruiters hire with confidence.
           </p>
           
-          <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6 text-sm text-gray-500 mb-12">
-            <div className="flex items-center gap-2">
-              <Lock className="w-4 h-4 text-[#0A66C2]" />
-              <span>Anonymous reviews</span>
+          <div className="flex flex-col items-center justify-center gap-2 mb-12">
+            <div className="text-xl md:text-3xl font-bold text-[#0A66C2]">
+              100% Free
             </div>
-            <div className="flex items-center gap-2">
-              <Eye className="w-4 h-4 text-[#0A66C2]" />
-              <span>You control visibility</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Shield className="w-4 h-4 text-[#0A66C2]" />
-              <span>100% Free</span>
+            <div className="flex items-center gap-2 text-lg md:text-xl font-semibold text-gray-700">
+              <img src="/images/anonymous.png" alt="Anonymous" className="w-6 h-6 md:w-7 md:h-7" />
+              <span>Completely Anonymous</span>
             </div>
           </div>
 
-          <div className="flex flex-col md:flex-row gap-6 justify-center max-w-2xl mx-auto">
+          {/* 4-Step Process - Horizontal with wrap on mobile */}
+          <div className="mb-8 max-w-3xl mx-auto px-4">
+            <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-2 md:gap-x-4 text-[10px] sm:text-xs md:text-sm text-gray-600">
+              <div className="flex items-center gap-1 font-medium">
+                <Linkedin className="w-3 h-3 sm:w-4 sm:h-4 md:w-4 md:h-4 text-[#0A66C2]" />
+                <span>Sign in</span>
+              </div>
+              <span className="text-lg sm:text-xl md:text-xl font-black text-gray-600">»</span>
+              <div className="flex items-center gap-1 font-medium">
+                <Users className="w-3 h-3 sm:w-4 sm:h-4 md:w-4 md:h-4 text-[#0A66C2]" />
+                <span>Review 3</span>
+              </div>
+              <span className="text-lg sm:text-xl md:text-xl font-black text-gray-600">»</span>
+              <div className="flex items-center gap-1 font-medium">
+                <Unlock className="w-3 h-3 sm:w-4 sm:h-4 md:w-4 md:h-4 text-[#0A66C2]" />
+                <span>Unlock score</span>
+              </div>
+              <span className="text-lg sm:text-xl md:text-xl font-black text-gray-600">»</span>
+              <div className="flex items-center gap-1 font-medium">
+                <Eye className="w-3 h-3 sm:w-4 sm:h-4 md:w-4 md:h-4 text-[#0A66C2]" />
+                <span className="whitespace-nowrap">Get discovered</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col md:flex-row gap-6 md:gap-50 justify-center max-w-4xl mx-auto">
             <Card className="flex-1 p-8 border-2 border-gray-100 hover:border-[#0A66C2]/20 transition-all duration-300 hover:shadow-lg group flex flex-col">
               <div className="w-14 h-14 bg-[#0A66C2]/10 rounded-2xl flex items-center justify-center mb-6 mx-auto group-hover:scale-110 transition-transform">
                 <Linkedin className="w-7 h-7 text-[#0A66C2]" />

@@ -2101,7 +2101,20 @@
       "tags": [],
       "commit_hash": "44557c4351e308416c46c9e934ed80437cd8b280",
       "created_at": "2026-01-21T13:26:37.000Z"
+    },
+    {
+      "id": 143,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix user_scores creation and extend company history to 5 years",
+      "files": [
+        "backend/routes/reviews.js",
+        "backend/server.js"
+      ],
+      "tags": [],
+      "commit_hash": "012372bffe99669031f5534e9a05604db4e903a6",
+      "created_at": "2026-01-21T15:04:00.000Z"
     }
   ],
-  "nextId": 143
+  "nextId": 144
 }
