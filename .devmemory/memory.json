@@ -2114,7 +2114,20 @@
       "tags": [],
       "commit_hash": "012372bffe99669031f5534e9a05604db4e903a6",
       "created_at": "2026-01-21T15:04:00.000Z"
+    },
+    {
+      "id": 144,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Improve landing page UX and fix colleague matching data issue",
+      "files": [
+        "public/images/anonymous.png",
+        "src/components/landing/HeroSection.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "faad99eb2081971f8a4261146fb13938f6bcb9de",
+      "created_at": "2026-01-22T13:04:55.000Z"
     }
   ],
-  "nextId": 144
+  "nextId": 145
 }

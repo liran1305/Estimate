@@ -1,20 +1,22 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-22T12:59:58.500Z
+> Last updated: 2026-01-22T13:26:28.399Z
 
 ## Project Stats
-- Total memories: 143
-- Commits tracked: 143
+- Total memories: 144
+- Commits tracked: 144
 - Decisions recorded: 0
 
 ## Relevant to Current Work
+- **1/22/2026**: Improve landing page UX and fix colleague matching data issue (public/images/anonymous.png, src/components/landing/HeroSection.jsx)
 - **1/14/2026**: Fix mobile OAuth: Make Cloudflare Turnstile verification visible (src/components/landing/HeroSection.jsx, src/components/landing/QuoteSection.jsx, src/lib/turnstile.js)
 - **1/14/2026**: Add dynamic typewriter hero titles with animation (DATA_FIELD_AUDIT.md, src/components/landing/HeroSection.jsx, src/components/landing/TypewriterTitle.jsx)
 - **1/13/2026**: Update Onboarding: wider card, user name greeting, bigger anonymous icon, replace all arrows with ne (src/components/landing/HeroSection.jsx, src/components/review/ColleagueCard.jsx, src/components/review/ReviewSuccess.jsx)
 - **1/7/2026**: Major UX improvements based on CPO/Senior UX analysis (src/components/landing/FAQ.jsx, src/components/landing/HeroSection.jsx, src/components/landing/HowItWorks.jsx)
-- **1/6/2026**: Add Logo component with local images and update header spacing (public/images/Estimate_logo.png, public/images/Simon_Sinek.png, src/components/Logo.jsx)
 
 ## Recent Changes
+- `faad99e` 1/22/2026: Improve landing page UX and fix colleague matching data issue
+  Files: public/images/anonymous.png, src/components/landing/HeroSection.jsx
 - `012372b` 1/21/2026: Fix user_scores creation and extend company history to 5 years
   Files: backend/routes/reviews.js, backend/server.js
 - `44557c4` 1/21/2026: Fix server.js to count reviews from BOTH tables
@@ -42,8 +44,6 @@
 - `89c55a4` 1/20/2026: feat: Exclude military organizations from colleague matching
   Files: DATA_STRUCTURES.md, backend/database/migration-company-stats.sql, backend/routes/reviews.js
 - `16594be` 1/20/2026: feat: Exclude non-workplace entries from colleague matching
-  Files: backend/routes/reviews.js
-- `4b5a9ae` 1/20/2026: debug: Add comprehensive logging to track colleague assignment flow
   Files: backend/routes/reviews.js
 
 ## Do Not Repeat

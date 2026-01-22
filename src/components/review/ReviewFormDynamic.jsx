@@ -414,10 +414,11 @@ export default function ReviewFormDynamic({
           maxLength={200}
         />
         
-        {/* Polish Button - Below textarea */}
-        {comment.length > 10 && !showPolishSuggestion && (
+        {/* Polish Button - Below textarea - Always visible */}
+        {!showPolishSuggestion && (
           <button
             onClick={async () => {
+              if (comment.length <= 10) return;
               setIsPolishing(true);
               try {
                 const apiUrl = import.meta.env.VITE_API_URL || 'https://estimate-mio1.onrender.com';
@@ -437,8 +438,9 @@ export default function ReviewFormDynamic({
                 setIsPolishing(false);
               }
             }}
-            disabled={isPolishing}
-            className="mt-2 flex items-center gap-1 px-3 py-1.5 text-xs text-blue-600 hover:text-blue-700 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 transition-colors disabled:opacity-50"
+            disabled={isPolishing || comment.length <= 10}
+            className="mt-2 flex items-center gap-1 px-3 py-1.5 text-xs text-blue-600 hover:text-blue-700 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            title={comment.length <= 10 ? 'Add more text to enable AI polish' : 'Polish your comment with AI'}
           >
             <Sparkles className="w-3 h-3" />
             {isPolishing ? 'Polishing...' : 'Polish with AI'}

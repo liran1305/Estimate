@@ -31,24 +31,24 @@ export default function HeroSection() {
 
           {/* 4-Step Process - Horizontal with wrap on mobile */}
           <div className="mb-8 max-w-3xl mx-auto px-4">
-            <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-2 md:gap-x-4 text-[10px] sm:text-xs md:text-sm text-gray-600">
-              <div className="flex items-center gap-1 font-medium">
-                <Linkedin className="w-3 h-3 sm:w-4 sm:h-4 md:w-4 md:h-4 text-[#0A66C2]" />
+            <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-2 md:gap-x-4 text-xs sm:text-sm md:text-sm text-gray-600">
+              <div className="flex items-center gap-1.5 font-medium">
+                <Linkedin className="w-4 h-4 sm:w-4 sm:h-4 md:w-4 md:h-4 text-[#0A66C2]" />
                 <span>Sign in</span>
               </div>
-              <span className="text-lg sm:text-xl md:text-xl font-black text-gray-600">»</span>
-              <div className="flex items-center gap-1 font-medium">
-                <Users className="w-3 h-3 sm:w-4 sm:h-4 md:w-4 md:h-4 text-[#0A66C2]" />
+              <span className="text-xl sm:text-xl md:text-xl font-black text-gray-600">»</span>
+              <div className="flex items-center gap-1.5 font-medium">
+                <Users className="w-4 h-4 sm:w-4 sm:h-4 md:w-4 md:h-4 text-[#0A66C2]" />
                 <span>Review 3</span>
               </div>
-              <span className="text-lg sm:text-xl md:text-xl font-black text-gray-600">»</span>
-              <div className="flex items-center gap-1 font-medium">
-                <Unlock className="w-3 h-3 sm:w-4 sm:h-4 md:w-4 md:h-4 text-[#0A66C2]" />
+              <span className="text-xl sm:text-xl md:text-xl font-black text-gray-600">»</span>
+              <div className="flex items-center gap-1.5 font-medium">
+                <Unlock className="w-4 h-4 sm:w-4 sm:h-4 md:w-4 md:h-4 text-[#0A66C2]" />
                 <span>Unlock score</span>
               </div>
-              <span className="text-lg sm:text-xl md:text-xl font-black text-gray-600">»</span>
-              <div className="flex items-center gap-1 font-medium">
-                <Eye className="w-3 h-3 sm:w-4 sm:h-4 md:w-4 md:h-4 text-[#0A66C2]" />
+              <span className="text-xl sm:text-xl md:text-xl font-black text-gray-600">»</span>
+              <div className="flex items-center gap-1.5 font-medium">
+                <Eye className="w-4 h-4 sm:w-4 sm:h-4 md:w-4 md:h-4 text-[#0A66C2]" />
                 <span className="whitespace-nowrap">Get discovered</span>
               </div>
             </div>

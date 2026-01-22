@@ -1341,17 +1341,30 @@ router.get('/score/me', async (req, res) => {
       }
 
       // Calculate score if not cached or outdated
+      // Fetch from both reviews and anonymous_reviews tables
       const [reviews] = await connection.query(`
         SELECT 
           scores,
           overall_score,
           strength_tags,
           would_work_again,
-          interaction_type,
-          created_at
+          CAST(interaction_type AS CHAR CHARACTER SET utf8mb4) COLLATE utf8mb4_unicode_ci as interaction_type,
+          created_at,
+          CAST(optional_comment AS CHAR CHARACTER SET utf8mb4) COLLATE utf8mb4_unicode_ci as optional_comment
         FROM reviews 
         WHERE reviewee_id = ?
-      `, [scoreData.linkedin_profile_id]);
+        UNION ALL
+        SELECT 
+          scores,
+          overall_score,
+          strength_tags,
+          would_work_again,
+          CAST(interaction_type AS CHAR CHARACTER SET utf8mb4) COLLATE utf8mb4_unicode_ci as interaction_type,
+          created_date as created_at,
+          CAST(optional_comment AS CHAR CHARACTER SET utf8mb4) COLLATE utf8mb4_unicode_ci as optional_comment
+        FROM anonymous_reviews
+        WHERE reviewee_id = ?
+      `, [scoreData.linkedin_profile_id, scoreData.linkedin_profile_id]);
 
       if (reviews.length === 0) {
         return res.json({
@@ -1390,8 +1403,19 @@ router.get('/score/me', async (req, res) => {
         cross_team: 0,
         other: 0
       };
+      
+      // Collect comments (only non-empty ones)
+      const comments = [];
 
       for (const review of reviews) {
+        // Collect optional comments
+        if (review.optional_comment && review.optional_comment.trim()) {
+          comments.push({
+            comment: review.optional_comment.trim(),
+            created_at: review.created_at
+          });
+        }
+        
         // Use overall_score if available, otherwise calculate from scores JSON
         if (review.overall_score) {
           overallSum += parseFloat(review.overall_score);
@@ -1519,6 +1543,8 @@ router.get('/score/me', async (req, res) => {
           breakdown: wouldWorkAgainBreakdown
         },
         reviewer_breakdown: reviewerBreakdown,
+        // Comments from reviews
+        comments: comments,
         // New: Percentile tier information
         percentile: {
           tier: percentileTier.tier,

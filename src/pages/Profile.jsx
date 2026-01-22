@@ -308,35 +308,6 @@ export default function Profile() {
                         <CheckCircle2 className="w-3 h-3" /> {scoreData?.reviews_given || 0} reviews given
                       </span>
                     </div>
-                    {/* Visible to Recruiters - More Prominent */}
-                    <div className="relative group">
-                      <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-md border ${
-                        user.recruitment_consent 
-                          ? 'bg-green-50 border-green-200' 
-                          : hasEnoughForRecruiters 
-                            ? 'bg-gray-50 border-gray-200 hover:bg-gray-100' 
-                            : 'bg-gray-50 border-gray-200 opacity-60'
-                      }`}>
-                        <CheckCircle2 className={`w-4 h-4 ${user.recruitment_consent ? 'text-green-500' : 'text-gray-400'}`} />
-                        <span className={`text-xs font-medium ${user.recruitment_consent ? 'text-green-700' : 'text-gray-600'}`}>
-                          {user.recruitment_consent ? 'Visible to Recruiters' : 'Open for Recruiters'}
-                        </span>
-                        <Switch 
-                          checked={user.recruitment_consent || false}
-                          onCheckedChange={handleConsentToggle}
-                          disabled={isUpdating || !hasEnoughForRecruiters}
-                          className="scale-75"
-                        />
-                      </div>
-                      {/* Tooltip */}
-                      {!hasEnoughForRecruiters && (
-                        <div className="absolute left-0 top-full mt-2 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none">
-                          <p className="font-medium mb-1">🔒 Locked</p>
-                          <p>You need at least 3 reviews to enable recruiter visibility. You currently have {scoreData?.reviews_received || 0} review{(scoreData?.reviews_received || 0) !== 1 ? 's' : ''}.</p>
-                          <div className="absolute -top-1 left-4 w-2 h-2 bg-gray-900 rotate-45"></div>
-                        </div>
-                      )}
-                    </div>
                   </div>
                 </div>
 
@@ -373,7 +344,7 @@ export default function Profile() {
                 
                 {/* Would Work Again - Blurred until 3+ reviews */}
                 <div className="relative">
-                  <p className="text-sm sm:text-base font-semibold text-gray-900 mb-2 sm:mb-3">Would Work Again</p>
+                  <p className="text-sm sm:text-base font-semibold text-gray-900 mb-2 sm:mb-3">Would Work Again?</p>
                   {(scoreData?.reviews_received || 0) >= 3 ? (
                     <>
                       <div className="flex items-center gap-3 mb-2">
@@ -498,6 +469,25 @@ export default function Profile() {
                 </div>
               </div>
 
+              {/* Comments Section */}
+              {scoreData?.comments && scoreData.comments.length > 0 && (
+                <div className="py-4 sm:py-6 border-b border-gray-100">
+                  <p className="text-sm sm:text-base font-semibold text-gray-900 mb-3">What Colleagues Said</p>
+                  <div className="space-y-3">
+                    {scoreData.comments.slice(0, 5).map((item, index) => (
+                      <div key={index} className="p-3 bg-gray-50 rounded-lg border border-gray-100">
+                        <p className="text-sm text-gray-700 italic">"{item.comment}"</p>
+                      </div>
+                    ))}
+                  </div>
+                  {scoreData.comments.length > 5 && (
+                    <p className="text-xs text-gray-400 mt-2 text-center">
+                      Showing 5 of {scoreData.comments.length} comments
+                    </p>
+                  )}
+                </div>
+              )}
+
               {/* Bottom Row: Who Reviewed (LEFT) + Share Button (RIGHT) */}
               <div className="pt-4 sm:pt-6 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
                 {/* Who Reviewed - LEFT */}
@@ -523,14 +513,53 @@ export default function Profile() {
                   </div>
                 </div>
 
-                {/* Share Button - Full width on mobile, normal on desktop */}
-                <Button 
-                  onClick={handleShareLinkedIn}
-                  className="w-full sm:w-auto bg-[#0A66C2] hover:bg-[#004182] text-white rounded-lg px-5 flex-shrink-0"
-                >
-                  <Linkedin className="w-4 h-4 mr-2" />
-                  Share to LinkedIn
-                </Button>
+                {/* Open for Recruiters - More prominent with toggle */}
+                <div className="relative group">
+                  <div className={`inline-flex items-center gap-3 px-4 py-3 rounded-lg border-2 ${
+                    user.recruitment_consent 
+                      ? 'bg-green-50 border-green-500' 
+                      : hasEnoughForRecruiters 
+                        ? 'bg-blue-50 border-blue-500 hover:bg-blue-100 cursor-pointer' 
+                        : 'bg-purple-50 border-purple-400 opacity-80'
+                  }`}
+                  onClick={() => {
+                    if (hasEnoughForRecruiters) {
+                      handleConsentToggle(!user.recruitment_consent);
+                    }
+                  }}
+                  >
+                    <CheckCircle2 className={`w-5 h-5 ${
+                      user.recruitment_consent 
+                        ? 'text-green-600' 
+                        : hasEnoughForRecruiters 
+                          ? 'text-blue-600' 
+                          : 'text-purple-400'
+                    }`} />
+                    <span className={`text-sm font-semibold ${
+                      user.recruitment_consent 
+                        ? 'text-green-700' 
+                        : hasEnoughForRecruiters 
+                          ? 'text-blue-700' 
+                          : 'text-purple-600'
+                    }`}>
+                      {user.recruitment_consent ? 'Visible to Recruiters' : 'Open for Recruiters'}
+                    </span>
+                    <Switch 
+                      checked={user.recruitment_consent || false}
+                      onCheckedChange={handleConsentToggle}
+                      disabled={isUpdating || !hasEnoughForRecruiters}
+                      className="scale-90"
+                    />
+                  </div>
+                  {/* Tooltip */}
+                  {!hasEnoughForRecruiters && (
+                    <div className="absolute left-0 bottom-full mb-2 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none">
+                      <p className="font-medium mb-1">🔒 Locked</p>
+                      <p>You need at least 3 reviews to enable recruiter visibility. You currently have {scoreData?.reviews_received || 0} review{(scoreData?.reviews_received || 0) !== 1 ? 's' : ''}.</p>
+                      <div className="absolute -bottom-1 left-4 w-2 h-2 bg-gray-900 rotate-45"></div>
+                    </div>
+                  )}
+                </div>
               </div>
             </Card>
           </motion.div>
