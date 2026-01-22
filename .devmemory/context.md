@@ -1,18 +1,19 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-22T14:39:37.049Z
+> Last updated: 2026-01-22T20:12:30.192Z
 
 ## Project Stats
-- Total memories: 145
-- Commits tracked: 145
+- Total memories: 148
+- Commits tracked: 148
 - Decisions recorded: 0
 
-## Relevant to Current Work
-- **1/21/2026**: Leaderboard share feature: disabled button with tooltip (package.json, src/pages/Leaderboard.jsx)
-- **1/21/2026**: Production Release v2: Realistic leaderboard, blurred fake profiles, review count fixes (backend/routes/leaderboard.js, public/images/fake-profile-images/download (1).png, public/images/fake-profile-images/download (10).png)
-- **1/21/2026**: Production Release: Score fix (0-10 scale), skip budget cap enforcement, leaderboard UI improvements (PROJECT_CONTEXT.md, backend/routes/leaderboard.js, backend/routes/reviews.js)
-
 ## Recent Changes
+- `4a12bbf` 1/22/2026: Fix skip refresh bug: prevent negative unusedSkips and add debug logging
+  Files: backend/routes/reviews.js
+- `b24ab18` 1/22/2026: Add debug logging for 70/30 company selection to diagnose FireArc issue
+  Files: backend/routes/reviews.js
+- `3b78a37` 1/22/2026: Major UX improvements and bug fixes
+  Files: src/components/review/ColleagueCard.jsx, src/pages/Leaderboard.jsx
 - `0edf72d` 1/22/2026: Add multiple UX improvements and new features
   Files: backend/routes/reviews.js, src/components/landing/HeroSection.jsx, src/components/review/ReviewFormDynamic.jsx
 - `faad99e` 1/22/2026: Improve landing page UX and fix colleague matching data issue
@@ -37,17 +38,11 @@
   Files: PROJECT_CONTEXT.md, backend/routes/leaderboard.js, backend/routes/reviews.js
 - `cc598d8` 1/21/2026: fix: Generate unsubscribe tokens for new users during signup
   Files: backend/server.js
-- `dabff6b` 1/21/2026: feat: Complete GDPR-compliant email unsubscribe system with Privacy Policy updates
-  Files: GDPR_COMPLIANCE_CHECKLIST.md, GDPR_EMAIL_SYSTEM.md, backend/routes/anonymousReviews.js
-- `0346391` 1/20/2026: feat: Switch to anonymous review system and fix company display
-  Files: backend/routes/anonymousReviews.js, backend/routes/reviews.js, src/pages/Review.jsx
-- `89c55a4` 1/20/2026: feat: Exclude military organizations from colleague matching
-  Files: DATA_STRUCTURES.md, backend/database/migration-company-stats.sql, backend/routes/reviews.js
 
 ## Do Not Repeat
 These issues have already been solved:
+- Fix skip refresh bug: prevent negative unusedSkips and add debug logging
 - Fix user_scores creation and extend company history to 5 years
 - Fix server.js to count reviews from BOTH tables
 - Fix dataValidation.js - use local getPool instead of missing config/database
 - Fix at source: Database triggers auto-sync review counts
-- Generate unsubscribe tokens for new users during signup

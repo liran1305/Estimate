@@ -578,6 +578,17 @@ router.get('/colleague/next', async (req, res) => {
         return overlapMonths >= 3;
       });
 
+      // Debug: Log overlap filtering results by company
+      const overlapByCompany = {};
+      colleaguesWithOverlap.forEach(c => {
+        if (!overlapByCompany[c.company_name]) overlapByCompany[c.company_name] = [];
+        overlapByCompany[c.company_name].push(`${c.name} (${c.overlap_months}mo)`);
+      });
+      console.log(`[OVERLAP FILTER] User ${user_id}: ${colleaguesWithOverlap.length} colleagues with 3+ months overlap`);
+      Object.keys(overlapByCompany).forEach(company => {
+        console.log(`[OVERLAP FILTER]   ${company}: ${overlapByCompany[company].length} colleagues - ${overlapByCompany[company].slice(0, 3).join(', ')}${overlapByCompany[company].length > 3 ? '...' : ''}`);
+      });
+
       if (colleaguesWithOverlap.length === 0) {
         return res.json({
           success: true,
@@ -609,6 +620,11 @@ router.get('/colleague/next', async (req, res) => {
         // Mark as 'current' if it's the user's current company (regardless of colleague's current status)
         const companyContext = userCompany?.is_current ? 'current' : 'previous';
         const reviewsGiven = reviewCountMap[colleague.id] || 0;
+        
+        // Debug: Log first 3 colleagues to see company_context assignment
+        if (scoredColleagues.length < 3) {
+          console.log(`[COMPANY_CONTEXT] ${colleague.name} from ${colleague.company_name}: userCompany.is_current=${userCompany?.is_current}, context=${companyContext}`);
+        }
         
         return {
           ...colleague,
@@ -643,6 +659,17 @@ router.get('/colleague/next', async (req, res) => {
       // Prioritize: 1-2 reviews > never-skipped > once-skipped
       const prioritizedColleagues = [...shuffledNeedsCompletion, ...shuffledNeverSkipped, ...shuffledOnceSkipped];
       
+      // Debug: Log prioritization results by company
+      const prioritizedByCompany = {};
+      prioritizedColleagues.forEach(c => {
+        if (!prioritizedByCompany[c.company_name]) prioritizedByCompany[c.company_name] = 0;
+        prioritizedByCompany[c.company_name]++;
+      });
+      console.log(`[PRIORITIZATION] User ${user_id}: ${prioritizedColleagues.length} colleagues after prioritization`);
+      Object.keys(prioritizedByCompany).forEach(company => {
+        console.log(`[PRIORITIZATION]   ${company}: ${prioritizedByCompany[company]} colleagues`);
+      });
+      
       // ========== FILTER BY COMPANIES WITH AVAILABLE SKIPS ==========
       // Get unique companies from prioritized colleagues
       const uniqueCompanies = [...new Set(prioritizedColleagues.map(c => c.company_name))];
@@ -658,6 +685,15 @@ router.get('/colleague/next', async (req, res) => {
       const colleaguesWithSkips = prioritizedColleagues.filter(c => 
         companySkipStatus[c.company_name]?.skips_remaining > 0
       );
+      
+      // Debug: Log skip filtering results
+      console.log(`[SKIP FILTER] User ${user_id}: Company skip status:`);
+      Object.keys(companySkipStatus).forEach(company => {
+        const status = companySkipStatus[company];
+        const colleaguesCount = colleaguesWithSkips.filter(c => c.company_name === company).length;
+        console.log(`[SKIP FILTER]   ${company}: ${status.skips_remaining}/${status.initial_budget} skips remaining, ${colleaguesCount} colleagues available`);
+      });
+      console.log(`[SKIP FILTER] Total colleagues with skips: ${colleaguesWithSkips.length}`);
       
       // If no colleagues have skips remaining, return no skips message
       if (colleaguesWithSkips.length === 0) {
