@@ -50,8 +50,8 @@ export default function ColleagueCard({
     <div className="space-y-6">
       {/* Company Context Banner */}
       {companySkips && (
-        <div className="flex items-center justify-between px-4 py-3 bg-blue-50 rounded-xl border border-blue-100">
-          <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 px-4 py-3 bg-blue-50 rounded-xl border border-blue-100">
+          <div className="flex items-center gap-2 flex-wrap">
             <span className="text-blue-600 text-sm font-medium">
               📍 Reviewing colleagues from
             </span>
@@ -59,24 +59,24 @@ export default function ColleagueCard({
               {companySkips.company_name}
             </span>
           </div>
-          <span className="text-blue-600 text-sm">
+          <span className="text-blue-600 text-sm font-medium">
             {companySkips.skips_remaining} skips left
           </span>
         </div>
       )}
       
-      <Card className="p-8 border-0 shadow-xl shadow-gray-200/50">
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-5">
+      <Card className="p-5 md:p-6 lg:p-8 border-0 shadow-xl shadow-gray-200/50">
+        <div className="flex items-center justify-between gap-2.5 md:gap-3 mb-7 md:mb-8">
+          <div className="flex items-center gap-3 md:gap-4 lg:gap-5 min-w-0 flex-1">
             <img 
               src={colleague.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(colleague.name)}&background=0A66C2&color=fff&size=80`}
               alt={colleague.name}
-              className="w-20 h-20 rounded-2xl object-cover"
+              className="w-16 h-16 md:w-16 md:h-16 lg:w-20 lg:h-20 rounded-2xl object-cover flex-shrink-0"
             />
-            <div>
-              <h2 className="text-xl font-bold text-gray-900">{colleague.name}</h2>
-              <p className="text-gray-500">{colleague.job_title}</p>
-              <p className="text-gray-400 text-sm">at {colleague.company}</p>
+            <div className="min-w-0 flex-1">
+              <h2 className="text-lg md:text-lg lg:text-xl font-bold text-gray-900 truncate">{colleague.name}</h2>
+              <p className="text-gray-500 text-sm md:text-sm lg:text-base truncate">{colleague.job_title}</p>
+              <p className="text-gray-400 text-sm md:text-sm truncate">at {colleague.company}</p>
             </div>
           </div>
           
@@ -85,15 +85,15 @@ export default function ColleagueCard({
               <TooltipTrigger asChild>
                 <button 
                   onClick={skipsRemaining <= 0 ? onBackToProfile : onSkip}
-                  className="flex flex-col items-center justify-center gap-1.5 text-[#0A66C2] hover:text-[#004182] font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed px-4 py-3 rounded-xl hover:bg-[#0A66C2]/5 min-w-[80px] active:scale-95"
+                  className="flex flex-col items-center justify-center gap-1.5 md:gap-1.5 text-[#0A66C2] hover:text-[#004182] font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed px-3 md:px-3 lg:px-4 py-2.5 md:py-2.5 lg:py-3 rounded-xl hover:bg-[#0A66C2]/5 min-w-[70px] md:min-w-[70px] lg:min-w-[80px] active:scale-95 flex-shrink-0"
                   disabled={isSkipping}
                 >
                   {isSkipping ? (
-                    <Loader2 className="w-6 h-6 animate-spin" />
+                    <Loader2 className="w-5.5 h-5.5 md:w-5 md:h-5 lg:w-6 lg:h-6 animate-spin" />
                   ) : (
-                    <RefreshCw className="w-6 h-6" />
+                    <RefreshCw className="w-5.5 h-5.5 md:w-5 md:h-5 lg:w-6 lg:h-6" />
                   )}
-                  <span className="text-xs whitespace-nowrap font-semibold">
+                  <span className="text-xs md:text-xs whitespace-nowrap font-semibold">
                     {skipsRemaining <= 0 ? 'No Skips' : `Skip (${skipsRemaining})`}
                   </span>
                 </button>

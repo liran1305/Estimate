@@ -1,20 +1,20 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-22T13:26:28.399Z
+> Last updated: 2026-01-22T14:39:37.049Z
 
 ## Project Stats
-- Total memories: 144
-- Commits tracked: 144
+- Total memories: 145
+- Commits tracked: 145
 - Decisions recorded: 0
 
 ## Relevant to Current Work
-- **1/22/2026**: Improve landing page UX and fix colleague matching data issue (public/images/anonymous.png, src/components/landing/HeroSection.jsx)
-- **1/14/2026**: Fix mobile OAuth: Make Cloudflare Turnstile verification visible (src/components/landing/HeroSection.jsx, src/components/landing/QuoteSection.jsx, src/lib/turnstile.js)
-- **1/14/2026**: Add dynamic typewriter hero titles with animation (DATA_FIELD_AUDIT.md, src/components/landing/HeroSection.jsx, src/components/landing/TypewriterTitle.jsx)
-- **1/13/2026**: Update Onboarding: wider card, user name greeting, bigger anonymous icon, replace all arrows with ne (src/components/landing/HeroSection.jsx, src/components/review/ColleagueCard.jsx, src/components/review/ReviewSuccess.jsx)
-- **1/7/2026**: Major UX improvements based on CPO/Senior UX analysis (src/components/landing/FAQ.jsx, src/components/landing/HeroSection.jsx, src/components/landing/HowItWorks.jsx)
+- **1/21/2026**: Leaderboard share feature: disabled button with tooltip (package.json, src/pages/Leaderboard.jsx)
+- **1/21/2026**: Production Release v2: Realistic leaderboard, blurred fake profiles, review count fixes (backend/routes/leaderboard.js, public/images/fake-profile-images/download (1).png, public/images/fake-profile-images/download (10).png)
+- **1/21/2026**: Production Release: Score fix (0-10 scale), skip budget cap enforcement, leaderboard UI improvements (PROJECT_CONTEXT.md, backend/routes/leaderboard.js, backend/routes/reviews.js)
 
 ## Recent Changes
+- `0edf72d` 1/22/2026: Add multiple UX improvements and new features
+  Files: backend/routes/reviews.js, src/components/landing/HeroSection.jsx, src/components/review/ReviewFormDynamic.jsx
 - `faad99e` 1/22/2026: Improve landing page UX and fix colleague matching data issue
   Files: public/images/anonymous.png, src/components/landing/HeroSection.jsx
 - `012372b` 1/21/2026: Fix user_scores creation and extend company history to 5 years
@@ -43,8 +43,6 @@
   Files: backend/routes/anonymousReviews.js, backend/routes/reviews.js, src/pages/Review.jsx
 - `89c55a4` 1/20/2026: feat: Exclude military organizations from colleague matching
   Files: DATA_STRUCTURES.md, backend/database/migration-company-stats.sql, backend/routes/reviews.js
-- `16594be` 1/20/2026: feat: Exclude non-workplace entries from colleague matching
-  Files: backend/routes/reviews.js
 
 ## Do Not Repeat
 These issues have already been solved:

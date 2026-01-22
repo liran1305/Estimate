@@ -24,15 +24,17 @@ import html2canvas from 'html2canvas';
 const BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:3001';
 
 // Hexagon component - Favikon-style with gradient borders and soft glow
-const ProfileHexagon = ({ user, size = 'md', currentUser }) => {
+const ProfileHexagon = ({ user, size = 'md', currentUser, isMobile = false }) => {
   const isCurrentUser = currentUser && user.userId === currentUser.id;
   const isPublic = user.isPublic || isCurrentUser;
   
   // Use original photo URL - browser can display it even with CORS
   const imageUrl = user.photoUrl;
   
-  // All hexagons same size - larger like Favikon
-  const s = { width: 140, height: 161, circleSize: 100, borderWidth: 5 };
+  // Responsive hexagon sizes - smaller on mobile
+  const s = isMobile 
+    ? { width: 80, height: 92, circleSize: 60, borderWidth: 3 }
+    : { width: 140, height: 161, circleSize: 100, borderWidth: 5 };
 
   // Gradient colors - vibrant like Favikon
   const getGradient = () => {
@@ -194,28 +196,56 @@ export default function Leaderboard() {
   const [isLoadingLeaderboard, setIsLoadingLeaderboard] = useState(false);
   const [error, setError] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
+  const [userPosition, setUserPosition] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [showAutocomplete, setShowAutocomplete] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [shareImage, setShareImage] = useState(null);
   const [shareText, setShareText] = useState('');
   const [isCopied, setIsCopied] = useState(false);
+  const [hasFetchedCategories, setHasFetchedCategories] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
 
-  // Get current user on mount
+  // Track window resize for responsive hexagons
   useEffect(() => {
-    const user = linkedinAuth.getCurrentUser();
-    setCurrentUser(user);
+    const handleResize = () => setIsMobile(window.innerWidth < 640);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Get current user, their position, and then fetch categories
+  useEffect(() => {
+    const initLeaderboard = async () => {
+      const user = linkedinAuth.getCurrentUser();
+      setCurrentUser(user);
+      
+      let position = null;
+      
+      // Fetch user's position from backend if logged in
+      if (user?.linkedinProfileId) {
+        try {
+          const res = await fetch(`${BACKEND_API_URL}/api/colleagues/profile/${user.linkedinProfileId}/colleagues`);
+          const data = await res.json();
+          if (data.success && data.profile?.position) {
+            position = data.profile.position;
+            setUserPosition(position);
+          }
+        } catch (err) {
+          console.error('Failed to fetch user position:', err);
+        }
+      }
+      
+      // Now fetch categories with the position we just got
+      await fetchCategoriesWithPosition(position);
+    };
+    
+    initLeaderboard();
   }, []);
 
   // Filter categories based on search
   const filteredCategories = categories.filter(cat => 
     cat.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
-  // Fetch categories on mount
-  useEffect(() => {
-    fetchCategories();
-  }, []);
 
   // Fetch leaderboard when category changes
   useEffect(() => {
@@ -245,7 +275,7 @@ export default function Leaderboard() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const fetchCategories = async () => {
+  const fetchCategoriesWithPosition = async (position) => {
     try {
       setIsLoadingCategories(true);
       const res = await fetch(`${BACKEND_API_URL}/api/leaderboard/categories`);
@@ -253,12 +283,51 @@ export default function Leaderboard() {
       
       if (data.success) {
         setCategories(data.categories);
-        // Auto-select first category (prefer ones with users)
-        const firstWithUsers = data.categories.find(c => c.userCount > 0);
-        if (firstWithUsers) {
-          setSelectedCategory(firstWithUsers.key);
-        } else if (data.categories.length > 0) {
-          setSelectedCategory(data.categories[0].key);
+        
+        // Try to match user's position to a category
+        let selectedCat = null;
+        
+        if (position) {
+          console.log('User position:', position);
+          // Normalize user's position and find matching category
+          const lowerPos = position.toLowerCase();
+          
+          // Try exact match first
+          selectedCat = data.categories.find(c => {
+            const catName = c.name.toLowerCase();
+            return catName === lowerPos;
+          });
+          
+          // Try partial match - check if position contains category name or vice versa
+          if (!selectedCat) {
+            selectedCat = data.categories.find(c => {
+              const catName = c.name.toLowerCase();
+              // Check both directions and also check individual words
+              const posWords = lowerPos.split(' ');
+              const catWords = catName.split(' ');
+              
+              return lowerPos.includes(catName) || 
+                     catName.includes(lowerPos) ||
+                     posWords.some(word => catWords.includes(word) && word.length > 3);
+            });
+          }
+          
+          console.log('Matched category:', selectedCat?.name || 'none');
+        }
+        
+        // Fallback: select first category with users
+        if (!selectedCat) {
+          selectedCat = data.categories.find(c => c.userCount > 0);
+          console.log('Using fallback category:', selectedCat?.name);
+        }
+        
+        // Final fallback: first category
+        if (!selectedCat && data.categories.length > 0) {
+          selectedCat = data.categories[0];
+        }
+        
+        if (selectedCat) {
+          setSelectedCategory(selectedCat.key);
         }
       }
     } catch (err) {
@@ -514,34 +583,34 @@ Check out your ranking: estimatenow.io
             </Link>
           </Card>
         ) : (
-          <Card className="p-8 bg-white border border-gray-200">
-            {/* Honeycomb Hexagonal Grid Layout - All same size, wider */}
-            <div id="leaderboard-hexagons" className="flex flex-col items-center" style={{ paddingBottom: '60px' }}>
+          <Card className="p-4 sm:p-8 bg-white border border-gray-200">
+            {/* Honeycomb Hexagonal Grid Layout - Responsive */}
+            <div id="leaderboard-hexagons" className="flex flex-col items-center" style={{ paddingBottom: isMobile ? '30px' : '60px' }}>
               {/* Row 1: #1 (centered) */}
-              <div className="flex justify-center" style={{ marginBottom: '-35px', zIndex: 40 }}>
+              <div className="flex justify-center" style={{ marginBottom: isMobile ? '-20px' : '-35px', zIndex: 40 }}>
                 {leaderboard.filter(u => u.rank === 1).map(user => (
-                  <ProfileHexagon key={user.rank} user={user} currentUser={currentUser} />
+                  <ProfileHexagon key={user.rank} user={user} currentUser={currentUser} isMobile={isMobile} />
                 ))}
               </div>
               
               {/* Row 2: #2, #3 (touching #1) */}
-              <div className="flex justify-center" style={{ gap: '8px', marginBottom: '-35px', zIndex: 30 }}>
+              <div className="flex justify-center" style={{ gap: isMobile ? '4px' : '8px', marginBottom: isMobile ? '-20px' : '-35px', zIndex: 30 }}>
                 {leaderboard.filter(u => u.rank >= 2 && u.rank <= 3).map(user => (
-                  <ProfileHexagon key={user.rank} user={user} currentUser={currentUser} />
+                  <ProfileHexagon key={user.rank} user={user} currentUser={currentUser} isMobile={isMobile} />
                 ))}
               </div>
               
               {/* Row 3: #4, #5, #6 (touching row 2) */}
-              <div className="flex justify-center" style={{ gap: '8px', marginBottom: '-35px', zIndex: 20 }}>
+              <div className="flex justify-center" style={{ gap: isMobile ? '4px' : '8px', marginBottom: isMobile ? '-20px' : '-35px', zIndex: 20 }}>
                 {leaderboard.filter(u => u.rank >= 4 && u.rank <= 6).map(user => (
-                  <ProfileHexagon key={user.rank} user={user} currentUser={currentUser} />
+                  <ProfileHexagon key={user.rank} user={user} currentUser={currentUser} isMobile={isMobile} />
                 ))}
               </div>
               
               {/* Row 4: #7, #8, #9, #10 (touching row 3) */}
-              <div className="flex justify-center" style={{ gap: '8px', zIndex: 10 }}>
+              <div className="flex justify-center" style={{ gap: isMobile ? '4px' : '8px', zIndex: 10 }}>
                 {leaderboard.filter(u => u.rank >= 7 && u.rank <= 10).map(user => (
-                  <ProfileHexagon key={user.rank} user={user} currentUser={currentUser} />
+                  <ProfileHexagon key={user.rank} user={user} currentUser={currentUser} isMobile={isMobile} />
                 ))}
               </div>
             </div>
