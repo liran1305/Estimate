@@ -400,7 +400,7 @@ router.get('/colleague/next', async (req, res) => {
         });
       }
 
-      console.log(`User ${user_id}: Found ${userWorkHistory.length} companies with colleagues: ${userWorkHistory.map(w => w.company_name).join(', ')}`);
+      console.log(`User ${user_id}: Found ${userWorkHistory.length} companies with colleagues: ${userWorkHistory.map(w => `${w.company_name} (is_current: ${w.is_current})`).join(', ')}`);
 
       // Check if there's already a pending assignment for this USER (persists across sessions/devices)
       // This ensures the same colleague is shown until they're skipped or reviewed
@@ -674,6 +674,15 @@ router.get('/colleague/next', async (req, res) => {
       const currentCompanyColleagues = colleaguesWithSkips.filter(c => c.company_context === 'current');
       const previousCompanyColleagues = colleaguesWithSkips.filter(c => c.company_context === 'previous');
       
+      // Debug logging
+      console.log(`[70/30 SELECTION] User ${user_id}: Current company colleagues: ${currentCompanyColleagues.length}, Previous: ${previousCompanyColleagues.length}`);
+      if (currentCompanyColleagues.length > 0) {
+        console.log(`[70/30 SELECTION] Current companies: ${[...new Set(currentCompanyColleagues.map(c => c.company_name))].join(', ')}`);
+      }
+      if (previousCompanyColleagues.length > 0) {
+        console.log(`[70/30 SELECTION] Previous companies: ${[...new Set(previousCompanyColleagues.map(c => c.company_name))].join(', ')}`);
+      }
+      
       let selectedColleague;
       const random = Math.random();
       
@@ -682,19 +691,24 @@ router.get('/colleague/next', async (req, res) => {
         if (random < 0.7) {
           // 70% chance: Select from current company
           selectedColleague = currentCompanyColleagues[0];
+          console.log(`[70/30 SELECTION] Roll ${random.toFixed(2)} < 0.7 → CURRENT: ${selectedColleague.company_name}`);
         } else {
           // 30% chance: Select from previous company
           selectedColleague = previousCompanyColleagues[0];
+          console.log(`[70/30 SELECTION] Roll ${random.toFixed(2)} >= 0.7 → PREVIOUS: ${selectedColleague.company_name}`);
         }
       } else if (currentCompanyColleagues.length > 0) {
         // Only current company colleagues available
         selectedColleague = currentCompanyColleagues[0];
+        console.log(`[70/30 SELECTION] Only CURRENT available: ${selectedColleague.company_name}`);
       } else if (previousCompanyColleagues.length > 0) {
         // Only previous company colleagues available
         selectedColleague = previousCompanyColleagues[0];
+        console.log(`[70/30 SELECTION] Only PREVIOUS available: ${selectedColleague.company_name}`);
       } else {
         // Fallback: Use first colleague with skips
         selectedColleague = colleaguesWithSkips[0];
+        console.log(`[70/30 SELECTION] Fallback: ${selectedColleague.company_name}`);
       }
 
       // Create assignment record with 'assigned' status (so refresh returns same colleague)
