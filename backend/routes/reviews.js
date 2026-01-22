@@ -819,8 +819,8 @@ async function getOrCreateCompanySkips(connection, user_id, company_name) {
   
   // Check if daily refresh should be applied
   if (record.last_refresh_date && record.last_refresh_date !== today) {
-    // Calculate unused skips from previous period
-    const unusedSkips = currentBudget - skipsUsed;
+    // Calculate unused skips from previous period (ensure it's never negative)
+    const unusedSkips = Math.max(0, currentBudget - skipsUsed);
     
     // Calculate days since last refresh
     const daysSinceRefresh = Math.floor((new Date(today) - new Date(record.last_refresh_date)) / (24 * 60 * 60 * 1000));
@@ -828,6 +828,8 @@ async function getOrCreateCompanySkips(connection, user_id, company_name) {
     
     // New budget = unused skips + daily refresh, but capped at company maximum
     const newBudget = Math.min(unusedSkips + refreshAmount, maxCap);
+    
+    console.log(`[SKIP REFRESH] ${company_name} for user ${user_id}: currentBudget=${currentBudget}, skipsUsed=${skipsUsed}, unusedSkips=${unusedSkips}, refreshAmount=${refreshAmount}, maxCap=${maxCap}, newBudget=${newBudget}`);
     
     // Update budget and reset skips_used counter for new period
     await connection.query(`
