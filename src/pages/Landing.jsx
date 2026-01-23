@@ -1,6 +1,7 @@
 import React from 'react';
 import Header from "@/components/landing/Header";
 import HeroSection from "@/components/landing/HeroSection";
+import VideoDemo from "@/components/landing/VideoDemo";
 import QuoteSection from "@/components/landing/QuoteSection";
 import HowItWorks from "@/components/landing/HowItWorks";
 import LeaderboardPreview from "@/components/landing/LeaderboardPreview";
@@ -14,6 +15,7 @@ export default function Landing() {
       <Header />
       <main>
         <HeroSection />
+        <VideoDemo />
         <QuoteSection />
         <HowItWorks />
         <LeaderboardPreview />
