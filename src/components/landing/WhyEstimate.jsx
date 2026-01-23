@@ -1,21 +1,21 @@
 import React from 'react';
-import { HelpCircle, FileText, TrendingUp } from "lucide-react";
+import { UserX, Sparkles, Clock } from "lucide-react";
 
 const reasons = [
   {
-    icon: HelpCircle,
-    title: "Tired of rejections without knowing why?",
-    description: "Get honest feedback from people who've actually worked with you."
+    icon: UserX,
+    title: "Great interviewers aren't always great employees.",
+    description: "Toxic hires slip through with polished resumes. Peer reviews reveal what interviews can't."
   },
   {
-    icon: FileText,
-    title: "Your CV shows experience. Your score shows who you really are.",
-    description: "Stand out with verified peer insights that go beyond bullet points."
+    icon: Sparkles,
+    title: "Your CV doesn't tell the full story.",
+    description: "Fast learners get overlooked for lacking 'experience'. Prove your worth through real feedback."
   },
   {
-    icon: TrendingUp,
-    title: "See what's holding you back. Fix it. Get hired.",
-    description: "Actionable insights to improve your professional perception."
+    icon: Clock,
+    title: "7 years at Microsoft doesn't mean you're good.",
+    description: "Tenure ≠ talent. Stand out with scores from people who've actually worked with you."
   }
 ];
 
@@ -27,7 +27,7 @@ export default function WhyEstimate() {
           Why Estimate?
         </h2>
         <p className="text-gray-500 text-center mb-16 max-w-xl mx-auto">
-          The truth about your professional reputation
+          The hiring system is broken. We're here to fix it.
         </p>
 
         <div className="space-y-6">
