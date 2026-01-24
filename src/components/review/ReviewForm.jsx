@@ -54,6 +54,10 @@ export default function ReviewForm({
           src={colleague.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(colleague.name)}&background=0A66C2&color=fff&size=48`}
           alt={colleague.name}
           className="w-12 h-12 rounded-xl object-cover"
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(colleague.name)}&background=0A66C2&color=fff&size=48`;
+          }}
         />
         <div>
           <h2 className="font-bold text-gray-900">{colleague.name}</h2>

@@ -199,6 +199,10 @@ export default function ReviewFormDynamic({
           src={colleague.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(colleague.name)}&background=0A66C2&color=fff&size=80`}
           alt={colleague.name}
           className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover flex-shrink-0"
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(colleague.name)}&background=0A66C2&color=fff&size=80`;
+          }}
         />
         <div className="min-w-0 flex-1">
           <h2 className="font-semibold text-gray-900 truncate">{colleague.name}</h2>

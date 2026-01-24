@@ -72,6 +72,10 @@ export default function ColleagueCard({
               src={colleague.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(colleague.name)}&background=0A66C2&color=fff&size=80`}
               alt={colleague.name}
               className="w-16 h-16 md:w-16 md:h-16 lg:w-20 lg:h-20 rounded-2xl object-cover flex-shrink-0"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(colleague.name)}&background=0A66C2&color=fff&size=80`;
+              }}
             />
             <div className="min-w-0 flex-1">
               <h2 className="text-lg md:text-lg lg:text-xl font-bold text-gray-900 truncate">{colleague.name}</h2>
