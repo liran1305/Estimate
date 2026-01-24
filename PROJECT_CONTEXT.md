@@ -523,6 +523,61 @@ Code updates (separate from trigger):
 
 ---
 
+## Manual User Addition Process
+
+When a user signs in via LinkedIn OAuth but their profile is not found in the system, they need to be added manually. This requires creating records in **4 tables** to ensure they appear in analytics and can use the platform.
+
+### Required Tables
+1. **`linkedin_profiles`** - Core profile data
+2. **`company_connections`** - Work history (one row per company)
+3. **`users`** - Update to link profile and enable access
+4. **`user_scores`** - **CRITICAL** - Required for analytics visibility
+
+### Quick Reference Script
+Use `backend/scripts/add-user-manually.sql` for the complete process with examples.
+
+### Minimal Steps
+```sql
+-- 1. Add LinkedIn profile
+INSERT INTO linkedin_profiles (id, linkedin_num_id, name, email, image_id, avatar, ...)
+VALUES ('profile-id', 'oauth-sub-id', 'Name', 'email@example.com', ...);
+
+-- 2. Add company connections (repeat for each company)
+INSERT INTO company_connections (profile_id, company_name, worked_from, is_current, ...)
+VALUES ('profile-id', 'Company Name', '2024-01-01', 1, ...);
+
+-- 3. Update user account
+UPDATE users 
+SET linkedin_profile_id = 'profile-id', can_use_platform = 1, profile_match_method = 'manual'
+WHERE email = 'email@example.com';
+
+-- 4. Create user_scores record (REQUIRED for analytics)
+INSERT INTO user_scores (user_id, linkedin_profile_id, reviews_received, reviews_given, ...)
+SELECT u.id, 'profile-id', 0, 0, FALSE, NULL, NOW(), NOW()
+FROM users u WHERE u.email = 'email@example.com';
+```
+
+### Verification
+After adding, verify the user appears in analytics:
+```sql
+SELECT us.user_id, lp.name, us.reviews_given, us.reviews_received
+FROM user_scores us
+JOIN users u ON u.id = us.user_id
+JOIN linkedin_profiles lp ON lp.id = u.linkedin_profile_id
+WHERE u.email = 'email@example.com';
+```
+
+### Incomplete OAuth Users Tracking
+Users who sign in but aren't found are tracked in `incomplete_oauth_users` table for manual review. Check this table regularly:
+```sql
+SELECT email, name, attempt_count, first_seen_at, last_seen_at
+FROM incomplete_oauth_users
+WHERE resolved = FALSE
+ORDER BY last_seen_at DESC;
+```
+
+---
+
 ## Contact & Resources
 
 - **GitHub:** https://github.com/liran1305/Estimate
@@ -536,3 +591,4 @@ Code updates (separate from trigger):
 - `NEW_REVIEW_STRUCTURE.md` - Review system redesign documentation
 - `DATABASE_SCHEMA_REVIEW.md` - Current schema alignment review
 - `backend/routes/analytics.js` - BI analytics implementation
+- `backend/scripts/add-user-manually.sql` - Manual user addition script
