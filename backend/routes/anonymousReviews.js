@@ -41,8 +41,8 @@ function getPool() {
 const HASH_SALT = process.env.REVIEW_HASH_SALT || 'estimate-anonymous-review-salt-2026';
 
 // Rate limits
-const MAX_REVIEWS_PER_DAY_REVIEWER = 10;  // One person can give max 10 reviews/day
-const MAX_REVIEWS_PER_DAY_REVIEWEE = 20;  // One person can receive max 20 reviews/day
+const MAX_REVIEWS_PER_DAY_REVIEWER = 50;  // One person can give max 50 reviews/day
+const MAX_REVIEWS_PER_DAY_REVIEWEE = 100;  // One person can receive max 100 reviews/day
 const TOKEN_EXPIRY_HOURS = 1;
 
 /**
