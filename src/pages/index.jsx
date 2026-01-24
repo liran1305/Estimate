@@ -16,6 +16,7 @@ const LinkedInCallback = React.lazy(() => import("./LinkedInCallback"));
 const Blocked = React.lazy(() => import("./Blocked"));
 const Unsubscribe = React.lazy(() => import("./Unsubscribe"));
 const Leaderboard = React.lazy(() => import("./Leaderboard"));
+const Contact = React.lazy(() => import("./Contact"));
 
 // Minimal loading fallback
 const PageLoader = () => (
@@ -47,6 +48,8 @@ const PAGES = {
     Blocked: Blocked,
     
     Leaderboard: Leaderboard,
+    
+    Contact: Contact,
     
 }
 
@@ -86,6 +89,7 @@ function PagesContent() {
                     <Route path="/unsubscribe/:token" element={<Unsubscribe />} />
                     <Route path="/Leaderboard" element={<Leaderboard />} />
                     <Route path="/top-performers" element={<Leaderboard />} />
+                    <Route path="/Contact" element={<Contact />} />
                 </Routes>
             </Suspense>
         </Layout>

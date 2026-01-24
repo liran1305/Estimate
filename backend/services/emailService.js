@@ -324,6 +324,66 @@ async function sendScoreUnlockedNotification(recipientEmail, recipientName, unsu
 }
 
 /**
+ * Send contact form submission to support email
+ */
+async function sendContactFormEmail(name, subject, message, userEmail = null) {
+  if (!process.env.SENDGRID_API_KEY) {
+    console.log('[EMAIL] SendGrid not configured, skipping email');
+    return { success: false, reason: 'SendGrid not configured' };
+  }
+
+  const supportEmail = 'support@estimatenow.io';
+  
+  const msg = {
+    to: supportEmail,
+    from: {
+      email: FROM_EMAIL,
+      name: FROM_NAME
+    },
+    replyTo: userEmail || FROM_EMAIL,
+    subject: `Contact: ${subject}`,
+    html: `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+  <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+    <h3 style="color: #0A66C2; margin-bottom: 20px;">Contact Form Submission</h3>
+    
+    <p><strong>From:</strong> ${name}</p>
+    ${userEmail ? `<p><strong>Email:</strong> ${userEmail}</p>` : ''}
+    <p><strong>Subject:</strong> ${subject}</p>
+    
+    <div style="margin-top: 20px; padding: 15px; background-color: #f5f5f5; border-left: 3px solid #0A66C2;">
+      <p style="margin: 0; white-space: pre-wrap;">${message}</p>
+    </div>
+    
+    <p style="margin-top: 30px; font-size: 12px; color: #666;">
+      Sent from estimatenow.io contact form
+    </p>
+  </div>
+</body>
+</html>
+    `,
+    text: `Contact Form Submission\n\nFrom: ${name}${userEmail ? `\nEmail: ${userEmail}` : ''}\nSubject: ${subject}\n\nMessage:\n${message}\n\n---\nSent from estimatenow.io contact form`
+  };
+
+  try {
+    await sgMail.send(msg);
+    console.log(`[EMAIL] Contact form email sent from ${name}`);
+    return { success: true };
+  } catch (error) {
+    console.error('[EMAIL] Failed to send contact form email:', error.message);
+    if (error.response) {
+      console.error('[EMAIL] SendGrid error body:', error.response.body);
+    }
+    return { success: false, error: error.message };
+  }
+}
+
+/**
  * Test function to send a sample review notification
  */
 async function sendTestEmail(testEmail, testName = 'Liran') {
@@ -334,5 +394,6 @@ async function sendTestEmail(testEmail, testName = 'Liran') {
 module.exports = {
   sendNewReviewNotification,
   sendScoreUnlockedNotification,
+  sendContactFormEmail,
   sendTestEmail
 };

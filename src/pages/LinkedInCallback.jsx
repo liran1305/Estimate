@@ -35,8 +35,26 @@ export default function LinkedInCallback() {
         if (window.dataLayer) {
           window.dataLayer.push({
             event: 'linkedin_auth_complete',
-            is_onboarded: user.isOnboarded
+            is_onboarded: user.isOnboarded,
+            can_use_platform: user.canUsePlatform
           });
+        }
+        
+        // Check if user has profile data
+        if (!user.canUsePlatform) {
+          // User signed in but profile not found in database
+          // Track this event and redirect to contact page
+          if (window.dataLayer) {
+            window.dataLayer.push({
+              event: 'incomplete_profile_detected',
+              email: user.email,
+              match_method: user.matchMethod
+            });
+          }
+          
+          // Redirect to contact page with context
+          navigate(createPageUrl("Contact") + '?reason=profile_not_found');
+          return;
         }
         
         if (user.isOnboarded) {

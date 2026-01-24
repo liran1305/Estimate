@@ -468,6 +468,21 @@ app.post('/api/auth/linkedin/callback', async (req, res) => {
       `, [userId, tokenData.access_token, tokenData.expires_in]);
     }
 
+    // Track users without profile data for manual review
+    if (!linkedinProfileId && matchMethod === 'not_found') {
+      await connection.query(`
+        INSERT INTO incomplete_oauth_users (user_id, email, name, linkedin_num_id, avatar, match_method, reason, attempt_count)
+        VALUES (?, ?, ?, ?, ?, ?, 'profile_not_found', 1)
+        ON DUPLICATE KEY UPDATE 
+          last_seen_at = CURRENT_TIMESTAMP,
+          attempt_count = attempt_count + 1,
+          linkedin_num_id = VALUES(linkedin_num_id),
+          avatar = VALUES(avatar)
+      `, [userId, profile.email, profile.name, profile.sub, profile.picture, matchMethod]);
+      
+      console.log(`⚠️ Incomplete OAuth user tracked: ${profile.email} (${profile.name})`);
+    }
+
     // Get is_blocked status before closing connection
     const [userStatus] = await connection.query(
       'SELECT is_blocked FROM users WHERE id = ?',
@@ -504,6 +519,38 @@ app.post('/api/auth/linkedin/callback', async (req, res) => {
     return res.status(500).json({ 
       error: 'Internal server error',
       message: error.message 
+    });
+  }
+});
+
+// Contact form endpoint
+app.post('/api/contact', async (req, res) => {
+  try {
+    const { name, subject, message, email } = req.body;
+
+    if (!name || !subject || !message) {
+      return res.status(400).json({ 
+        success: false,
+        error: 'Missing required fields' 
+      });
+    }
+
+    const { sendContactFormEmail } = require('./services/emailService');
+    const result = await sendContactFormEmail(name, subject, message, email);
+
+    if (result.success) {
+      return res.status(200).json({ success: true });
+    } else {
+      return res.status(500).json({ 
+        success: false,
+        error: result.error || 'Failed to send email' 
+      });
+    }
+  } catch (error) {
+    console.error('Contact form error:', error);
+    return res.status(500).json({ 
+      success: false,
+      error: 'Internal server error' 
     });
   }
 });
