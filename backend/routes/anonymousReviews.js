@@ -87,20 +87,15 @@ router.post('/token/create', async (req, res) => {
     const connection = await pool.getConnection();
 
     try {
-      // Check rate limit using pending tokens + rolling counter (no daily_limits tables!)
-      // This prevents correlation attacks while still limiting spam
-      const [pendingTokens] = await connection.query(`
-        SELECT COUNT(*) as count FROM review_tokens 
-        WHERE reviewer_id = ? AND created_at > DATE_SUB(NOW(), INTERVAL 24 HOUR)
-      `, [user_id]);
-
+      // Check rate limit using only completed reviews (not pending tokens)
+      // Pending tokens from skipped reviews should not count against daily limit
       const [userData] = await connection.query(`
         SELECT reviews_given_today FROM users WHERE id = ?
       `, [user_id]);
 
-      const totalToday = (pendingTokens[0]?.count || 0) + (userData[0]?.reviews_given_today || 0);
+      const reviewsCompletedToday = userData[0]?.reviews_given_today || 0;
       
-      if (totalToday >= MAX_REVIEWS_PER_DAY_REVIEWER) {
+      if (reviewsCompletedToday >= MAX_REVIEWS_PER_DAY_REVIEWER) {
         return res.status(429).json({ 
           success: false, 
           error: 'You have reached your daily review limit. Try again tomorrow.' 
