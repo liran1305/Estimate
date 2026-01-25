@@ -72,7 +72,8 @@ app.get('/api/table-info/:tableName', async (req, res) => {
       user: process.env.CLOUD_SQL_USER,
       password: process.env.CLOUD_SQL_PASSWORD,
       database: process.env.CLOUD_SQL_DATABASE,
-      port: process.env.CLOUD_SQL_PORT || 3306
+      port: process.env.CLOUD_SQL_PORT || 3306,
+      ssl: { rejectUnauthorized: false }
     });
 
     const [columns] = await connection.query(`SHOW FULL COLUMNS FROM ${req.params.tableName}`);
@@ -98,7 +99,8 @@ app.post('/api/add-indexes', async (req, res) => {
       user: process.env.CLOUD_SQL_USER,
       password: process.env.CLOUD_SQL_PASSWORD,
       database: process.env.CLOUD_SQL_DATABASE,
-      port: process.env.CLOUD_SQL_PORT || 3306
+      port: process.env.CLOUD_SQL_PORT || 3306,
+      ssl: { rejectUnauthorized: false }
     });
 
     // Add composite index for colleague lookup by company
@@ -139,7 +141,8 @@ app.post('/api/migrate', async (req, res) => {
       password: process.env.CLOUD_SQL_PASSWORD,
       database: process.env.CLOUD_SQL_DATABASE,
       port: process.env.CLOUD_SQL_PORT || 3306,
-      multipleStatements: true
+      multipleStatements: true,
+      ssl: { rejectUnauthorized: false }
     });
 
     // Drop users table if it exists (it may have been created with wrong constraints)
@@ -276,7 +279,8 @@ app.post('/api/auth/linkedin/callback', async (req, res) => {
       user: process.env.CLOUD_SQL_USER,
       password: process.env.CLOUD_SQL_PASSWORD,
       database: process.env.CLOUD_SQL_DATABASE,
-      port: process.env.CLOUD_SQL_PORT || 3306
+      port: process.env.CLOUD_SQL_PORT || 3306,
+      ssl: { rejectUnauthorized: false }
     });
     timings.dbConnection = Date.now() - startTime;
 

@@ -39,7 +39,8 @@ async function sendNewReviewNotification(recipientEmail, recipientName, reviewCo
       user: process.env.CLOUD_SQL_USER,
       password: process.env.CLOUD_SQL_PASSWORD,
       database: process.env.CLOUD_SQL_DATABASE,
-      port: process.env.CLOUD_SQL_PORT || 3306
+      port: process.env.CLOUD_SQL_PORT || 3306,
+      ssl: { rejectUnauthorized: false }
     });
 
     const [users] = await connection.query(
@@ -202,7 +203,8 @@ async function sendScoreUnlockedNotification(recipientEmail, recipientName, unsu
       user: process.env.CLOUD_SQL_USER,
       password: process.env.CLOUD_SQL_PASSWORD,
       database: process.env.CLOUD_SQL_DATABASE,
-      port: process.env.CLOUD_SQL_PORT || 3306
+      port: process.env.CLOUD_SQL_PORT || 3306,
+      ssl: { rejectUnauthorized: false }
     });
 
     const [users] = await connection.query(

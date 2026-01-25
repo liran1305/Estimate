@@ -14,6 +14,7 @@ function getPool() {
       port: process.env.CLOUD_SQL_PORT || 3306,
       waitForConnections: true,
       connectionLimit: 10,
+      ssl: { rejectUnauthorized: false }
     });
   }
   return pool;
