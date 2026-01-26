@@ -62,7 +62,24 @@ export default function Onboarding() {
     
     const updatedUser = { ...user, isOnboarded: true };
     localStorage.setItem('user', JSON.stringify(updatedUser));
-    navigate(createPageUrl("Review"));
+    
+    // Check if there's a pending review request from an invite link
+    const pendingRequest = localStorage.getItem('pendingReviewRequest');
+    if (pendingRequest) {
+      const requestData = JSON.parse(pendingRequest);
+      localStorage.removeItem('pendingReviewRequest'); // Clear it
+      navigate('/Review', { 
+        state: { 
+          reviewRequest: {
+            id: requestData.requestId,
+            requesterName: requestData.requesterName,
+            isRequested: true
+          }
+        }
+      });
+    } else {
+      navigate(createPageUrl("Review"));
+    }
   };
 
   if (isLoading) {

@@ -1,20 +1,17 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-26T09:35:25.088Z
+> Last updated: 2026-01-26T14:05:16.943Z
 
 ## Project Stats
-- Total memories: 169
-- Commits tracked: 169
+- Total memories: 171
+- Commits tracked: 171
 - Decisions recorded: 0
 
-## Relevant to Current Work
-- **1/22/2026**: Add multiple UX improvements and new features (backend/routes/reviews.js, src/components/landing/HeroSection.jsx, src/components/review/ReviewFormDynamic.jsx)
-- **1/20/2026**: fix: Persist colleague assignment across sessions/devices (backend/routes/reviews.js, src/pages/Onboarding.jsx, src/pages/Profile.jsx)
-- **1/20/2026**: feat: Add GTM event tracking for key user actions (src/pages/LinkedInAuth.jsx, src/pages/LinkedInCallback.jsx, src/pages/Profile.jsx)
-- **1/19/2026**: feat: Complete review counter fix + UI improvements (backend/routes/reviews.js, src/components/review/ReviewSuccess.jsx, src/pages/Profile.jsx)
-- **1/19/2026**: Add clean badge preview to profile headline (src/pages/Profile.jsx)
-
 ## Recent Changes
+- `b000fa6` 1/26/2026: Improve colleague matching: increase overlap to 6 months and add smart skip detection
+  Files: DATA_STRUCTURES.md, backend/routes/colleagues.js, backend/routes/reviews.js
+- `347779d` 1/26/2026: Add Estimate Verified badge creator feature
+  Files: backend/database/add-profile-photo.sql, backend/package.json, backend/routes/profilePhoto.js
 - `c43a518` 1/25/2026: Enable SSL for all database connections (Level 1 Security)
   Files: backend/config/database.js, backend/routes/admin.js, backend/routes/anonymousReviews.js
 - `e13a67b` 1/25/2026: Add anonymity trust message to colleague selection screen
@@ -40,10 +37,6 @@
 - `a932c7f` 1/23/2026: Add og:image back with 180x180 favicon and image type
   Files: index.html
 - `8a9142f` 1/23/2026: Remove og:image tags to let LinkedIn use favicon for icon-card layout
-  Files: index.html
-- `38c0796` 1/22/2026: Use smaller 180x180 favicon for OG image to trigger icon-card layout
-  Files: index.html, public/og-image.png
-- `c1f93ed` 1/22/2026: Update OG image to 512x512 for icon-card layout on LinkedIn
   Files: index.html
 
 ## Do Not Repeat

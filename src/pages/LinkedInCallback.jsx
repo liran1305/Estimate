@@ -57,9 +57,28 @@ export default function LinkedInCallback() {
           return;
         }
         
+        // Check if there's a pending review request from an invite link
+        const pendingRequest = localStorage.getItem('pendingReviewRequest');
+        
         if (user.isOnboarded) {
-          navigate(createPageUrl("Review"));
+          if (pendingRequest) {
+            // User came from an invite link - go to review with request context
+            const requestData = JSON.parse(pendingRequest);
+            localStorage.removeItem('pendingReviewRequest'); // Clear it
+            navigate('/Review', { 
+              state: { 
+                reviewRequest: {
+                  id: requestData.requestId,
+                  requesterName: requestData.requesterName,
+                  isRequested: true
+                }
+              }
+            });
+          } else {
+            navigate(createPageUrl("Review"));
+          }
         } else {
+          // New user needs onboarding first, but keep the pending request for after
           navigate(createPageUrl("Onboarding"));
         }
       } catch (err) {

@@ -501,6 +501,109 @@ Code updates (separate from trigger):
 
 ---
 
+## Viral Loop - Request Tokens System (January 2026)
+
+### Overview
+A token-based viral growth mechanism that allows users to invite specific colleagues to review them, while maintaining review integrity through weighted scoring.
+
+### How It Works
+1. **Earning Tokens**: Users earn 1 Request Token for every 5 reviews they complete
+2. **Using Tokens**: Each token generates a unique invite link to send to a colleague
+3. **Weighted Reviews**: Requested reviews carry 0.5x weight (vs 1.0x for organic)
+4. **Transparent Labeling**: Scores show breakdown of organic vs requested reviews
+
+### Database Tables (NEW)
+
+#### `request_tokens`
+```sql
+- user_id (FK to users)
+- tokens_available (INT)
+- tokens_earned_total (INT)
+- tokens_used_total (INT)
+- created_at, updated_at
+```
+
+#### `review_requests`
+```sql
+- id, requester_id (FK to users)
+- unique_link (VARCHAR 64) - URL slug for invite
+- recipient_email, recipient_name (optional)
+- status: 'pending' | 'completed' | 'expired' | 'cancelled'
+- expires_at (14 days from creation)
+- completed_by_user_id, completed_at
+- message_sent_via: 'whatsapp' | 'email' | 'linkedin' | 'copy_link'
+```
+
+#### `request_blocks` (Anti-gaming)
+```sql
+- user_a_id, user_b_id
+- reason: 'reciprocal_block' | 'already_reviewed'
+```
+
+#### Modified: `anonymous_reviews`
+```sql
++ review_type: 'organic' | 'requested' (DEFAULT 'organic')
++ request_id (nullable FK to review_requests)
+```
+
+### API Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/tokens/balance` | GET | Get token balance and progress |
+| `/api/tokens/check-and-award` | POST | Check if user earned new tokens |
+| `/api/tokens/create-request` | POST | Create invite link (uses 1 token) |
+| `/api/tokens/request/:link` | GET | Get request details by link |
+| `/api/tokens/my-requests` | GET | List user's pending/completed requests |
+| `/api/tokens/complete-request` | POST | Mark request as completed |
+| `/api/tokens/cancel-request` | POST | Cancel request & refund token |
+| `/api/tokens/check-can-request` | POST | Anti-gaming validation |
+
+### Frontend Components
+
+| Component | Location | Purpose |
+|-----------|----------|---------|
+| `TokenProgressBar` | `src/components/tokens/` | Shows progress toward next token |
+| `RequestReviewModal` | `src/components/tokens/` | Create & share invite links |
+| `PendingRequestsList` | `src/components/tokens/` | View pending/completed requests |
+| `TokenEarnedToast` | `src/components/tokens/` | Celebration when token earned |
+| `ReviewRequest` | `src/pages/` | Landing page for invite links |
+
+### User Flows
+
+**Flow A: Organic User**
+```
+Sign up → Review 3 colleagues → Score unlocked
+→ Review 2 more → Earn first token
+→ Send invite → Colleague joins → Loop continues
+```
+
+**Flow B: Invited User**
+```
+Click invite link → Sign up → Review 2 random colleagues
+→ Review the requester → 1 more review → Score unlocked
+→ Now active in system with 3 reviews
+```
+
+### Anti-Gaming Rules
+- Can't request from someone who requested you (reciprocal block)
+- Same person can review you only once
+- Requested reviews = 0.5x weight
+- Transparent labeling (organic vs requested)
+- Work email required
+- Must complete 2 random reviews before submitting requested review
+
+### Files Created/Modified
+- `backend/database/migration-viral-loop.sql` - Database migration
+- `backend/routes/requestTokens.js` - Token management API
+- `backend/routes/anonymousReviews.js` - Updated for review_type
+- `backend/server.js` - Added requestTokens router
+- `src/components/tokens/*` - Frontend components
+- `src/pages/ReviewRequest.jsx` - Invite landing page
+- `src/pages/index.jsx` - Added route
+
+---
+
 ## Future Enhancements
 
 ### Short Term
@@ -508,6 +611,7 @@ Code updates (separate from trigger):
 - [ ] Implement recruiter view with would_promote data
 - [ ] Refactor score calculation endpoint
 - [ ] Add aggregated metrics to user_scores table
+- [x] Viral loop / Request Tokens system
 
 ### Medium Term
 - [ ] Trend analysis (score changes over time)

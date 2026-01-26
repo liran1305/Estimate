@@ -2461,7 +2461,41 @@
       ],
       "commit_hash": "c43a5184ce632c2c45a201e091a151e70074db42",
       "created_at": "2026-01-25T08:51:24.000Z"
+    },
+    {
+      "id": 170,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add Estimate Verified badge creator feature",
+      "files": [
+        "backend/database/add-profile-photo.sql",
+        "backend/package.json",
+        "backend/routes/profilePhoto.js",
+        "backend/server.js",
+        "public/images/Estimat_Verified.png",
+        "src/components/profile/ProfilePhotoUpload.jsx",
+        "src/pages/BadgeCreator.jsx",
+        "src/pages/Profile.jsx",
+        "src/pages/index.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "347779d5ac36c9bbf6fd08476e09be6347854e01",
+      "created_at": "2026-01-26T09:37:17.000Z"
+    },
+    {
+      "id": 171,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Improve colleague matching: increase overlap to 6 months and add smart skip detection",
+      "files": [
+        "DATA_STRUCTURES.md",
+        "backend/routes/colleagues.js",
+        "backend/routes/reviews.js"
+      ],
+      "tags": [],
+      "commit_hash": "b000fa692a74e2761639b78468dd19ce915fbe8a",
+      "created_at": "2026-01-26T11:04:29.000Z"
     }
   ],
-  "nextId": 170
+  "nextId": 172
 }

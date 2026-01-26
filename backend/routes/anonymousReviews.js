@@ -167,7 +167,9 @@ router.post('/review/submit', async (req, res) => {
       would_work_again,
       would_promote,
       optional_comment,
-      time_spent_seconds
+      time_spent_seconds,
+      review_type,      // 'organic' or 'requested'
+      request_id        // ID of review_request if this is a requested review
     } = req.body;
 
     if (!token) {
@@ -214,9 +216,16 @@ router.post('/review/submit', async (req, res) => {
         });
       }
 
-      // 3. Fraud detection
+      // 3. Fraud detection and review type weighting
       let reviewWeight = 1.0;
       let fraudFlags = [];
+      
+      // Apply 0.5x weight for requested reviews (viral loop feature)
+      const isRequestedReview = review_type === 'requested' || request_id;
+      if (isRequestedReview) {
+        reviewWeight = 0.5;
+        console.log(`[ANON] Requested review - applying 0.5x weight`);
+      }
 
       if (scores && typeof scores === 'object') {
         const scoreValues = Object.values(scores).filter(s => s !== null && s !== undefined);
@@ -269,12 +278,14 @@ router.post('/review/submit', async (req, res) => {
 
       // 5. INSERT ANONYMOUS REVIEW (NO reviewer_id!)
       const reviewId = uuidv4();
+      const finalReviewType = isRequestedReview ? 'requested' : 'organic';
+      
       await connection.query(`
         INSERT INTO anonymous_reviews 
         (id, reviewee_id, company_name, company_context, interaction_type,
          scores, strength_tags, would_work_again, would_promote, optional_comment,
-         overall_score, review_weight, created_date)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURDATE())
+         overall_score, review_weight, review_type, request_id, created_date)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURDATE())
       `, [
         reviewId,
         reviewee_id,
@@ -287,7 +298,9 @@ router.post('/review/submit', async (req, res) => {
         would_promote || null,
         optional_comment || null,
         overallScore,
-        reviewWeight
+        reviewWeight,
+        finalReviewType,
+        request_id || null
       ]);
 
       // ❌ REMOVED: review_pair_hashes insert (vulnerable to rainbow attack!)
@@ -343,6 +356,31 @@ router.post('/review/submit', async (req, res) => {
       );
 
       console.log(`🔥 [ANON] Token BURNED. Review ${reviewId} is now untraceable.`);
+      
+      // 10b. If this was a requested review, mark the request as completed
+      if (request_id) {
+        await connection.query(`
+          UPDATE review_requests 
+          SET status = 'completed', 
+              completed_at = NOW(),
+              completed_by_user_id = ?
+          WHERE id = ? AND status = 'pending'
+        `, [reviewer_id, request_id]);
+        
+        // Create reciprocal block (reviewer cannot request from requester)
+        const [requestInfo] = await connection.query(
+          'SELECT requester_id FROM review_requests WHERE id = ?',
+          [request_id]
+        );
+        if (requestInfo.length > 0) {
+          await connection.query(`
+            INSERT IGNORE INTO request_blocks (user_a_id, user_b_id, reason)
+            VALUES (?, ?, 'reciprocal_block')
+          `, [requestInfo[0].requester_id, reviewer_id]);
+        }
+        
+        console.log(`[ANON] Requested review completed for request_id: ${request_id}`);
+      }
 
       // 11. Check if reviewer unlocked their profile (read from user_scores table)
       const [reviewerData] = await connection.query(
@@ -415,13 +453,44 @@ router.post('/review/submit', async (req, res) => {
         }
       }
 
+      // 14. Check if reviewer earned a new token (every 5 reviews)
+      let tokenAwarded = false;
+      let tokensAvailable = 0;
+      
+      if (reviewsGiven > 0 && reviewsGiven % 5 === 0) {
+        // Award a token
+        const [tokenResult] = await connection.query(`
+          INSERT INTO request_tokens (user_id, tokens_available, tokens_earned_total, tokens_used_total)
+          VALUES (?, 1, 1, 0)
+          ON DUPLICATE KEY UPDATE 
+            tokens_available = tokens_available + 1,
+            tokens_earned_total = tokens_earned_total + 1
+        `, [reviewer_id]);
+        
+        tokenAwarded = true;
+        
+        // Get updated token count
+        const [tokenData] = await connection.query(
+          'SELECT tokens_available FROM request_tokens WHERE user_id = ?',
+          [reviewer_id]
+        );
+        tokensAvailable = tokenData.length > 0 ? tokenData[0].tokens_available : 1;
+        
+        console.log(`🎟️ [TOKENS] User ${reviewer_id} earned a Request Token! (${reviewsGiven} reviews)`);
+      }
+
       res.json({
         success: true,
         message: 'Review submitted anonymously',
         reviews_given: reviewsGiven,
         profile_unlocked: profileUnlocked,
         reviews_until_unlock: Math.max(0, 3 - reviewsGiven),
-        fraud_flags: fraudFlags.length > 0 ? fraudFlags : undefined
+        fraud_flags: fraudFlags.length > 0 ? fraudFlags : undefined,
+        review_type: finalReviewType,
+        // Token progress info
+        token_awarded: tokenAwarded,
+        tokens_available: tokensAvailable,
+        reviews_to_next_token: 5 - (reviewsGiven % 5)
       });
 
     } catch (error) {

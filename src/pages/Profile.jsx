@@ -5,10 +5,11 @@ import { linkedinAuth } from "@/lib/linkedinAuth";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Loader2, CheckCircle2, MapPin, Clock, Users, Linkedin, LinkIcon, Star, Sparkles, Target, Lightbulb, MessageSquare, Zap } from "lucide-react";
+import { Loader2, CheckCircle2, MapPin, Clock, Users, Linkedin, LinkIcon, Star, Sparkles, Target, Lightbulb, MessageSquare, Zap, Ticket } from "lucide-react";
 import { motion } from "framer-motion";
 import WaitingState from "@/components/profile/WaitingState";
 import ConsentModal from "@/components/profile/ConsentModal";
+import { TokenProgressBar, RequestReviewModal } from "@/components/tokens";
 
 const BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:3001';
 
@@ -89,6 +90,8 @@ export default function Profile() {
   const [isUpdating, setIsUpdating] = useState(false);
   const [badgeCopied, setBadgeCopied] = useState(false);
   const [customPhotoUrl, setCustomPhotoUrl] = useState(null);
+  const [tokenData, setTokenData] = useState(null);
+  const [showRequestModal, setShowRequestModal] = useState(false);
 
   useEffect(() => {
     const init = async () => {
@@ -139,6 +142,23 @@ export default function Profile() {
           }
         } catch (err) {
           console.error('Failed to fetch profile photo:', err);
+        }
+
+        // Fetch token data
+        try {
+          const tokenRes = await fetch(`${BACKEND_API_URL}/api/tokens/balance?user_id=${currentUser.id}`);
+          const tokenApiData = await tokenRes.json();
+          if (tokenApiData.success) {
+            // Transform API response to match component expectations
+            setTokenData({
+              tokens_available: tokenApiData.tokens?.available || 0,
+              reviews_given: tokenApiData.progress?.reviews_given || 0,
+              reviews_to_next_token: tokenApiData.progress?.reviews_to_next_token || 5,
+              progress_percentage: tokenApiData.progress?.progress_percentage || 0
+            });
+          }
+        } catch (err) {
+          console.error('Failed to fetch token data:', err);
         }
       }
       
@@ -395,6 +415,27 @@ export default function Profile() {
                 </div>
               </div>
 
+              {/* Token Section - Request Reviews - Compact */}
+              <div className="py-3 border-b border-gray-100">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2 flex-1 min-w-0">
+                    <Ticket className="w-4 h-4 text-amber-600 flex-shrink-0" />
+                    <span className="text-xs text-gray-600 truncate">Request Direct Reviews</span>
+                    {tokenData && (
+                      <span className="text-xs text-gray-400">• {tokenData.reviews_given % 5}/5 reviews</span>
+                    )}
+                  </div>
+                  <Button
+                    onClick={() => setShowRequestModal(true)}
+                    disabled={!tokenData || !tokenData.tokens_available || tokenData.tokens_available === 0}
+                    className="bg-amber-500 hover:bg-amber-600 text-white text-xs font-medium px-3 py-1.5 rounded-md transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5 flex-shrink-0"
+                  >
+                    <Ticket className="w-3.5 h-3.5" />
+                    Request ({tokenData?.tokens_available || 0})
+                  </Button>
+                </div>
+              </div>
+
               {/* Middle Row: Would Work Again + Top Strengths */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 py-4 sm:py-6 border-b border-gray-100">
                 
@@ -634,6 +675,28 @@ export default function Profile() {
         onClose={() => setShowConsent(false)}
         onConfirm={() => updateConsent(true)}
         isLoading={isUpdating}
+      />
+
+      <RequestReviewModal
+        isOpen={showRequestModal}
+        onClose={() => setShowRequestModal(false)}
+        userId={user?.id}
+        tokensAvailable={tokenData?.tokens_available || 0}
+        onRequestCreated={() => {
+          // Refresh token data after creating a request
+          fetch(`${BACKEND_API_URL}/api/tokens/balance?user_id=${user.id}`)
+            .then(res => res.json())
+            .then(data => {
+              if (data.success) {
+                setTokenData({
+                  tokens_available: data.tokens?.available || 0,
+                  reviews_given: data.progress?.reviews_given || 0,
+                  reviews_to_next_token: data.progress?.reviews_to_next_token || 5,
+                  progress_percentage: data.progress?.progress_percentage || 0
+                });
+              }
+            });
+        }}
       />
     </div>
   );
