@@ -306,11 +306,13 @@ CREATE TABLE user_scores (
    - If both current + no dates: Assume 24 months overlap
    - If one current + no dates: Assume 12 months overlap
    - If neither has dates: Assume 6 months overlap
-4. Filter: Keep only colleagues with 3+ months overlap
+4. Filter: Keep only colleagues with 6+ months overlap
 5. Exclude: Reviewed colleagues and colleagues skipped 2+ times
 6. Prioritize: Never-skipped > Once-skipped
 7. Sort by overlap months (most overlap first)
-8. Return top colleague
+8. 70/30 Selection: 70% current company, 30% previous company
+   - EXCEPTION: If user skipped 3+ colleagues from current company, force previous company
+9. Return selected colleague
 ```
 
 ### Skip Tracking Flow

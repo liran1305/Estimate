@@ -566,7 +566,7 @@ router.get('/colleague/next', async (req, res) => {
 
       const [potentialColleagues] = await connection.query(colleagueQuery, queryParams);
 
-      // Filter by 3+ months time overlap
+      // Filter by 6+ months time overlap
       const colleaguesWithOverlap = potentialColleagues.filter(colleague => {
         const userCompany = userWorkHistory.find(w => w.company_name === colleague.company_name);
         if (!userCompany) return false;
@@ -576,7 +576,7 @@ router.get('/colleague/next', async (req, res) => {
           colleague.worked_from, colleague.worked_to, colleague.is_current
         );
         colleague.overlap_months = overlapMonths;
-        return overlapMonths >= 3;
+        return overlapMonths >= 6;
       });
 
       // Debug: Log overlap filtering results by company
@@ -585,7 +585,7 @@ router.get('/colleague/next', async (req, res) => {
         if (!overlapByCompany[c.company_name]) overlapByCompany[c.company_name] = [];
         overlapByCompany[c.company_name].push(`${c.name} (${c.overlap_months}mo)`);
       });
-      console.log(`[OVERLAP FILTER] User ${user_id}: ${colleaguesWithOverlap.length} colleagues with 3+ months overlap`);
+      console.log(`[OVERLAP FILTER] User ${user_id}: ${colleaguesWithOverlap.length} colleagues with 6+ months overlap`);
       Object.keys(overlapByCompany).forEach(company => {
         console.log(`[OVERLAP FILTER]   ${company}: ${overlapByCompany[company].length} colleagues - ${overlapByCompany[company].slice(0, 3).join(', ')}${overlapByCompany[company].length > 3 ? '...' : ''}`);
       });
@@ -710,11 +710,42 @@ router.get('/colleague/next', async (req, res) => {
       
       // ========== 70/30 WEIGHTED SELECTION: Current vs Previous Company ==========
       // 70% chance to select from current company, 30% from previous company
+      // EXCEPTION: If user skipped 3+ colleagues from current company, force previous company
       const currentCompanyColleagues = colleaguesWithSkips.filter(c => c.company_context === 'current');
       const previousCompanyColleagues = colleaguesWithSkips.filter(c => c.company_context === 'previous');
       
+      // Count consecutive skips from current company
+      const [recentSkips] = await connection.query(`
+        SELECT 
+          ra.colleague_id,
+          lp.id,
+          cc.company_name,
+          cc.is_current as colleague_is_current,
+          uc.is_current as user_is_current
+        FROM review_assignments ra
+        JOIN linkedin_profiles lp ON lp.id = ra.colleague_id
+        JOIN company_connections cc ON cc.profile_id = lp.id AND cc.company_name = ra.company_name
+        JOIN company_connections uc ON uc.profile_id = ? AND uc.company_name = ra.company_name
+        WHERE ra.user_id = ? 
+          AND ra.status = 'skipped'
+          AND ra.company_context = 'current'
+        ORDER BY ra.actioned_at DESC
+        LIMIT 10
+      `, [userProfileId, user_id]);
+      
+      // Count consecutive current company skips (stop counting when we hit a non-current skip)
+      let consecutiveCurrentSkips = 0;
+      for (const skip of recentSkips) {
+        if (skip.user_is_current === 1) {
+          consecutiveCurrentSkips++;
+        } else {
+          break;
+        }
+      }
+      
       // Debug logging
       console.log(`[70/30 SELECTION] User ${user_id}: Current company colleagues: ${currentCompanyColleagues.length}, Previous: ${previousCompanyColleagues.length}`);
+      console.log(`[70/30 SELECTION] Consecutive current company skips: ${consecutiveCurrentSkips}`);
       if (currentCompanyColleagues.length > 0) {
         console.log(`[70/30 SELECTION] Current companies: ${[...new Set(currentCompanyColleagues.map(c => c.company_name))].join(', ')}`);
       }
@@ -725,7 +756,11 @@ router.get('/colleague/next', async (req, res) => {
       let selectedColleague;
       const random = Math.random();
       
-      if (currentCompanyColleagues.length > 0 && previousCompanyColleagues.length > 0) {
+      // Force previous company if 3+ consecutive current company skips
+      if (consecutiveCurrentSkips >= 3 && previousCompanyColleagues.length > 0) {
+        selectedColleague = previousCompanyColleagues[0];
+        console.log(`[70/30 SELECTION] FORCED PREVIOUS (${consecutiveCurrentSkips} current skips): ${selectedColleague.company_name}`);
+      } else if (currentCompanyColleagues.length > 0 && previousCompanyColleagues.length > 0) {
         // Both current and previous colleagues available - use 70/30 weighting
         if (random < 0.7) {
           // 70% chance: Select from current company

@@ -113,14 +113,14 @@ router.get('/profile/:profileId/colleagues', async (req, res) => {
           WHERE cc.company_name = ? AND lp.id != ?
         `, [company.company_name, profileId]);
 
-        // Filter colleagues with 3+ months overlap
+        // Filter colleagues with 6+ months overlap
         const colleaguesWithOverlap = potentialColleagues.filter(colleague => {
           const overlapMonths = calculateTimeOverlap(
             company.worked_from, company.worked_to, company.is_current,
             colleague.worked_from, colleague.worked_to, colleague.is_current
           );
           colleague.overlap_months = overlapMonths;
-          return overlapMonths >= 3;
+          return overlapMonths >= 6;
         });
 
         // Sort by overlap months (most overlap first)
