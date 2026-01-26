@@ -1,48 +1,51 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-22T20:12:30.192Z
+> Last updated: 2026-01-26T09:35:25.088Z
 
 ## Project Stats
-- Total memories: 148
-- Commits tracked: 148
+- Total memories: 169
+- Commits tracked: 169
 - Decisions recorded: 0
 
+## Relevant to Current Work
+- **1/22/2026**: Add multiple UX improvements and new features (backend/routes/reviews.js, src/components/landing/HeroSection.jsx, src/components/review/ReviewFormDynamic.jsx)
+- **1/20/2026**: fix: Persist colleague assignment across sessions/devices (backend/routes/reviews.js, src/pages/Onboarding.jsx, src/pages/Profile.jsx)
+- **1/20/2026**: feat: Add GTM event tracking for key user actions (src/pages/LinkedInAuth.jsx, src/pages/LinkedInCallback.jsx, src/pages/Profile.jsx)
+- **1/19/2026**: feat: Complete review counter fix + UI improvements (backend/routes/reviews.js, src/components/review/ReviewSuccess.jsx, src/pages/Profile.jsx)
+- **1/19/2026**: Add clean badge preview to profile headline (src/pages/Profile.jsx)
+
 ## Recent Changes
-- `4a12bbf` 1/22/2026: Fix skip refresh bug: prevent negative unusedSkips and add debug logging
-  Files: backend/routes/reviews.js
-- `b24ab18` 1/22/2026: Add debug logging for 70/30 company selection to diagnose FireArc issue
-  Files: backend/routes/reviews.js
-- `3b78a37` 1/22/2026: Major UX improvements and bug fixes
-  Files: src/components/review/ColleagueCard.jsx, src/pages/Leaderboard.jsx
-- `0edf72d` 1/22/2026: Add multiple UX improvements and new features
-  Files: backend/routes/reviews.js, src/components/landing/HeroSection.jsx, src/components/review/ReviewFormDynamic.jsx
-- `faad99e` 1/22/2026: Improve landing page UX and fix colleague matching data issue
-  Files: public/images/anonymous.png, src/components/landing/HeroSection.jsx
-- `012372b` 1/21/2026: Fix user_scores creation and extend company history to 5 years
-  Files: backend/routes/reviews.js, backend/server.js
-- `44557c4` 1/21/2026: Fix server.js to count reviews from BOTH tables
-  Files: PROJECT_CONTEXT.md, backend/server.js
-- `69076ba` 1/21/2026: Fix dataValidation.js - use local getPool instead of missing config/database
-  Files: backend/routes/dataValidation.js
-- `e50759e` 1/21/2026: Fix at source: Database triggers auto-sync review counts
-  Files: backend/routes/anonymousReviews.js, backend/routes/reviews.js
-- `a57428f` 1/21/2026: Add data validation system and fix review count sync
-  Files: backend/database/find-actual-reviews.sql, backend/database/fix-reviews-received-counts.sql, backend/database/full-data-investigation.sql
-- `217e8d0` 1/21/2026: Leaderboard share feature: disabled button with tooltip
-  Files: package.json, src/pages/Leaderboard.jsx
-- `32a6c0c` 1/21/2026: Production Release v2: Realistic leaderboard, blurred fake profiles, review count fixes
-  Files: backend/routes/leaderboard.js, public/images/fake-profile-images/download (1).png, public/images/fake-profile-images/download (10).png
-- `36671f1` 1/21/2026: Production Release: Score fixes, skip budget cap, review count sync, leaderboard UI
-  Files: backend/routes/reviews.js, backend/server.js
-- `04821d6` 1/21/2026: Production Release: Score fix (0-10 scale), skip budget cap enforcement, leaderboard UI improvements, dropdown menu
-  Files: PROJECT_CONTEXT.md, backend/routes/leaderboard.js, backend/routes/reviews.js
-- `cc598d8` 1/21/2026: fix: Generate unsubscribe tokens for new users during signup
-  Files: backend/server.js
+- `c43a518` 1/25/2026: Enable SSL for all database connections (Level 1 Security)
+  Files: backend/config/database.js, backend/routes/admin.js, backend/routes/anonymousReviews.js
+- `e13a67b` 1/25/2026: Add anonymity trust message to colleague selection screen
+  Files: src/components/review/ColleagueCard.jsx
+- `41e0edd` 1/24/2026: Fix daily review limit to only count completed reviews
+  Files: backend/routes/anonymousReviews.js
+- `2bde425` 1/24/2026: Increase daily review limits to allow more reviews
+  Files: backend/routes/anonymousReviews.js
+- `d27f8f7` 1/24/2026: Add robust avatar fallback for broken LinkedIn images
+  Files: src/components/review/ColleagueCard.jsx, src/components/review/ReviewForm.jsx, src/components/review/ReviewFormDynamic.jsx
+- `0ba4dc4` 1/24/2026: Add manual user addition documentation and script
+  Files: PROJECT_CONTEXT.md, backend/scripts/add-user-manually.sql
+- `2864e9a` 1/24/2026: Add incomplete OAuth user tracking and contact form with backend email
+  Files: backend/server.js, backend/services/emailService.js, src/pages/Contact.jsx
+- `1e84027` 1/23/2026: Add video demo section to landing page
+  Files: public/videos/estimate-demo.mp4, src/components/landing/VideoDemo.jsx, src/pages/Landing.jsx
+- `d0717db` 1/23/2026: Add leaderboard preview image for landing page
+  Files: public/leaderboard-preview.png
+- `5c54e3b` 1/23/2026: Add leaderboard preview and update Why Estimate section on landing page
+  Files: src/components/landing/LeaderboardPreview.jsx, src/components/landing/WhyEstimate.jsx, src/pages/Landing.jsx
+- `c4fc168` 1/23/2026: Use light background logo for OG image (1024x1024)
+  Files: index.html, public/og-image.png
+- `a932c7f` 1/23/2026: Add og:image back with 180x180 favicon and image type
+  Files: index.html
+- `8a9142f` 1/23/2026: Remove og:image tags to let LinkedIn use favicon for icon-card layout
+  Files: index.html
+- `38c0796` 1/22/2026: Use smaller 180x180 favicon for OG image to trigger icon-card layout
+  Files: index.html, public/og-image.png
+- `c1f93ed` 1/22/2026: Update OG image to 512x512 for icon-card layout on LinkedIn
+  Files: index.html
 
 ## Do Not Repeat
 These issues have already been solved:
-- Fix skip refresh bug: prevent negative unusedSkips and add debug logging
-- Fix user_scores creation and extend company history to 5 years
-- Fix server.js to count reviews from BOTH tables
-- Fix dataValidation.js - use local getPool instead of missing config/database
-- Fix at source: Database triggers auto-sync review counts
+- Fix daily review limit to only count completed reviews

@@ -88,6 +88,7 @@ export default function Profile() {
   const [showConsent, setShowConsent] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [badgeCopied, setBadgeCopied] = useState(false);
+  const [customPhotoUrl, setCustomPhotoUrl] = useState(null);
 
   useEffect(() => {
     const init = async () => {
@@ -128,12 +129,29 @@ export default function Profile() {
           console.error('Failed to fetch score data:', err);
           setScoreData(null);
         }
+
+        // Fetch custom profile photo
+        try {
+          const photoRes = await fetch(`${BACKEND_API_URL}/api/profile-photo/${currentUser.id}`);
+          const photoData = await photoRes.json();
+          if (photoData.success && photoData.photoUrl) {
+            setCustomPhotoUrl(photoData.photoUrl);
+          }
+        } catch (err) {
+          console.error('Failed to fetch profile photo:', err);
+        }
       }
       
       setIsLoading(false);
     };
     init();
   }, [navigate]);
+
+  const handlePhotoUploadSuccess = (photoUrl) => {
+    setCustomPhotoUrl(photoUrl);
+    // Reload page to show new photo
+    window.location.reload();
+  };
 
   const handleConsentToggle = (checked) => {
     if (checked) {
@@ -172,6 +190,7 @@ export default function Profile() {
   const overallScore = scoreData?.score?.overall ? parseFloat(scoreData.score.overall) : 0;
   const hasAnyReviews = (scoreData?.reviews_received || 0) > 0;
   const hasEnoughForRecruiters = (scoreData?.reviews_received || 0) >= 3;
+  const hasEnoughReviewsGiven = (scoreData?.reviews_received || 0) >= 3; // Badge unlocks when user has 3+ reviews received (verified user)
   
   // Get strength tags from score data (aggregated from reviews)
   const strengthTags = scoreData?.strength_tags || [];
@@ -265,12 +284,49 @@ export default function Profile() {
                 
                 {/* Left: Avatar and Info */}
                 <div className="flex items-start gap-3 sm:gap-4 flex-1 w-full">
-                  <div className="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0">
-                    <img 
-                      src={user.picture || profileData?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'User')}&background=0A66C2&color=fff&size=200`}
-                      alt={user.name}
-                      className="w-full h-full rounded-full object-cover shadow-lg ring-2 ring-white"
-                    />
+                  {/* Profile Picture with Estimate Verified Badge Overlay */}
+                  <div className="relative group">
+                    <div 
+                      className={`relative w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 rounded-full overflow-hidden ${hasEnoughReviewsGiven ? 'cursor-pointer' : 'cursor-default'}`}
+                      onClick={(e) => {
+                        if (!hasEnoughReviewsGiven) {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          return false;
+                        }
+                        navigate('/badge-creator');
+                      }}
+                    >
+                      {/* Profile Image */}
+                      <img 
+                        src={customPhotoUrl ? `${BACKEND_API_URL}${customPhotoUrl}` : (profileData?.avatar || user.picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'User')}&background=0A66C2&color=fff&size=200`)}
+                        alt={user.name}
+                        crossOrigin="anonymous"
+                        className="w-full h-full rounded-full object-cover shadow-lg"
+                      />
+                      {/* Estimate Verified Badge Overlay - Show for all users */}
+                      <img 
+                        src="/images/Estimat_Verified.png"
+                        alt="Estimate Verified"
+                        className="absolute inset-0 w-full h-full pointer-events-none rounded-full"
+                      />
+                      {/* Hover overlay - Only show for users with 3+ reviews */}
+                      {hasEnoughReviewsGiven && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-full">
+                          <span className="text-white text-xs font-medium">
+                            Create Badge
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    {/* Tooltip for locked state */}
+                    {!hasEnoughReviewsGiven && (
+                      <div className="absolute left-0 top-full mt-2 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none">
+                        <p className="font-medium mb-1">🔒 Badge Creator Locked</p>
+                        <p>Receive 3 reviews to unlock the Estimate Verified badge creator. You currently have {scoreData?.reviews_received || 0} review{(scoreData?.reviews_received || 0) !== 1 ? 's' : ''} received.</p>
+                        <div className="absolute -top-1 left-4 w-2 h-2 bg-gray-900 rotate-45"></div>
+                      </div>
+                    )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <h1 className="text-lg sm:text-xl font-bold text-gray-900 mb-0.5 leading-tight">

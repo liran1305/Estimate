@@ -54,6 +54,7 @@ const anonymousReviewsRouter = require('./routes/anonymousReviews');
 const emailPreferencesRouter = require('./routes/emailPreferences');
 const leaderboardRouter = require('./routes/leaderboard');
 const dataValidationRouter = require('./routes/dataValidation');
+const profilePhotoRouter = require('./routes/profilePhoto');
 app.use('/api/colleagues', colleaguesRouter);
 app.use('/api', reviewsRouter);
 app.use('/api/admin', adminRouter);
@@ -62,6 +63,10 @@ app.use('/api/anonymous', anonymousReviewsRouter);
 app.use('/api/email-preferences', emailPreferencesRouter);
 app.use('/api/leaderboard', leaderboardRouter);
 app.use('/api/data-validation', dataValidationRouter);
+app.use('/api/profile-photo', profilePhotoRouter);
+
+// Serve uploaded profile photos
+app.use('/uploads', express.static('uploads'));
 
 // Check table structure
 app.get('/api/table-info/:tableName', async (req, res) => {

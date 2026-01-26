@@ -2179,7 +2179,289 @@
       "tags": [],
       "commit_hash": "4a12bbf08a2b2e972301cf705dfa718f87585a1e",
       "created_at": "2026-01-22T19:53:42.000Z"
+    },
+    {
+      "id": 149,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add comprehensive debug logging for colleague selection pipeline",
+      "files": [
+        "backend/routes/reviews.js"
+      ],
+      "tags": [],
+      "commit_hash": "af0c04a24a51e548a8abe4044422b1e194265666",
+      "created_at": "2026-01-22T20:14:16.000Z"
+    },
+    {
+      "id": 150,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix circular reference error in debug logging",
+      "files": [
+        "backend/routes/reviews.js"
+      ],
+      "tags": [],
+      "commit_hash": "264ac9c6054b8b5ad8b3e8cedb3a8652c7f70d20",
+      "created_at": "2026-01-22T21:15:41.000Z"
+    },
+    {
+      "id": 151,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Improve mobile touch targets for navigation dropdown",
+      "files": [
+        "src/components/ui/dropdown-menu.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "94111348cf12d7490c831bbfb11a13cfd6096a2e",
+      "created_at": "2026-01-22T21:21:01.000Z"
+    },
+    {
+      "id": 152,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add Open Graph meta tags for LinkedIn link previews",
+      "files": [
+        "index.html"
+      ],
+      "tags": [],
+      "commit_hash": "23f7153c044c9e18ab5983e5124ed14b6b0f4784",
+      "created_at": "2026-01-22T21:34:48.000Z"
+    },
+    {
+      "id": 153,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add OG image for LinkedIn link previews",
+      "files": [
+        "public/og-image.png"
+      ],
+      "tags": [],
+      "commit_hash": "48571618e8583fb7e0ff122723f200947a652f37",
+      "created_at": "2026-01-22T21:36:57.000Z"
+    },
+    {
+      "id": 154,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Update OG image to use icon only (512px favicon)",
+      "files": [
+        "public/og-image.png"
+      ],
+      "tags": [],
+      "commit_hash": "726b808da643f8a72d05a66fdca14d051684e42c",
+      "created_at": "2026-01-22T21:39:35.000Z"
+    },
+    {
+      "id": 155,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Update OG image to 512x512 for icon-card layout on LinkedIn",
+      "files": [
+        "index.html"
+      ],
+      "tags": [],
+      "commit_hash": "c1f93edc00614b14854270233d9ff076efd8b425",
+      "created_at": "2026-01-22T21:43:31.000Z"
+    },
+    {
+      "id": 156,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Use smaller 180x180 favicon for OG image to trigger icon-card layout",
+      "files": [
+        "index.html",
+        "public/og-image.png"
+      ],
+      "tags": [],
+      "commit_hash": "38c0796cd83cb75d55be56d48b49df7485425485",
+      "created_at": "2026-01-22T21:56:24.000Z"
+    },
+    {
+      "id": 157,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Remove og:image tags to let LinkedIn use favicon for icon-card layout",
+      "files": [
+        "index.html"
+      ],
+      "tags": [],
+      "commit_hash": "8a9142fc1e0bc6dfac743b08e91eceaca8b225c3",
+      "created_at": "2026-01-22T22:03:16.000Z"
+    },
+    {
+      "id": 158,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add og:image back with 180x180 favicon and image type",
+      "files": [
+        "index.html"
+      ],
+      "tags": [],
+      "commit_hash": "a932c7fdf449f756590234c0dd1ba7177ed86276",
+      "created_at": "2026-01-22T22:05:15.000Z"
+    },
+    {
+      "id": 159,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Use light background logo for OG image (1024x1024)",
+      "files": [
+        "index.html",
+        "public/og-image.png"
+      ],
+      "tags": [],
+      "commit_hash": "c4fc168f50632d0431c3f8441bb1967e7cccab10",
+      "created_at": "2026-01-22T22:13:53.000Z"
+    },
+    {
+      "id": 160,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add leaderboard preview and update Why Estimate section on landing page",
+      "files": [
+        "src/components/landing/LeaderboardPreview.jsx",
+        "src/components/landing/WhyEstimate.jsx",
+        "src/pages/Landing.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "5c54e3b0f40be263a3b914b94b5b013cdc1cea65",
+      "created_at": "2026-01-23T09:31:24.000Z"
+    },
+    {
+      "id": 161,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add leaderboard preview image for landing page",
+      "files": [
+        "public/leaderboard-preview.png"
+      ],
+      "tags": [],
+      "commit_hash": "d0717db688c9ed309b25d2eb2ff1e0b50fb7f600",
+      "created_at": "2026-01-23T09:38:53.000Z"
+    },
+    {
+      "id": 162,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add video demo section to landing page",
+      "files": [
+        "public/videos/estimate-demo.mp4",
+        "src/components/landing/VideoDemo.jsx",
+        "src/pages/Landing.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "1e8402751aefc865ca96faec0831ed306271ff4e",
+      "created_at": "2026-01-23T10:31:06.000Z"
+    },
+    {
+      "id": 163,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add incomplete OAuth user tracking and contact form with backend email",
+      "files": [
+        "backend/server.js",
+        "backend/services/emailService.js",
+        "src/pages/Contact.jsx",
+        "src/pages/LinkedInCallback.jsx",
+        "src/pages/index.jsx"
+      ],
+      "tags": [
+        "auth"
+      ],
+      "commit_hash": "2864e9a5facb0c8a578ee7a32a5872ee56fd3b91",
+      "created_at": "2026-01-24T07:08:25.000Z"
+    },
+    {
+      "id": 164,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add manual user addition documentation and script",
+      "files": [
+        "PROJECT_CONTEXT.md",
+        "backend/scripts/add-user-manually.sql"
+      ],
+      "tags": [],
+      "commit_hash": "0ba4dc455b36721f2af841a880432f9222564fd4",
+      "created_at": "2026-01-24T07:36:12.000Z"
+    },
+    {
+      "id": 165,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add robust avatar fallback for broken LinkedIn images",
+      "files": [
+        "src/components/review/ColleagueCard.jsx",
+        "src/components/review/ReviewForm.jsx",
+        "src/components/review/ReviewFormDynamic.jsx",
+        "src/components/review/ReviewFormNew.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "d27f8f70e039f5a52a533a76ddd2f176a4137158",
+      "created_at": "2026-01-24T07:44:23.000Z"
+    },
+    {
+      "id": 166,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Increase daily review limits to allow more reviews",
+      "files": [
+        "backend/routes/anonymousReviews.js"
+      ],
+      "tags": [],
+      "commit_hash": "2bde4258b5494dc96f562378bd564873f1c7e0b7",
+      "created_at": "2026-01-24T07:53:00.000Z"
+    },
+    {
+      "id": 167,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix daily review limit to only count completed reviews",
+      "files": [
+        "backend/routes/anonymousReviews.js"
+      ],
+      "tags": [],
+      "commit_hash": "41e0edd47b8b97324805d58af57c6770716e77dc",
+      "created_at": "2026-01-24T07:54:27.000Z"
+    },
+    {
+      "id": 168,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add anonymity trust message to colleague selection screen",
+      "files": [
+        "src/components/review/ColleagueCard.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "e13a67ba10872b944fd601fadea1f75452d2de67",
+      "created_at": "2026-01-25T08:27:32.000Z"
+    },
+    {
+      "id": 169,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Enable SSL for all database connections (Level 1 Security)",
+      "files": [
+        "backend/config/database.js",
+        "backend/routes/admin.js",
+        "backend/routes/anonymousReviews.js",
+        "backend/routes/colleagues.js",
+        "backend/routes/dataValidation.js",
+        "backend/routes/emailPreferences.js",
+        "backend/routes/fraud.js",
+        "backend/routes/leaderboard.js",
+        "backend/routes/reviews.js",
+        "backend/scripts/test-ssl-connection.js",
+        "backend/server.js",
+        "backend/services/emailService.js"
+      ],
+      "tags": [
+        "database",
+        "security"
+      ],
+      "commit_hash": "c43a5184ce632c2c45a201e091a151e70074db42",
+      "created_at": "2026-01-25T08:51:24.000Z"
     }
   ],
-  "nextId": 149
+  "nextId": 170
 }
