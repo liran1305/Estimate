@@ -317,7 +317,7 @@ router.get('/request/:link', async (req, res) => {
          FROM review_requests rr
          JOIN users u ON u.id = rr.requester_id
          LEFT JOIN linkedin_profiles lp ON lp.id = u.linkedin_profile_id
-         WHERE rr.unique_link = ?`,
+         WHERE rr.unique_link = ? COLLATE utf8mb4_unicode_ci`,
         [link]
       );
 
