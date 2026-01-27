@@ -2829,7 +2829,20 @@
       "tags": [],
       "commit_hash": "b728b8cb34b99fecfc74ac91840aa1d657df342b",
       "created_at": "2026-01-27T14:39:30.000Z"
+    },
+    {
+      "id": 195,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix profile avatar to use scoreData.avatar from linkedin_profiles",
+      "files": [
+        "backend/routes/reviews.js",
+        "src/pages/ProfileLinkedIn.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "64e62676bad0de9e8d6236f47c0617055f3c27ec",
+      "created_at": "2026-01-27T14:42:33.000Z"
     }
   ],
-  "nextId": 195
+  "nextId": 196
 }

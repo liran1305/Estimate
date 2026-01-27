@@ -11,14 +11,20 @@ const BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhos
 
 const LINKEDIN_BLUE = '#0a66c2';
 
-const PercentileBar = ({ percentile }) => (
-  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '8px' }}>
-    <div style={{ flex: 1, height: '4px', backgroundColor: '#e5e5e5', borderRadius: '2px', overflow: 'hidden' }}>
-      <div style={{ width: `${percentile}%`, height: '100%', backgroundColor: LINKEDIN_BLUE, borderRadius: '2px' }} />
+const PercentileBar = ({ percentile }) => {
+  if (!percentile && percentile !== 0) return null;
+  // percentile is already "Top X%" value (e.g., 25 means Top 25%)
+  // Bar should fill based on how good the score is (Top 10% = 90% fill, Top 25% = 75% fill)
+  const barFill = 100 - percentile;
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '8px' }}>
+      <div style={{ flex: 1, height: '4px', backgroundColor: '#e5e5e5', borderRadius: '2px', overflow: 'hidden' }}>
+        <div style={{ width: `${barFill}%`, height: '100%', backgroundColor: LINKEDIN_BLUE, borderRadius: '2px' }} />
+      </div>
+      <span style={{ fontSize: '13px', color: '#666666', minWidth: '65px' }}>Top {percentile}%</span>
     </div>
-    <span style={{ fontSize: '13px', color: '#666666', minWidth: '65px' }}>Top {100 - percentile}%</span>
-  </div>
-);
+  );
+};
 
 export default function ProfileLinkedIn() {
   const navigate = useNavigate();
@@ -171,7 +177,7 @@ export default function ProfileLinkedIn() {
                   <div key={key}>
                     <div style={{ fontWeight: '600', color: '#191919', fontSize: '15px' }}>{dim.name}</div>
                     <div style={{ fontSize: '13px', color: '#666666', marginTop: '2px' }}>{dim.description}</div>
-                    <PercentileBar percentile={data.percentile || 75} />
+                    <PercentileBar percentile={data.percentile} />
                   </div>
                 );
               })}
