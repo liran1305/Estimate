@@ -301,9 +301,10 @@ export default function ProfileLinkedIn() {
         
         {/* Consent Modal */}
         <ConsentModal 
-          isOpen={showConsent}
+          open={showConsent}
           onClose={() => setShowConsent(false)}
           onConfirm={() => updateConsent(true)}
+          isLoading={isUpdating}
         />
 
         {/* Credibility Summary - LinkedIn Professional Style */}

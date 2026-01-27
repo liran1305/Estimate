@@ -1,16 +1,18 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-27T16:03:25.499Z
+> Last updated: 2026-01-27T16:05:59.834Z
 
 ## Project Stats
-- Total memories: 207
-- Commits tracked: 207
+- Total memories: 208
+- Commits tracked: 208
 - Decisions recorded: 0
 
 ## Relevant to Current Work
 - **1/27/2026**: Add test review scripts and recalculation utility (backend/database/migrations/add-test-review-liran.sql, backend/database/migrations/find-liran-naim-exact.sql, backend/database/migrations/find-liran-profile.sql)
 
 ## Recent Changes
+- `c0bb6a2` 1/27/2026: Remove redundant Verified badge from Credibility Summary section
+  Files: src/pages/ProfileLinkedIn.jsx
 - `1e2cc68` 1/27/2026: Add Open for Recruiters toggle to ProfileLinkedIn page
   Files: src/pages/ProfileLinkedIn.jsx
 - `7656ea6` 1/27/2026: Fix company names wrapping on mobile - use line-clamp-2 instead of truncate
@@ -39,8 +41,6 @@
   Files: backend/routes/reviews.js, src/pages/ProfileLinkedIn.jsx
 - `b728b8c` 1/27/2026: Add LinkedIn-styled ProfileLinkedIn page
   Files: src/pages/ProfileLinkedIn.jsx, src/pages/ProfileV2.jsx, src/pages/index.jsx
-- `b7ea1d4` 1/27/2026: Add vote counts back to StrengthTagsDisplay and make tags larger
-  Files: src/components/profile/StrengthTagsDisplay.jsx
 
 ## Do Not Repeat
 These issues have already been solved:
