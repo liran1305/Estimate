@@ -2922,7 +2922,20 @@
       "tags": [],
       "commit_hash": "854dd6d938b052bb9fb177d0dac410006a46450d",
       "created_at": "2026-01-27T15:06:35.000Z"
+    },
+    {
+      "id": 202,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add role-based skills comparison table (You vs Avg PM)",
+      "files": [
+        "src/config/roleSkillsConfig.js",
+        "src/pages/ProfileLinkedIn.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "674bc72e805c82f02f4dd8cb5b92bb813d99a519",
+      "created_at": "2026-01-27T15:14:57.000Z"
     }
   ],
-  "nextId": 202
+  "nextId": 203
 }

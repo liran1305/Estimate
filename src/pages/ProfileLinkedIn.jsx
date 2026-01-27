@@ -48,6 +48,8 @@ export default function ProfileLinkedIn() {
         
         const scoreRes = await fetch(`${BACKEND_API_URL}/api/score/me?user_id=${currentUser.id}`);
         const scoreJson = await scoreRes.json();
+        console.log('Score API response:', scoreJson);
+        console.log('Dimension scores:', scoreJson.dimension_scores);
         setScoreData(scoreJson);
         setDimensionScores(scoreJson.dimension_scores || null);
         

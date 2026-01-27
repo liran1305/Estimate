@@ -1,16 +1,15 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-27T15:14:19.948Z
+> Last updated: 2026-01-27T15:38:15.989Z
 
 ## Project Stats
-- Total memories: 201
-- Commits tracked: 201
+- Total memories: 202
+- Commits tracked: 202
 - Decisions recorded: 0
 
-## Relevant to Current Work
-- **1/27/2026**: Add Never Worry About and Room to Grow features (backend/database/migrations/add-room-to-grow.sql, backend/database/migrations/scoring-redesign.sql, backend/routes/anonymousReviews.js)
-
 ## Recent Changes
+- `674bc72` 1/27/2026: Add role-based skills comparison table (You vs Avg PM)
+  Files: src/config/roleSkillsConfig.js, src/pages/ProfileLinkedIn.jsx
 - `854dd6d` 1/27/2026: Redesign Credibility Summary with professional LinkedIn styling
   Files: src/pages/ProfileLinkedIn.jsx
 - `6bbd859` 1/27/2026: Add recruiter-focused credibility data to profile
@@ -39,8 +38,6 @@
   Files: src/components/profile/DimensionCard.jsx, src/components/profile/SkillsThatMatter.jsx, src/components/profile/StrengthTagsDisplay.jsx
 - `6370ba3` 1/27/2026: Integrate V2 behavioral scoring into Profile page
   Files: backend/routes/reviews.js, src/pages/Profile.jsx
-- `d413aa2` 1/27/2026: Make AI Grammar Fix button always visible, disabled until 10+ chars
-  Files: src/components/review/ReviewFormBehavioral.jsx
 
 ## Do Not Repeat
 These issues have already been solved:
