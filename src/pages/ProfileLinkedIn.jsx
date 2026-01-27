@@ -6,6 +6,7 @@ import { Loader2, Lock, CheckCircle, User } from "lucide-react";
 import WaitingState from "@/components/profile/WaitingState";
 import { RequestReviewModal } from "@/components/tokens";
 import { behavioralConfig } from "@/config/behavioralConfig";
+import { getRoleConfig, calculateSkillComparison } from "@/config/roleSkillsConfig";
 
 const BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:3001';
 
@@ -102,6 +103,37 @@ export default function ProfileLinkedIn() {
   if (reviewerBreakdown.direct_report > 0) reviewerTypes.push(`${reviewerBreakdown.direct_report} direct report${reviewerBreakdown.direct_report > 1 ? 's' : ''}`);
   if (reviewerBreakdown.cross_team > 0) reviewerTypes.push(`${reviewerBreakdown.cross_team} cross-team`);
   if (reviewerBreakdown.other > 0) reviewerTypes.push(`${reviewerBreakdown.other} other`);
+
+  // Role-based skills comparison
+  const roleConfig = getRoleConfig(userPosition);
+  const skillsComparison = roleConfig.allSkills.map(skillKey => {
+    const dim = behavioralConfig.dimensions[skillKey];
+    const userPercentile = dimensionScores?.[skillKey]?.percentile;
+    const avgPercentile = roleConfig.avgBenchmarks[skillKey];
+    const comparison = userPercentile ? calculateSkillComparison(userPercentile, avgPercentile) : null;
+    const isKeySkill = roleConfig.keySkills.includes(skillKey);
+    
+    return {
+      key: skillKey,
+      name: dim?.name || skillKey,
+      description: dim?.description || '',
+      userPercentile,
+      avgPercentile,
+      comparison,
+      isKeySkill,
+      isAboveAverage: comparison?.isAboveAverage || false
+    };
+  }).filter(s => s.userPercentile); // Only show skills with data
+  
+  // Sort: above average first, then by difference
+  const sortedSkills = [...skillsComparison].sort((a, b) => {
+    if (a.isAboveAverage && !b.isAboveAverage) return -1;
+    if (!a.isAboveAverage && b.isAboveAverage) return 1;
+    return (b.comparison?.difference || 0) - (a.comparison?.difference || 0);
+  });
+  
+  // Count standout skills (above average)
+  const standoutSkills = sortedSkills.filter(s => s.isAboveAverage);
 
   if (!hasAnyReviews) {
     return (
@@ -263,28 +295,92 @@ export default function ProfileLinkedIn() {
         )}
 
         {/* Two Column Layout - Stack on mobile */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-          {/* Left Column - Skills */}
-          <div className="bg-white rounded-lg p-4 sm:p-5 md:p-6 shadow-[0_0_0_1px_rgba(0,0,0,0.08)]">
-            <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-0.5">Workplace Skills</h2>
-            <p className="text-xs sm:text-sm text-gray-500 mb-4 sm:mb-5">Based on peer assessments</p>
-            <div className="space-y-4 sm:space-y-5">
-              {dimensionScores && Object.entries(dimensionScores).map(([key, data]) => {
-                const dim = behavioralConfig.dimensions[key];
-                if (!dim) return null;
-                return (
-                  <div key={key}>
-                    <div className="font-semibold text-gray-900 text-sm sm:text-base">{dim.name}</div>
-                    <div className="text-xs sm:text-sm text-gray-500 mt-0.5 line-clamp-2">{dim.description}</div>
-                    <PercentileBar percentile={data.percentile} />
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-2">
+          {/* Left Column - Skills Comparison Table (wider) */}
+          <div className="lg:col-span-3 bg-white rounded-lg shadow-[0_0_0_1px_rgba(0,0,0,0.08)] overflow-hidden">
+            {/* Header */}
+            <div className="p-4 sm:p-5 border-b border-gray-100">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-base sm:text-lg font-semibold text-[#191919]">Skills vs. {roleConfig.pluralName}</h2>
+                  <p className="text-xs sm:text-sm text-[#666666] mt-0.5">How you compare to average {roleConfig.displayName.toLowerCase()}s</p>
+                </div>
+                {standoutSkills.length > 0 && (
+                  <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-green-50 rounded-full text-green-700 text-xs font-medium">
+                    <CheckCircle className="w-3.5 h-3.5" />
+                    <span>Above avg in {standoutSkills.length} skill{standoutSkills.length > 1 ? 's' : ''}</span>
                   </div>
-                );
-              })}
+                )}
+              </div>
             </div>
+            
+            {/* Table */}
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-[#f9fafb] text-[10px] sm:text-xs text-[#666666] uppercase tracking-wider">
+                    <th className="text-left px-4 py-2.5 font-medium">Skill</th>
+                    <th className="text-center px-2 py-2.5 font-medium">You</th>
+                    <th className="text-center px-2 py-2.5 font-medium">Avg {roleConfig.displayName.split(' ')[0]}</th>
+                    <th className="text-center px-2 py-2.5 font-medium">vs. Peers</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {sortedSkills.map((skill, idx) => (
+                    <tr key={skill.key} className={skill.isAboveAverage ? 'bg-green-50/30' : ''}>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium text-sm text-[#191919]">{skill.name}</span>
+                          {skill.isKeySkill && (
+                            <span className="px-1.5 py-0.5 bg-[#0a66c2] text-white text-[9px] sm:text-[10px] rounded font-medium uppercase">Key</span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="text-center px-2 py-3">
+                        <span className="font-semibold text-sm text-[#191919]">Top {skill.userPercentile}%</span>
+                      </td>
+                      <td className="text-center px-2 py-3">
+                        <span className="text-sm text-[#666666]">Top {skill.avgPercentile}%</span>
+                      </td>
+                      <td className="text-center px-2 py-3">
+                        {skill.comparison && (
+                          <span className={`inline-flex items-center gap-0.5 font-semibold text-sm ${
+                            skill.isAboveAverage ? 'text-green-600' : skill.comparison.difference < 0 ? 'text-amber-600' : 'text-gray-500'
+                          }`}>
+                            {skill.comparison.displayDiff}
+                            <span className="text-xs">{skill.comparison.arrow}</span>
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            
+            {/* Standout Summary */}
+            {standoutSkills.length > 0 && (
+              <div className="px-4 py-3 bg-green-50 border-t border-green-100">
+                <div className="flex items-start gap-2">
+                  <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                  <div className="text-sm">
+                    <span className="font-medium text-green-800">Standout for {roleConfig.pluralName}: </span>
+                    <span className="text-green-700">
+                      {standoutSkills.map((s, i) => (
+                        <span key={s.key}>
+                          {s.name} (Top {s.userPercentile}%)
+                          {i < standoutSkills.length - 1 ? ', ' : ''}
+                        </span>
+                      ))}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Right Column */}
-          <div className="space-y-2">
+          <div className="lg:col-span-2 space-y-2">
             {/* Top Qualities */}
             <div className="bg-white rounded-lg p-4 sm:p-5 md:p-6 shadow-[0_0_0_1px_rgba(0,0,0,0.08)]">
               <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Top Qualities</h2>
