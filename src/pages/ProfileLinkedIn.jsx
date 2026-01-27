@@ -78,6 +78,10 @@ export default function ProfileLinkedIn() {
   const firstName = user?.name?.split(' ')[0] || 'User';
   const initials = user?.name?.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'U';
   
+  // Get avatar from multiple sources - use ui-avatars as fallback like header does
+  const avatarUrl = scoreData?.avatar || profileData?.avatar || user?.picture || user?.avatar || 
+    `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'U')}&background=0A66C2&color=fff&size=120`;
+  
   const strengthTags = scoreData?.strength_tags || [];
   const neverWorryAbout = scoreData?.never_worry_about || [];
   const quotes = (scoreData?.comments || []).map(c => ({ text: c.comment, context: c.context || c.company_name }));
@@ -116,9 +120,7 @@ export default function ProfileLinkedIn() {
               background: 'linear-gradient(135deg, #e7f3ff 0%, #cce4ff 100%)',
               overflow: 'hidden'
             }}>
-              {(scoreData?.avatar || profileData?.avatar || user?.picture) ? (
-                <img src={scoreData?.avatar || profileData?.avatar || user?.picture} alt={user?.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              ) : initials}
+              <img src={avatarUrl} alt={user?.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
             
             <div style={{ marginLeft: '140px', paddingTop: '12px' }}>

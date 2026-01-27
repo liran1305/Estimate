@@ -2842,7 +2842,21 @@
       "tags": [],
       "commit_hash": "64e62676bad0de9e8d6236f47c0617055f3c27ec",
       "created_at": "2026-01-27T14:42:33.000Z"
+    },
+    {
+      "id": 196,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix percentile display - use actual database values, no hardcoded fallback",
+      "files": [
+        "src/pages/ProfileLinkedIn.jsx"
+      ],
+      "tags": [
+        "database"
+      ],
+      "commit_hash": "c2d51538c49ceb21208fa3d3acae6ee3402d08ae",
+      "created_at": "2026-01-27T14:44:53.000Z"
     }
   ],
-  "nextId": 196
+  "nextId": 197
 }

@@ -1424,16 +1424,17 @@ router.get('/score/me', async (req, res) => {
     const connection = await pool.getConnection();
 
     try {
-      // Get user score data with position and avatar from linkedin_profiles
+      // Get user score data with position and avatar from linkedin_profiles and users
       const [scores] = await connection.query(`
         SELECT 
           us.*,
           lp.position,
-          lp.avatar,
+          COALESCE(lp.avatar, u.avatar) as avatar,
           lp.location,
           (SELECT COUNT(*) FROM reviews WHERE reviewee_id = us.linkedin_profile_id) as actual_reviews_received
         FROM user_scores us
         LEFT JOIN linkedin_profiles lp ON us.linkedin_profile_id = lp.id
+        LEFT JOIN users u ON us.user_id = u.id
         WHERE us.user_id = ?
         LIMIT 1
       `, [user_id]);
