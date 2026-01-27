@@ -298,17 +298,34 @@ export default function Leaderboard() {
             return catName === lowerPos;
           });
           
-          // Try partial match - check if position contains category name or vice versa
+          // Try to find the most specific match (longest category name that matches)
+          if (!selectedCat) {
+            const matchingCategories = data.categories.filter(c => {
+              const catName = c.name.toLowerCase();
+              // Check if the full category name appears in the position
+              return lowerPos.includes(catName);
+            });
+            
+            // Sort by name length (longest = most specific) and pick the first
+            if (matchingCategories.length > 0) {
+              matchingCategories.sort((a, b) => b.name.length - a.name.length);
+              selectedCat = matchingCategories[0];
+            }
+          }
+          
+          // Fallback: check individual significant words (but prioritize multi-word matches)
           if (!selectedCat) {
             selectedCat = data.categories.find(c => {
               const catName = c.name.toLowerCase();
-              // Check both directions and also check individual words
-              const posWords = lowerPos.split(' ');
+              const posWords = lowerPos.split(/[\s|,]+/);
               const catWords = catName.split(' ');
               
-              return lowerPos.includes(catName) || 
-                     catName.includes(lowerPos) ||
-                     posWords.some(word => catWords.includes(word) && word.length > 3);
+              // Require at least 2 words to match, or the full category name
+              const matchingWords = catWords.filter(cw => 
+                posWords.some(pw => pw.includes(cw) || cw.includes(pw)) && cw.length > 3
+              );
+              
+              return matchingWords.length >= Math.min(2, catWords.length);
             });
           }
           
