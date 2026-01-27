@@ -33,15 +33,15 @@ router.get('/check', async (req, res) => {
         u.email,
         us.reviews_received as counted,
         (
-          (SELECT COUNT(*) FROM reviews r WHERE r.reviewee_id COLLATE utf8mb4_unicode_ci = lp.id COLLATE utf8mb4_unicode_ci) +
-          (SELECT COUNT(*) FROM anonymous_reviews ar WHERE ar.reviewee_id COLLATE utf8mb4_unicode_ci = lp.id COLLATE utf8mb4_unicode_ci)
+          (SELECT COUNT(*) FROM reviews r WHERE r.reviewee_id = lp.id) +
+          (SELECT COUNT(*) FROM anonymous_reviews ar WHERE ar.reviewee_id = lp.id)
         ) as actual
       FROM users u
       JOIN user_scores us ON us.user_id = u.id
       JOIN linkedin_profiles lp ON u.linkedin_profile_id = lp.id
       WHERE us.reviews_received != (
-        (SELECT COUNT(*) FROM reviews r WHERE r.reviewee_id COLLATE utf8mb4_unicode_ci = lp.id COLLATE utf8mb4_unicode_ci) +
-        (SELECT COUNT(*) FROM anonymous_reviews ar WHERE ar.reviewee_id COLLATE utf8mb4_unicode_ci = lp.id COLLATE utf8mb4_unicode_ci)
+        (SELECT COUNT(*) FROM reviews r WHERE r.reviewee_id = lp.id) +
+        (SELECT COUNT(*) FROM anonymous_reviews ar WHERE ar.reviewee_id = lp.id)
       )
     `);
 
@@ -115,8 +115,8 @@ router.post('/sync', async (req, res) => {
       JOIN users u ON us.user_id = u.id
       JOIN linkedin_profiles lp ON u.linkedin_profile_id = lp.id
       SET us.reviews_received = (
-        (SELECT COUNT(*) FROM reviews r WHERE r.reviewee_id COLLATE utf8mb4_unicode_ci = lp.id COLLATE utf8mb4_unicode_ci) +
-        (SELECT COUNT(*) FROM anonymous_reviews ar WHERE ar.reviewee_id COLLATE utf8mb4_unicode_ci = lp.id COLLATE utf8mb4_unicode_ci)
+        (SELECT COUNT(*) FROM reviews r WHERE r.reviewee_id = lp.id) +
+        (SELECT COUNT(*) FROM anonymous_reviews ar WHERE ar.reviewee_id = lp.id)
       )
     `);
 
@@ -130,11 +130,11 @@ router.post('/sync', async (req, res) => {
         FROM (
           SELECT overall_score as score 
           FROM reviews 
-          WHERE reviewee_id COLLATE utf8mb4_unicode_ci = lp.id COLLATE utf8mb4_unicode_ci
+          WHERE reviewee_id = lp.id
           UNION ALL
           SELECT overall_score as score 
           FROM anonymous_reviews 
-          WHERE reviewee_id COLLATE utf8mb4_unicode_ci = lp.id COLLATE utf8mb4_unicode_ci
+          WHERE reviewee_id = lp.id
         ) as combined_scores
       )
       WHERE us.reviews_received > 0
