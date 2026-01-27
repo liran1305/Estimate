@@ -2774,7 +2774,24 @@
       "tags": [],
       "commit_hash": "81bb2880a6bd4de4a6f8a7a03097fc2b8bae9ae1",
       "created_at": "2026-01-27T14:24:58.000Z"
+    },
+    {
+      "id": 191,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add Never Worry About and Room to Grow features",
+      "files": [
+        "backend/database/migrations/add-room-to-grow.sql",
+        "backend/database/migrations/scoring-redesign.sql",
+        "backend/routes/anonymousReviews.js",
+        "backend/routes/reviews.js",
+        "backend/services/dimensionScoring.js",
+        "src/components/review/ReviewFormBehavioral.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "ceaa6d17af3b5de476351caa4428d2c98701351f",
+      "created_at": "2026-01-27T14:29:30.000Z"
     }
   ],
-  "nextId": 191
+  "nextId": 192
 }

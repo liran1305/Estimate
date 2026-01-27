@@ -1,13 +1,18 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-27T14:29:22.056Z
+> Last updated: 2026-01-27T14:30:18.266Z
 
 ## Project Stats
-- Total memories: 190
-- Commits tracked: 190
+- Total memories: 191
+- Commits tracked: 191
 - Decisions recorded: 0
 
+## Relevant to Current Work
+- **1/27/2026**: Add Never Worry About and Room to Grow features (backend/database/migrations/add-room-to-grow.sql, backend/database/migrations/scoring-redesign.sql, backend/routes/anonymousReviews.js)
+
 ## Recent Changes
+- `ceaa6d1` 1/27/2026: Add Never Worry About and Room to Grow features
+  Files: backend/database/migrations/add-room-to-grow.sql, backend/database/migrations/scoring-redesign.sql, backend/routes/anonymousReviews.js
 - `81bb288` 1/27/2026: Fix ProfileV2: thinner badge, add colleague comments
   Files: backend/database/migrations/migrate-existing-reviews.js, src/components/profile/ColleagueQuotes.jsx, src/components/profile/DimensionCard.jsx
 - `f982030` 1/27/2026: Add all V2 Profile components matching design mockups
@@ -36,8 +41,6 @@
   Files: backend/routes/requestTokens.js
 - `c18f6c5` 1/27/2026: Fix: Remove all COLLATE clauses in dataValidation queries
   Files: backend/routes/dataValidation.js
-- `3c10471` 1/27/2026: Fix: Remove COLLATE clause causing collation mismatch in review request query
-  Files: backend/routes/requestTokens.js
 
 ## Do Not Repeat
 These issues have already been solved:
