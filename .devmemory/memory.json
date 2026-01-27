@@ -2992,7 +2992,21 @@
       "tags": [],
       "commit_hash": "7656ea6cdef6e68875a92dffb0f771b1877da89c",
       "created_at": "2026-01-27T15:58:26.000Z"
+    },
+    {
+      "id": 207,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add Open for Recruiters toggle to ProfileLinkedIn page",
+      "files": [
+        "src/pages/ProfileLinkedIn.jsx"
+      ],
+      "tags": [
+        "ui"
+      ],
+      "commit_hash": "1e2cc68645a923f2540c4c93f0d29d4388ebba12",
+      "created_at": "2026-01-27T16:01:44.000Z"
     }
   ],
-  "nextId": 207
+  "nextId": 208
 }

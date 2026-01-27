@@ -1,16 +1,18 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-27T16:01:35.800Z
+> Last updated: 2026-01-27T16:03:25.499Z
 
 ## Project Stats
-- Total memories: 206
-- Commits tracked: 206
+- Total memories: 207
+- Commits tracked: 207
 - Decisions recorded: 0
 
 ## Relevant to Current Work
 - **1/27/2026**: Add test review scripts and recalculation utility (backend/database/migrations/add-test-review-liran.sql, backend/database/migrations/find-liran-naim-exact.sql, backend/database/migrations/find-liran-profile.sql)
 
 ## Recent Changes
+- `1e2cc68` 1/27/2026: Add Open for Recruiters toggle to ProfileLinkedIn page
+  Files: src/pages/ProfileLinkedIn.jsx
 - `7656ea6` 1/27/2026: Fix company names wrapping on mobile - use line-clamp-2 instead of truncate
   Files: src/pages/ProfileLinkedIn.jsx
 - `a51fb4d` 1/27/2026: Remove redundant Companies Footer and show both companies in tile
@@ -38,8 +40,6 @@
 - `b728b8c` 1/27/2026: Add LinkedIn-styled ProfileLinkedIn page
   Files: src/pages/ProfileLinkedIn.jsx, src/pages/ProfileV2.jsx, src/pages/index.jsx
 - `b7ea1d4` 1/27/2026: Add vote counts back to StrengthTagsDisplay and make tags larger
-  Files: src/components/profile/StrengthTagsDisplay.jsx
-- `f207b48` 1/27/2026: Update StrengthTagsDisplay to professional style
   Files: src/components/profile/StrengthTagsDisplay.jsx
 
 ## Do Not Repeat
