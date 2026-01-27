@@ -2856,7 +2856,22 @@
       ],
       "commit_hash": "c2d51538c49ceb21208fa3d3acae6ee3402d08ae",
       "created_at": "2026-01-27T14:44:53.000Z"
+    },
+    {
+      "id": 197,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix profile avatar with ui-avatars fallback",
+      "files": [
+        "backend/routes/reviews.js",
+        "src/pages/ProfileLinkedIn.jsx"
+      ],
+      "tags": [
+        "ui"
+      ],
+      "commit_hash": "d2a241b7943a57312d4291b902df22ab539e1c5f",
+      "created_at": "2026-01-27T14:47:42.000Z"
     }
   ],
-  "nextId": 197
+  "nextId": 198
 }

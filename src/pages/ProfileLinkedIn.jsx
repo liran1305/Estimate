@@ -78,9 +78,9 @@ export default function ProfileLinkedIn() {
   const firstName = user?.name?.split(' ')[0] || 'User';
   const initials = user?.name?.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'U';
   
-  // Get avatar from multiple sources - use ui-avatars as fallback like header does
-  const avatarUrl = scoreData?.avatar || profileData?.avatar || user?.picture || user?.avatar || 
-    `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'U')}&background=0A66C2&color=fff&size=120`;
+  // Get avatar from multiple sources - prioritize user.picture (from localStorage) like header does
+  const avatarUrl = user?.picture || scoreData?.avatar || profileData?.avatar || user?.avatar;
+  const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'U')}&background=0A66C2&color=fff&size=120`;
   
   const strengthTags = scoreData?.strength_tags || [];
   const neverWorryAbout = scoreData?.never_worry_about || [];
@@ -120,7 +120,12 @@ export default function ProfileLinkedIn() {
               background: 'linear-gradient(135deg, #e7f3ff 0%, #cce4ff 100%)',
               overflow: 'hidden'
             }}>
-              <img src={avatarUrl} alt={user?.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <img 
+                src={avatarUrl || fallbackAvatar} 
+                alt={user?.name} 
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                onError={(e) => { e.target.src = fallbackAvatar; }}
+              />
             </div>
             
             <div style={{ marginLeft: '140px', paddingTop: '12px' }}>

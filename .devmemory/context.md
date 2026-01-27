@@ -1,16 +1,18 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-27T14:47:33.317Z
+> Last updated: 2026-01-27T14:50:58.653Z
 
 ## Project Stats
-- Total memories: 196
-- Commits tracked: 196
+- Total memories: 197
+- Commits tracked: 197
 - Decisions recorded: 0
 
 ## Relevant to Current Work
 - **1/27/2026**: Add Never Worry About and Room to Grow features (backend/database/migrations/add-room-to-grow.sql, backend/database/migrations/scoring-redesign.sql, backend/routes/anonymousReviews.js)
 
 ## Recent Changes
+- `d2a241b` 1/27/2026: Fix profile avatar with ui-avatars fallback
+  Files: backend/routes/reviews.js, src/pages/ProfileLinkedIn.jsx
 - `c2d5153` 1/27/2026: Fix percentile display - use actual database values, no hardcoded fallback
   Files: src/pages/ProfileLinkedIn.jsx
 - `64e6267` 1/27/2026: Fix profile avatar to use scoreData.avatar from linkedin_profiles
@@ -39,11 +41,10 @@
   Files: src/components/review/ReviewFormBehavioral.jsx
 - `e32fa57` 1/27/2026: Redesign review form - simple, fun, one question at a time
   Files: backend/database/migrations/scoring-redesign.sql, src/components/review/ReviewFormBehavioral.jsx
-- `9977d65` 1/27/2026: Add profile components index.js exports
-  Files: src/components/profile/index.js
 
 ## Do Not Repeat
 These issues have already been solved:
+- Fix profile avatar with ui-avatars fallback
 - Fix percentile display - use actual database values, no hardcoded fallback
 - Fix profile avatar to use scoreData.avatar from linkedin_profiles
 - Fix ProfileV2: thinner badge, add colleague comments
