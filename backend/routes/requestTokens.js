@@ -312,7 +312,7 @@ router.get('/request/:link', async (req, res) => {
 
     try {
       const [request] = await connection.query(
-        `SELECT rr.*, u.name as requester_name, lp.avatar as requester_avatar,
+        `SELECT rr.*, u.name as requester_name, u.avatar as requester_avatar,
                 lp.current_company_name as requester_company
          FROM review_requests rr
          JOIN users u ON BINARY u.id = BINARY rr.requester_id
