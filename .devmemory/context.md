@@ -1,16 +1,18 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-27T14:55:57.336Z
+> Last updated: 2026-01-27T15:03:14.247Z
 
 ## Project Stats
-- Total memories: 198
-- Commits tracked: 198
+- Total memories: 199
+- Commits tracked: 199
 - Decisions recorded: 0
 
 ## Relevant to Current Work
 - **1/27/2026**: Add Never Worry About and Room to Grow features (backend/database/migrations/add-room-to-grow.sql, backend/database/migrations/scoring-redesign.sql, backend/routes/anonymousReviews.js)
 
 ## Recent Changes
+- `a98ea0b` 1/27/2026: Make ProfileLinkedIn fully mobile responsive with Tailwind CSS
+  Files: src/pages/ProfileLinkedIn.jsx
 - `6b9691b` 1/27/2026: Fix avatar display and clean up debug logs
   Files: src/pages/ProfileLinkedIn.jsx
 - `d2a241b` 1/27/2026: Fix profile avatar with ui-avatars fallback
@@ -38,8 +40,6 @@
 - `37b20c5` 1/27/2026: Show Other option only for choice-type questions, not emoji questions
   Files: src/components/review/ReviewFormBehavioral.jsx
 - `87a2ec2` 1/27/2026: Add Other option with free text input to questions
-  Files: src/components/review/ReviewFormBehavioral.jsx
-- `b6659c7` 1/27/2026: Fix progress bar and add skip option to questions
   Files: src/components/review/ReviewFormBehavioral.jsx
 
 ## Do Not Repeat

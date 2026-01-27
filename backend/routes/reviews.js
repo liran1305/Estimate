@@ -1470,7 +1470,8 @@ router.get('/score/me', async (req, res) => {
           would_work_again,
           CAST(interaction_type AS CHAR CHARACTER SET utf8mb4) COLLATE utf8mb4_unicode_ci as interaction_type,
           created_at,
-          CAST(optional_comment AS CHAR CHARACTER SET utf8mb4) COLLATE utf8mb4_unicode_ci as optional_comment
+          CAST(optional_comment AS CHAR CHARACTER SET utf8mb4) COLLATE utf8mb4_unicode_ci as optional_comment,
+          CAST(company_name AS CHAR CHARACTER SET utf8mb4) COLLATE utf8mb4_unicode_ci as company_name
         FROM reviews 
         WHERE reviewee_id = ?
         UNION ALL
@@ -1481,7 +1482,8 @@ router.get('/score/me', async (req, res) => {
           would_work_again,
           CAST(interaction_type AS CHAR CHARACTER SET utf8mb4) COLLATE utf8mb4_unicode_ci as interaction_type,
           created_date as created_at,
-          CAST(optional_comment AS CHAR CHARACTER SET utf8mb4) COLLATE utf8mb4_unicode_ci as optional_comment
+          CAST(optional_comment AS CHAR CHARACTER SET utf8mb4) COLLATE utf8mb4_unicode_ci as optional_comment,
+          CAST(company_name AS CHAR CHARACTER SET utf8mb4) COLLATE utf8mb4_unicode_ci as company_name
         FROM anonymous_reviews
         WHERE reviewee_id = ?
       `, [scoreData.linkedin_profile_id, scoreData.linkedin_profile_id]);
@@ -1523,6 +1525,12 @@ router.get('/score/me', async (req, res) => {
         cross_team: 0,
         other: 0
       };
+      
+      // Company breakdown - track unique companies
+      const companySet = new Set();
+      
+      // Track earliest review date for time context
+      let earliestReviewDate = null;
       
       // Collect comments (only non-empty ones)
       const comments = [];
@@ -1582,6 +1590,19 @@ router.get('/score/me', async (req, res) => {
         // Count reviewer types
         if (review.interaction_type && reviewerBreakdown.hasOwnProperty(review.interaction_type)) {
           reviewerBreakdown[review.interaction_type]++;
+        }
+        
+        // Track companies
+        if (review.company_name && review.company_name.trim()) {
+          companySet.add(review.company_name.trim());
+        }
+        
+        // Track earliest review date for time context
+        if (review.created_at) {
+          const reviewDate = new Date(review.created_at);
+          if (!earliestReviewDate || reviewDate < earliestReviewDate) {
+            earliestReviewDate = reviewDate;
+          }
         }
       }
 
@@ -1663,6 +1684,14 @@ router.get('/score/me', async (req, res) => {
           breakdown: wouldWorkAgainBreakdown
         },
         reviewer_breakdown: reviewerBreakdown,
+        // Companies where reviews came from
+        companies: Array.from(companySet).slice(0, 5),
+        company_count: companySet.size,
+        // Time context - how long the working relationships span
+        time_context: earliestReviewDate ? {
+          earliest_review: earliestReviewDate.toISOString(),
+          years_of_data: Math.max(1, Math.round((new Date() - earliestReviewDate) / (1000 * 60 * 60 * 24 * 365)))
+        } : null,
         // Comments from reviews
         comments: comments,
         // New: Percentile tier information

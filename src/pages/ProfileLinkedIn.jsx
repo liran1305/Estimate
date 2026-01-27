@@ -86,6 +86,22 @@ export default function ProfileLinkedIn() {
   const workAgainPct = scoreData?.work_again_absolutely_pct || scoreData?.would_work_again?.percent;
   const startupHirePct = scoreData?.startup_hire_pct;
   const harderJobPct = scoreData?.harder_job_pct;
+  
+  // Recruiter-focused data
+  const reviewerBreakdown = scoreData?.reviewer_breakdown || {};
+  const companies = scoreData?.companies || [];
+  const companyCount = scoreData?.company_count || companies.length;
+  const timeContext = scoreData?.time_context;
+  const percentileTier = scoreData?.percentile?.tier || 'Top 25%';
+  const userPosition = scoreData?.user_position || 'Professional';
+  
+  // Format reviewer breakdown for display
+  const reviewerTypes = [];
+  if (reviewerBreakdown.manager > 0) reviewerTypes.push(`${reviewerBreakdown.manager} manager${reviewerBreakdown.manager > 1 ? 's' : ''}`);
+  if (reviewerBreakdown.peer > 0) reviewerTypes.push(`${reviewerBreakdown.peer} peer${reviewerBreakdown.peer > 1 ? 's' : ''}`);
+  if (reviewerBreakdown.direct_report > 0) reviewerTypes.push(`${reviewerBreakdown.direct_report} direct report${reviewerBreakdown.direct_report > 1 ? 's' : ''}`);
+  if (reviewerBreakdown.cross_team > 0) reviewerTypes.push(`${reviewerBreakdown.cross_team} cross-team`);
+  if (reviewerBreakdown.other > 0) reviewerTypes.push(`${reviewerBreakdown.other} other`);
 
   if (!hasAnyReviews) {
     return (
@@ -154,6 +170,71 @@ export default function ProfileLinkedIn() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Recruiter Credibility Bar - Overall tier + reviewer breakdown + companies + time */}
+        <div className="bg-white rounded-lg p-3 sm:p-4 md:p-5 shadow-[0_0_0_1px_rgba(0,0,0,0.08)]">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+            {/* Overall Tier Badge */}
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-[#0a66c2] to-[#004182] flex items-center justify-center flex-shrink-0">
+                <span className="text-white text-sm sm:text-lg font-bold">
+                  {percentileTier.replace('Top ', '').replace('%', '')}
+                </span>
+              </div>
+              <div>
+                <div className="text-sm sm:text-base font-semibold text-gray-900">{percentileTier} of {userPosition}s</div>
+                <div className="text-[10px] sm:text-xs text-gray-500">Based on peer assessments</div>
+              </div>
+            </div>
+            
+            {/* Quick Stats */}
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-[10px] sm:text-xs">
+              {/* Reviewer Types */}
+              {reviewerTypes.length > 0 && (
+                <div className="flex items-center gap-1.5 px-2 py-1 bg-blue-50 rounded-full text-[#0a66c2]">
+                  <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
+                  </svg>
+                  <span className="font-medium">{reviewerTypes.join(', ')}</span>
+                </div>
+              )}
+              
+              {/* Companies */}
+              {companyCount > 0 && (
+                <div className="flex items-center gap-1.5 px-2 py-1 bg-green-50 rounded-full text-green-700">
+                  <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clipRule="evenodd"/>
+                  </svg>
+                  <span className="font-medium">{companyCount} {companyCount === 1 ? 'company' : 'companies'}</span>
+                </div>
+              )}
+              
+              {/* Time Context */}
+              {timeContext && (
+                <div className="flex items-center gap-1.5 px-2 py-1 bg-amber-50 rounded-full text-amber-700">
+                  <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd"/>
+                  </svg>
+                  <span className="font-medium">{timeContext.years_of_data}+ year{timeContext.years_of_data > 1 ? 's' : ''} of data</span>
+                </div>
+              )}
+            </div>
+          </div>
+          
+          {/* Companies List */}
+          {companies.length > 0 && (
+            <div className="mt-3 pt-3 border-t border-gray-100">
+              <div className="text-[10px] sm:text-xs text-gray-500 mb-1.5">Verified at:</div>
+              <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                {companies.map((company, idx) => (
+                  <span key={idx} className="px-2 py-0.5 sm:py-1 bg-gray-100 rounded text-[10px] sm:text-xs text-gray-700 font-medium">
+                    {company}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Key Metrics Card */}
