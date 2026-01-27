@@ -32,31 +32,32 @@ CREATE TABLE IF NOT EXISTS dimension_scores (
 
 -- ============================================================================
 -- 2. ADD NEW COLUMNS TO ANONYMOUS_REVIEWS
+-- Note: Run each statement separately if column already exists
 -- ============================================================================
 ALTER TABLE anonymous_reviews 
-  ADD COLUMN IF NOT EXISTS behavioral_answers JSON DEFAULT NULL,
-  ADD COLUMN IF NOT EXISTS high_signal_answers JSON DEFAULT NULL,
-  ADD COLUMN IF NOT EXISTS never_worry_about VARCHAR(200) DEFAULT NULL,
-  ADD COLUMN IF NOT EXISTS review_version INT DEFAULT 1;
+  ADD COLUMN behavioral_answers JSON DEFAULT NULL,
+  ADD COLUMN high_signal_answers JSON DEFAULT NULL,
+  ADD COLUMN never_worry_about VARCHAR(200) DEFAULT NULL,
+  ADD COLUMN review_version INT DEFAULT 1;
 
 -- ============================================================================
 -- 3. ADD NEW COLUMNS TO USER_SCORES
 -- ============================================================================
 ALTER TABLE user_scores
-  ADD COLUMN IF NOT EXISTS qualitative_badge VARCHAR(50) DEFAULT NULL,
-  ADD COLUMN IF NOT EXISTS startup_hire_pct INT DEFAULT NULL,
-  ADD COLUMN IF NOT EXISTS harder_job_pct INT DEFAULT NULL,
-  ADD COLUMN IF NOT EXISTS work_again_absolutely_pct INT DEFAULT NULL,
-  ADD COLUMN IF NOT EXISTS never_worry_about JSON DEFAULT NULL;
+  ADD COLUMN qualitative_badge VARCHAR(50) DEFAULT NULL,
+  ADD COLUMN startup_hire_pct INT DEFAULT NULL,
+  ADD COLUMN harder_job_pct INT DEFAULT NULL,
+  ADD COLUMN work_again_absolutely_pct INT DEFAULT NULL,
+  ADD COLUMN never_worry_about JSON DEFAULT NULL;
 
 -- ============================================================================
 -- 4. ADD NEW COLUMNS TO REVIEWS (legacy table)
 -- ============================================================================
 ALTER TABLE reviews
-  ADD COLUMN IF NOT EXISTS behavioral_answers JSON DEFAULT NULL,
-  ADD COLUMN IF NOT EXISTS high_signal_answers JSON DEFAULT NULL,
-  ADD COLUMN IF NOT EXISTS never_worry_about VARCHAR(200) DEFAULT NULL,
-  ADD COLUMN IF NOT EXISTS review_version INT DEFAULT 1;
+  ADD COLUMN behavioral_answers JSON DEFAULT NULL,
+  ADD COLUMN high_signal_answers JSON DEFAULT NULL,
+  ADD COLUMN never_worry_about VARCHAR(200) DEFAULT NULL,
+  ADD COLUMN review_version INT DEFAULT 1;
 
 -- ============================================================================
 -- RE-ENABLE FOREIGN KEY CHECKS

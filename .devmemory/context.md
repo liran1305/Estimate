@@ -1,13 +1,15 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-27T13:33:34.914Z
+> Last updated: 2026-01-27T13:43:50.552Z
 
 ## Project Stats
-- Total memories: 181
-- Commits tracked: 181
+- Total memories: 182
+- Commits tracked: 182
 - Decisions recorded: 0
 
 ## Recent Changes
+- `9977d65` 1/27/2026: Add profile components index.js exports
+  Files: src/components/profile/index.js
 - `263e7d4` 1/27/2026: Feature: Implement proper review request flow
   Files: backend/routes/requestTokens.js, src/pages/Review.jsx
 - `394d0d2` 1/27/2026: Fix: Refresh user avatar on every login to prevent expired LinkedIn URLs
@@ -36,8 +38,6 @@
   Files: backend/config/database.js, backend/routes/admin.js, backend/routes/anonymousReviews.js
 - `e13a67b` 1/25/2026: Add anonymity trust message to colleague selection screen
   Files: src/components/review/ColleagueCard.jsx
-- `41e0edd` 1/24/2026: Fix daily review limit to only count completed reviews
-  Files: backend/routes/anonymousReviews.js
 
 ## Do Not Repeat
 These issues have already been solved:
