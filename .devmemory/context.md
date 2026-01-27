@@ -1,16 +1,18 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-27T13:55:55.627Z
+> Last updated: 2026-01-27T13:56:59.095Z
 
 ## Project Stats
-- Total memories: 184
-- Commits tracked: 184
+- Total memories: 185
+- Commits tracked: 185
 - Decisions recorded: 0
 
 ## Relevant to Current Work
 - **1/27/2026**: Redesign review form - simple, fun, one question at a time (backend/database/migrations/scoring-redesign.sql, src/components/review/ReviewFormBehavioral.jsx)
 
 ## Recent Changes
+- `87a2ec2` 1/27/2026: Add Other option with free text input to questions
+  Files: src/components/review/ReviewFormBehavioral.jsx
 - `b6659c7` 1/27/2026: Fix progress bar and add skip option to questions
   Files: src/components/review/ReviewFormBehavioral.jsx
 - `e32fa57` 1/27/2026: Redesign review form - simple, fun, one question at a time
@@ -39,8 +41,6 @@
   Files: PROJECT_CONTEXT.md, backend/OAUTH_MATCHING_IMPROVEMENT.md, backend/routes/anonymousReviews.js
 - `b000fa6` 1/26/2026: Improve colleague matching: increase overlap to 6 months and add smart skip detection
   Files: DATA_STRUCTURES.md, backend/routes/colleagues.js, backend/routes/reviews.js
-- `347779d` 1/26/2026: Add Estimate Verified badge creator feature
-  Files: backend/database/add-profile-photo.sql, backend/package.json, backend/routes/profilePhoto.js
 
 ## Do Not Repeat
 These issues have already been solved:
