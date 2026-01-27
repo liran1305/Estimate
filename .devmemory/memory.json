@@ -2722,7 +2722,20 @@
       "tags": [],
       "commit_hash": "d413aa2c027aaca7132d2968fcaf5fd554bbab53",
       "created_at": "2026-01-27T14:03:54.000Z"
+    },
+    {
+      "id": 188,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Integrate V2 behavioral scoring into Profile page",
+      "files": [
+        "backend/routes/reviews.js",
+        "src/pages/Profile.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "6370ba373b841c49f43413a7dd7c7620440e14ab",
+      "created_at": "2026-01-27T14:07:25.000Z"
     }
   ],
-  "nextId": 188
+  "nextId": 189
 }

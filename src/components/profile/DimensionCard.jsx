@@ -16,13 +16,16 @@ export default function DimensionCard({ dimension, level, percentile, compact = 
           borderLeft: `4px solid ${levelConfig.color}`
         }}
       >
-        <div className="flex items-center gap-2">
-          <span className="text-xl">{dimensionConfig.icon}</span>
-          <span className="font-medium text-gray-900">{dimensionConfig.name}</span>
+        <div className="flex items-center gap-3">
+          <span className="text-2xl">{dimensionConfig.icon}</span>
+          <div>
+            <span className="font-semibold text-gray-900">{dimensionConfig.name}</span>
+            <p className="text-xs text-gray-500 mt-0.5">{dimensionConfig.description}</p>
+          </div>
         </div>
-        <div className="text-right">
+        <div className="text-right flex-shrink-0 ml-3">
           <span 
-            className="text-sm font-semibold px-2 py-1 rounded-full"
+            className="text-sm font-semibold px-3 py-1 rounded-full inline-block"
             style={{ 
               color: levelConfig.color,
               backgroundColor: 'white',
@@ -31,6 +34,11 @@ export default function DimensionCard({ dimension, level, percentile, compact = 
           >
             {levelConfig.label}
           </span>
+          {percentile && (
+            <div className="text-xs text-gray-500 mt-1">
+              Top {percentile}%
+            </div>
+          )}
         </div>
       </div>
     );

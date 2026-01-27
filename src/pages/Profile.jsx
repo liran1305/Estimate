@@ -10,10 +10,15 @@ import { motion } from "framer-motion";
 import WaitingState from "@/components/profile/WaitingState";
 import ConsentModal from "@/components/profile/ConsentModal";
 import { TokenProgressBar, RequestReviewModal } from "@/components/tokens";
-import DimensionCard from "@/components/profile/DimensionCard";
-import QualitativeBadge from "@/components/profile/QualitativeBadge";
-import KeyMetrics from "@/components/profile/KeyMetrics";
-import StrengthTagsDisplay from "@/components/profile/StrengthTagsDisplay";
+import { 
+  QualitativeBadge, 
+  KeyMetrics, 
+  StrengthTagsDisplay,
+  SkillsThatMatter,
+  NeverWorryAbout,
+  ColleagueQuotes,
+  RoomToGrow
+} from "@/components/profile";
 
 const BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:3001';
 
@@ -570,51 +575,64 @@ export default function Profile() {
                 </div>
               </div>
 
-              {/* NEW V2: Behavioral Dimensions Section */}
-              {scoreData?.dimension_scores && Object.keys(scoreData.dimension_scores).length > 0 && (
+              {/* V2: Qualitative Badge */}
+              {scoreData?.qualitative_badge && (
                 <div className="py-4 sm:py-6 border-b border-gray-100">
-                  <p className="text-sm sm:text-base font-semibold text-gray-900 mb-3">How Colleagues See You</p>
-                  <div className="space-y-2">
-                    {Object.entries(scoreData.dimension_scores).map(([dimension, data]) => (
-                      <DimensionCard 
-                        key={dimension}
-                        dimension={dimension}
-                        level={data.level}
-                        percentile={data.percentile}
-                        compact
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* NEW V2: Key Metrics - High Signal Questions */}
-              {scoreData?.high_signal_metrics && (
-                <div className="py-4 sm:py-6 border-b border-gray-100">
-                  <KeyMetrics 
-                    startupHirePct={scoreData.high_signal_metrics.startup_hire_pct}
-                    harderJobPct={scoreData.high_signal_metrics.harder_job_pct}
-                    workAgainAbsolutelyPct={scoreData.high_signal_metrics.work_again_absolutely_pct}
+                  <QualitativeBadge 
+                    badge={scoreData.qualitative_badge}
+                    percentile={scoreData.percentile?.tier?.match(/\d+/)?.[0]}
+                    jobTitle={userPosition}
                   />
                 </div>
               )}
 
-              {/* Comments Section */}
+              {/* V2: Key Metrics - High Signal Questions */}
+              {(scoreData?.startup_hire_pct || scoreData?.harder_job_pct || scoreData?.work_again_absolutely_pct) && (
+                <div className="py-4 sm:py-6 border-b border-gray-100">
+                  <KeyMetrics 
+                    startupHirePct={scoreData.startup_hire_pct}
+                    harderJobPct={scoreData.harder_job_pct}
+                    workAgainAbsolutelyPct={scoreData.work_again_absolutely_pct}
+                  />
+                </div>
+              )}
+
+              {/* V2: Skills That Matter Now - Behavioral Dimensions */}
+              {scoreData?.dimension_scores && Object.keys(scoreData.dimension_scores).length > 0 && (
+                <div className="py-4 sm:py-6 border-b border-gray-100">
+                  <SkillsThatMatter dimensions={scoreData.dimension_scores} />
+                </div>
+              )}
+
+              {/* V2: Never Worry About */}
+              {scoreData?.never_worry_about && scoreData.never_worry_about.length > 0 && (
+                <div className="py-4 sm:py-6 border-b border-gray-100">
+                  <NeverWorryAbout 
+                    items={scoreData.never_worry_about}
+                    firstName={profileData?.name?.split(' ')[0] || 'This person'}
+                  />
+                </div>
+              )}
+
+              {/* V2: Colleague Quotes */}
               {scoreData?.comments && scoreData.comments.length > 0 && (
                 <div className="py-4 sm:py-6 border-b border-gray-100">
-                  <p className="text-sm sm:text-base font-semibold text-gray-900 mb-3">What Colleagues Said</p>
-                  <div className="space-y-3">
-                    {scoreData.comments.slice(0, 5).map((item, index) => (
-                      <div key={index} className="p-3 bg-gray-50 rounded-lg border border-gray-100">
-                        <p className="text-sm text-gray-700 italic">"{item.comment}"</p>
-                      </div>
-                    ))}
-                  </div>
-                  {scoreData.comments.length > 5 && (
-                    <p className="text-xs text-gray-400 mt-2 text-center">
-                      Showing 5 of {scoreData.comments.length} comments
-                    </p>
-                  )}
+                  <ColleagueQuotes 
+                    quotes={scoreData.comments.slice(0, 5).map(c => ({
+                      text: c.comment,
+                      context: c.context || c.company_name
+                    }))}
+                  />
+                </div>
+              )}
+
+              {/* V2: Room to Grow - Private section */}
+              {scoreData?.room_to_grow && scoreData.room_to_grow.length > 0 && (
+                <div className="py-4 sm:py-6 border-b border-gray-100">
+                  <RoomToGrow 
+                    items={scoreData.room_to_grow}
+                    isOwner={true}
+                  />
                 </div>
               )}
 
