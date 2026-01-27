@@ -36,6 +36,7 @@ export default function ProfileLinkedIn() {
       setUser(currentUser);
       
       try {
+        // Fetch profile data including avatar
         if (currentUser.linkedinProfileId) {
           const profileRes = await fetch(`${BACKEND_API_URL}/api/colleagues/profile/${currentUser.linkedinProfileId}/colleagues`);
           const profileJson = await profileRes.json();
@@ -46,6 +47,11 @@ export default function ProfileLinkedIn() {
         const scoreJson = await scoreRes.json();
         setScoreData(scoreJson);
         setDimensionScores(scoreJson.dimension_scores || null);
+        
+        // If no avatar yet, try to get from score response
+        if (scoreJson.avatar) {
+          setProfileData(prev => ({ ...prev, avatar: scoreJson.avatar }));
+        }
       } catch (error) {
         console.error('Error fetching profile data:', error);
       }
@@ -104,8 +110,8 @@ export default function ProfileLinkedIn() {
               background: 'linear-gradient(135deg, #e7f3ff 0%, #cce4ff 100%)',
               overflow: 'hidden'
             }}>
-              {profileData?.avatar ? (
-                <img src={profileData.avatar} alt={user?.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              {(scoreData?.avatar || profileData?.avatar || user?.picture) ? (
+                <img src={scoreData?.avatar || profileData?.avatar || user?.picture} alt={user?.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               ) : initials}
             </div>
             

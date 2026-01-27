@@ -1,16 +1,18 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-27T14:37:07.970Z
+> Last updated: 2026-01-27T14:41:38.811Z
 
 ## Project Stats
-- Total memories: 193
-- Commits tracked: 193
+- Total memories: 194
+- Commits tracked: 194
 - Decisions recorded: 0
 
 ## Relevant to Current Work
 - **1/27/2026**: Add Never Worry About and Room to Grow features (backend/database/migrations/add-room-to-grow.sql, backend/database/migrations/scoring-redesign.sql, backend/routes/anonymousReviews.js)
 
 ## Recent Changes
+- `b728b8c` 1/27/2026: Add LinkedIn-styled ProfileLinkedIn page
+  Files: src/pages/ProfileLinkedIn.jsx, src/pages/ProfileV2.jsx, src/pages/index.jsx
 - `b7ea1d4` 1/27/2026: Add vote counts back to StrengthTagsDisplay and make tags larger
   Files: src/components/profile/StrengthTagsDisplay.jsx
 - `f207b48` 1/27/2026: Update StrengthTagsDisplay to professional style
@@ -39,12 +41,9 @@
   Files: backend/routes/requestTokens.js, src/pages/Review.jsx
 - `394d0d2` 1/27/2026: Fix: Refresh user avatar on every login to prevent expired LinkedIn URLs
   Files: backend/server.js
-- `c75ea87` 1/27/2026: Fix: Fetch requester avatar from users table instead of linkedin_profiles
-  Files: backend/routes/requestTokens.js
 
 ## Do Not Repeat
 These issues have already been solved:
 - Fix ProfileV2: thinner badge, add colleague comments
 - Fix progress bar and add skip option to questions
 - Refresh user avatar on every login to prevent expired LinkedIn URLs
-- Fetch requester avatar from users table instead of linkedin_profiles

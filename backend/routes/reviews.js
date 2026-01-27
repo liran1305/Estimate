@@ -1424,11 +1424,13 @@ router.get('/score/me', async (req, res) => {
     const connection = await pool.getConnection();
 
     try {
-      // Get user score data with position from linkedin_profiles
+      // Get user score data with position and avatar from linkedin_profiles
       const [scores] = await connection.query(`
         SELECT 
           us.*,
           lp.position,
+          lp.avatar,
+          lp.location,
           (SELECT COUNT(*) FROM reviews WHERE reviewee_id = us.linkedin_profile_id) as actual_reviews_received
         FROM user_scores us
         LEFT JOIN linkedin_profiles lp ON us.linkedin_profile_id = lp.id
@@ -1676,6 +1678,9 @@ router.get('/score/me', async (req, res) => {
         role_display_name: roleDisplayName,
         // New: Canonical position title for percentile badge (e.g., "Product Manager")
         user_position: canonicalPosition,
+        // Profile data
+        avatar: scoreData.avatar,
+        location: scoreData.location,
         // V2 Scoring System: Dimension scores
         dimension_scores: await getDimensionScores(connection, scoreData.linkedin_profile_id),
         // V2: Aggregated "never worry about" responses
