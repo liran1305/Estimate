@@ -891,6 +891,27 @@ async function getOrCreateCompanySkips(connection, user_id, company_name) {
   // Get the maximum cap for this company (skip_allowance)
   const maxCap = initialBudget; // This is the company's skip_allowance calculated above
   
+  // FIX: Detect and repair corrupted records where initial_budget=0
+  // This can happen if a record was created incorrectly or the company size was updated
+  if (currentBudget === 0 && maxCap > 0) {
+    console.log(`[SKIP BUDGET FIX] Repairing corrupted budget for ${company_name}, user ${user_id}: was 0, setting to ${maxCap}`);
+    
+    await connection.query(`
+      UPDATE user_company_skips 
+      SET initial_budget = ?, skips_used = 0, last_refresh_date = ?
+      WHERE user_id = ? AND company_name = ?
+    `, [maxCap, today, user_id, company_name]);
+    
+    return {
+      initial_budget: maxCap,
+      skips_used: 0,
+      daily_refresh: record.daily_refresh,
+      skips_remaining: maxCap,
+      last_refresh_date: today,
+      max_cap: maxCap
+    };
+  }
+  
   // Check if daily refresh should be applied
   if (record.last_refresh_date && record.last_refresh_date !== today) {
     // Calculate unused skips from previous period (ensure it's never negative)
