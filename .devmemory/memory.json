@@ -2495,7 +2495,161 @@
       "tags": [],
       "commit_hash": "b000fa692a74e2761639b78468dd19ce915fbe8a",
       "created_at": "2026-01-26T11:04:29.000Z"
+    },
+    {
+      "id": 172,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add token request feature to profile page",
+      "files": [
+        "PROJECT_CONTEXT.md",
+        "backend/OAUTH_MATCHING_IMPROVEMENT.md",
+        "backend/routes/anonymousReviews.js",
+        "backend/routes/requestTokens.js",
+        "backend/server.js",
+        "src/components/review/ReviewSuccess.jsx",
+        "src/components/tokens/PendingRequestsList.jsx",
+        "src/components/tokens/RequestReviewModal.jsx",
+        "src/components/tokens/TokenEarnedToast.jsx",
+        "src/components/tokens/TokenProgressBar.jsx",
+        "src/components/tokens/index.js",
+        "src/pages/LinkedInCallback.jsx",
+        "src/pages/Onboarding.jsx",
+        "src/pages/Profile.jsx",
+        "src/pages/ReviewRequest.jsx",
+        "src/pages/index.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "f4ed234204182b46f57d4c17613ef87c5fba1bde",
+      "created_at": "2026-01-26T14:07:35.000Z"
+    },
+    {
+      "id": 173,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix collation error in review request query",
+      "files": [
+        "backend/routes/requestTokens.js"
+      ],
+      "tags": [],
+      "commit_hash": "3659f4a480cd71c7b4fd50a9b1446767100f1c93",
+      "created_at": "2026-01-26T14:10:42.000Z"
+    },
+    {
+      "id": 174,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix: Auto-repair corrupted skip budget records (initial_budget=0)",
+      "files": [
+        "backend/routes/reviews.js"
+      ],
+      "tags": [
+        "fix"
+      ],
+      "commit_hash": "86c2629d7d92373fc5b7645d004d3cc56b5418b0",
+      "created_at": "2026-01-27T10:31:20.000Z"
+    },
+    {
+      "id": 175,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix: Use consistent VITE_BACKEND_API_URL across all frontend files",
+      "files": [
+        "src/components/review/ReviewFormDynamic.jsx",
+        "src/components/tokens/PendingRequestsList.jsx",
+        "src/components/tokens/RequestReviewModal.jsx",
+        "src/pages/ReviewRequest.jsx"
+      ],
+      "tags": [
+        "fix",
+        "api"
+      ],
+      "commit_hash": "15f66b41fb8bbaac65172f8dd952b46d01f00aa0",
+      "created_at": "2026-01-27T11:10:46.000Z"
+    },
+    {
+      "id": 176,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix: Remove COLLATE clause causing collation mismatch in review request query",
+      "files": [
+        "backend/routes/requestTokens.js"
+      ],
+      "tags": [
+        "fix"
+      ],
+      "commit_hash": "3c1047106085468ebe1383f8e3e4e4f42e15d640",
+      "created_at": "2026-01-27T11:16:10.000Z"
+    },
+    {
+      "id": 177,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix: Remove all COLLATE clauses in dataValidation queries",
+      "files": [
+        "backend/routes/dataValidation.js"
+      ],
+      "tags": [
+        "fix"
+      ],
+      "commit_hash": "c18f6c55a53384f1fc7458f69d4d42bead5bf25f",
+      "created_at": "2026-01-27T11:20:13.000Z"
+    },
+    {
+      "id": 178,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix: Use BINARY casting in JOINs to prevent collation mismatch",
+      "files": [
+        "backend/routes/requestTokens.js"
+      ],
+      "tags": [
+        "fix"
+      ],
+      "commit_hash": "0a3a328e515bc83f16f6a60883147302bb966693",
+      "created_at": "2026-01-27T11:30:45.000Z"
+    },
+    {
+      "id": 179,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix: Fetch requester avatar from users table instead of linkedin_profiles",
+      "files": [
+        "backend/routes/requestTokens.js"
+      ],
+      "tags": [
+        "fix"
+      ],
+      "commit_hash": "c75ea879374db5aa92be30d18a79c42b378c913a",
+      "created_at": "2026-01-27T12:33:21.000Z"
+    },
+    {
+      "id": 180,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix: Refresh user avatar on every login to prevent expired LinkedIn URLs",
+      "files": [
+        "backend/server.js"
+      ],
+      "tags": [
+        "fix"
+      ],
+      "commit_hash": "394d0d23fe38ec2ff23c38290ceddf270fd2bb1b",
+      "created_at": "2026-01-27T12:38:57.000Z"
+    },
+    {
+      "id": 181,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Feature: Implement proper review request flow",
+      "files": [
+        "backend/routes/requestTokens.js",
+        "src/pages/Review.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "263e7d4b76cead89d213cba3e57b66c72ff63421",
+      "created_at": "2026-01-27T12:48:22.000Z"
     }
   ],
-  "nextId": 172
+  "nextId": 182
 }
