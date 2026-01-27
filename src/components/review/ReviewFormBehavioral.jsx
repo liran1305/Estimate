@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Send, Sparkles, Trophy, Check } from 'lucide-react';
+import { Textarea } from "@/components/ui/textarea";
+import { ArrowLeft, Send, Sparkles, Trophy, Check, Wand2, MessageSquare } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { behavioralConfig, getStrengthTags } from "@/config/behavioralConfig";
+
+const BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:3001';
 
 // Simplified questions - fewer, more impactful
 const QUICK_QUESTIONS = [
@@ -72,23 +75,72 @@ export default function ReviewFormBehavioral({
 }) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState({});
+  const [otherTexts, setOtherTexts] = useState({}); // For "Other" free text per question
+  const [showOtherInput, setShowOtherInput] = useState(false);
   const [selectedTags, setSelectedTags] = useState([]);
   const [showTags, setShowTags] = useState(false);
+  const [showFreeText, setShowFreeText] = useState(false);
+  const [freeText, setFreeText] = useState('');
+  const [isPolishing, setIsPolishing] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   
   const startTimeRef = useRef(Date.now());
   const strengthTags = getStrengthTags();
   const firstName = colleague?.name?.split(' ')[0] || 'this person';
   
-  const totalSteps = QUICK_QUESTIONS.length + 1; // +1 for tags
-  const progress = showTags 
+  // AI Grammar Polish
+  const handlePolishText = async () => {
+    if (!freeText.trim() || isPolishing) return;
+    setIsPolishing(true);
+    try {
+      const res = await fetch(`${BACKEND_API_URL}/api/review/polish-comment`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ comment: freeText })
+      });
+      const data = await res.json();
+      if (data.success && data.polished) {
+        setFreeText(data.polished);
+      }
+    } catch (err) {
+      console.error('Polish error:', err);
+    }
+    setIsPolishing(false);
+  };
+  
+  const totalSteps = QUICK_QUESTIONS.length + 2; // +1 for tags, +1 for free text
+  const progress = showFreeText 
     ? 100 
-    : Math.round(((currentQuestion + 1) / totalSteps) * 100);
+    : showTags 
+      ? Math.round(((QUICK_QUESTIONS.length + 1) / totalSteps) * 100)
+      : Math.round(((currentQuestion + 1) / totalSteps) * 100);
   
   const formatQuestion = (text) => text.replace(/{name}/g, firstName);
   
   const handleAnswer = (questionId, value) => {
+    // If "other" is selected, show input instead of advancing
+    if (value === 'other') {
+      setShowOtherInput(true);
+      setAnswers(prev => ({ ...prev, [questionId]: 'other' }));
+      return;
+    }
+    
     setAnswers(prev => ({ ...prev, [questionId]: value }));
+    setShowOtherInput(false);
+    
+    // Auto-advance after short delay
+    setTimeout(() => {
+      if (currentQuestion < QUICK_QUESTIONS.length - 1) {
+        setCurrentQuestion(prev => prev + 1);
+      } else {
+        setShowTags(true);
+      }
+    }, 300);
+  };
+  
+  const handleOtherSubmit = (questionId) => {
+    if (!otherTexts[questionId]?.trim()) return;
+    setShowOtherInput(false);
     
     // Auto-advance after short delay
     setTimeout(() => {
@@ -131,10 +183,17 @@ export default function ReviewFormBehavioral({
         behavioral_answers,
         high_signal_answers,
         strength_tags: selectedTags,
+        optional_comment: freeText.trim() || null,
+        other_answers: Object.keys(otherTexts).length > 0 ? otherTexts : null,
         time_spent_seconds: timeSpent,
         review_version: 2
       });
     }, 500);
+  };
+  
+  const handleTagsContinue = () => {
+    setShowTags(false);
+    setShowFreeText(true);
   };
   
   const currentQ = QUICK_QUESTIONS[currentQuestion];
@@ -167,7 +226,7 @@ export default function ReviewFormBehavioral({
         {/* Progress bar */}
         <div className="relative h-2 bg-gray-100 rounded-full overflow-hidden mb-4">
           <motion.div 
-            className="absolute left-0 top-0 h-full bg-gradient-to-r from-amber-400 to-amber-500 rounded-full"
+            className="absolute left-0 top-0 h-full bg-gradient-to-r from-[#4A9FD4] to-[#70B8E8] rounded-full"
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
             transition={{ duration: 0.3 }}
@@ -193,14 +252,14 @@ export default function ReviewFormBehavioral({
           </div>
           <div className="ml-auto text-right">
             <span className="text-xs text-gray-400">
-              {showTags ? 'Final step' : `${currentQuestion + 1}/${QUICK_QUESTIONS.length}`}
+              {showFreeText ? 'Final step' : showTags ? 'Strengths' : `${currentQuestion + 1}/${QUICK_QUESTIONS.length}`}
             </span>
           </div>
         </div>
       </div>
       
       <AnimatePresence mode="wait">
-        {!showTags ? (
+        {!showTags && !showFreeText ? (
           /* Question Card */
           <motion.div
             key={currentQuestion}
@@ -248,71 +307,164 @@ export default function ReviewFormBehavioral({
               ))}
             </div>
             
+            {/* Other option with free text */}
+            {showOtherInput && answers[currentQ.id] === 'other' ? (
+              <div className="mt-4 space-y-2">
+                <input
+                  type="text"
+                  value={otherTexts[currentQ.id] || ''}
+                  onChange={(e) => setOtherTexts(prev => ({ ...prev, [currentQ.id]: e.target.value }))}
+                  placeholder="Type your answer..."
+                  className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-blue-400 focus:ring-1 focus:ring-blue-400 outline-none"
+                  autoFocus
+                />
+                <button
+                  onClick={() => handleOtherSubmit(currentQ.id)}
+                  disabled={!otherTexts[currentQ.id]?.trim()}
+                  className="w-full py-2 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-200 disabled:text-gray-400 text-white rounded-lg font-medium transition-colors"
+                >
+                  Continue
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => handleAnswer(currentQ.id, 'other')}
+                className="w-full mt-3 py-3 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-50 rounded-lg border border-dashed border-gray-200 transition-colors"
+              >
+                ✏️ Other (type your own)
+              </button>
+            )}
+            
             {/* Skip option */}
             <button
               onClick={() => handleAnswer(currentQ.id, null)}
-              className="w-full mt-4 py-2 text-sm text-gray-400 hover:text-gray-600 transition-colors"
+              className="w-full mt-2 py-2 text-sm text-gray-400 hover:text-gray-600 transition-colors"
             >
               🤷 Can't say / Skip this one
             </button>
           </motion.div>
-        ) : (
+        ) : showTags && !showFreeText ? (
           /* Tags Selection */
           <motion.div
             key="tags"
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
-            className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100"
+            className="bg-white rounded-lg p-6 shadow-sm border border-gray-200"
           >
-            <div className="text-center mb-6">
-              <Trophy className="w-10 h-10 text-amber-500 mx-auto mb-2" />
-              <h2 className="text-xl font-semibold text-gray-900">Almost done!</h2>
-              <p className="text-gray-500 text-sm">Pick up to 3 superpowers for {firstName}</p>
+            <div className="text-center mb-5">
+              <div className="inline-flex items-center justify-center w-12 h-12 bg-amber-100 rounded-lg mb-3">
+                <Trophy className="w-6 h-6 text-amber-600" />
+              </div>
+              <h2 className="text-lg font-semibold text-gray-900">Pick {firstName}'s superpowers</h2>
+              <p className="text-gray-500 text-sm mt-1">Select up to 3 strengths</p>
             </div>
             
-            <div className="flex flex-wrap gap-2 justify-center mb-6">
+            <div className="grid grid-cols-1 gap-2 mb-5">
               {strengthTags.slice(0, 9).map((tag) => {
                 const isSelected = selectedTags.includes(tag.id);
                 const isDisabled = !isSelected && selectedTags.length >= 3;
                 
                 return (
-                  <motion.button
+                  <button
                     key={tag.id}
-                    whileHover={{ scale: isDisabled ? 1 : 1.05 }}
-                    whileTap={{ scale: isDisabled ? 1 : 0.95 }}
                     onClick={() => !isDisabled && handleTagToggle(tag.id)}
                     disabled={isDisabled}
-                    className={`flex items-center gap-1.5 px-3 py-2 rounded-full text-sm transition-all ${
+                    className={`flex items-center gap-3 px-4 py-3 rounded-lg border text-left transition-all ${
                       isSelected
-                        ? 'bg-amber-500 text-white shadow-md'
+                        ? 'bg-amber-50 border-amber-500 text-amber-900'
                         : isDisabled
-                          ? 'bg-gray-100 text-gray-300 cursor-not-allowed'
-                          : 'bg-gray-100 text-gray-700 hover:bg-amber-100'
+                          ? 'bg-gray-50 border-gray-100 text-gray-300 cursor-not-allowed'
+                          : 'bg-white border-gray-200 text-gray-700 hover:border-amber-300 hover:bg-amber-50/50'
                     }`}
                   >
-                    <span>{tag.icon}</span>
-                    <span className="font-medium">{tag.label}</span>
-                  </motion.button>
+                    <span className="text-xl">{tag.icon}</span>
+                    <span className="font-medium flex-1">{tag.label}</span>
+                    {isSelected && (
+                      <Check className="w-5 h-5 text-amber-600" />
+                    )}
+                  </button>
                 );
               })}
             </div>
             
-            <p className="text-center text-sm text-gray-500 mb-4">
-              {selectedTags.length}/3 selected
-            </p>
+            <div className="flex items-center justify-between text-sm text-gray-500 mb-4 px-1">
+              <span>{selectedTags.length}/3 selected</span>
+              {selectedTags.length > 0 && (
+                <button 
+                  onClick={() => setSelectedTags([])}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  Clear all
+                </button>
+              )}
+            </div>
+            
+            <Button
+              onClick={handleTagsContinue}
+              disabled={selectedTags.length === 0}
+              className="w-full bg-amber-500 hover:bg-amber-600 text-white py-5 text-base rounded-lg"
+            >
+              Continue
+            </Button>
+          </motion.div>
+        ) : (
+          /* Free Text - Final Step */
+          <motion.div
+            key="freetext"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="bg-white rounded-lg p-6 shadow-sm border border-gray-200"
+          >
+            <div className="text-center mb-5">
+              <div className="inline-flex items-center justify-center w-12 h-12 bg-green-100 rounded-lg mb-3">
+                <MessageSquare className="w-6 h-6 text-green-600" />
+              </div>
+              <h2 className="text-lg font-semibold text-gray-900">The most valuable part!</h2>
+              <p className="text-gray-500 text-sm mt-1">
+                A few words about {firstName} can make a huge difference
+              </p>
+            </div>
+            
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4">
+              <p className="text-amber-800 text-sm">
+                ⭐ <strong>This is the most important part.</strong> Recruiters and hiring managers value personal insights more than any score.
+              </p>
+            </div>
+            
+            <Textarea
+              value={freeText}
+              onChange={(e) => setFreeText(e.target.value)}
+              placeholder={`What makes ${firstName} great to work with? Any specific example or story?`}
+              className="w-full min-h-[120px] resize-none rounded-lg border-gray-200"
+              maxLength={500}
+            />
+            
+            <div className="flex items-center justify-between mt-2 mb-4">
+              <span className="text-xs text-gray-400">{freeText.length}/500</span>
+              {freeText.trim().length > 10 && (
+                <button
+                  onClick={handlePolishText}
+                  disabled={isPolishing}
+                  className="flex items-center gap-1.5 text-xs text-blue-600 hover:text-blue-700 transition-colors"
+                >
+                  <Wand2 className={`w-3.5 h-3.5 ${isPolishing ? 'animate-spin' : ''}`} />
+                  {isPolishing ? 'Fixing...' : 'AI Grammar Fix'}
+                </button>
+              )}
+            </div>
             
             <Button
               onClick={handleSubmit}
-              disabled={selectedTags.length === 0 || isSubmitting}
-              className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-6 text-lg rounded-xl shadow-lg"
+              disabled={isSubmitting}
+              className="w-full bg-green-600 hover:bg-green-700 text-white py-5 text-base rounded-lg"
             >
               {isSubmitting ? (
-                <span className="flex items-center gap-2">
+                <span className="flex items-center justify-center gap-2">
                   <Sparkles className="w-5 h-5 animate-spin" />
                   Submitting...
                 </span>
               ) : (
-                <span className="flex items-center gap-2">
+                <span className="flex items-center justify-center gap-2">
                   <Send className="w-5 h-5" />
                   Submit Review
                 </span>

@@ -2674,7 +2674,19 @@
       "tags": [],
       "commit_hash": "e32fa5729cb6402741e316ca41c596ba29de8c56",
       "created_at": "2026-01-27T13:44:23.000Z"
+    },
+    {
+      "id": 184,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix progress bar and add skip option to questions",
+      "files": [
+        "src/components/review/ReviewFormBehavioral.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "b6659c7f8606a978696b58d5382e76522a06d8af",
+      "created_at": "2026-01-27T13:48:38.000Z"
     }
   ],
-  "nextId": 184
+  "nextId": 185
 }
