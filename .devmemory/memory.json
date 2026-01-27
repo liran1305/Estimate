@@ -2751,7 +2751,30 @@
       "tags": [],
       "commit_hash": "f982030ba3ed611a0ffa73401860192efd5814c9",
       "created_at": "2026-01-27T14:10:35.000Z"
+    },
+    {
+      "id": 190,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix ProfileV2: thinner badge, add colleague comments",
+      "files": [
+        "backend/database/migrations/migrate-existing-reviews.js",
+        "src/components/profile/ColleagueQuotes.jsx",
+        "src/components/profile/DimensionCard.jsx",
+        "src/components/profile/KeyMetrics.jsx",
+        "src/components/profile/NeverWorryAbout.jsx",
+        "src/components/profile/QualitativeBadge.jsx",
+        "src/components/profile/RoomToGrow.jsx",
+        "src/components/profile/SkillsThatMatter.jsx",
+        "src/components/profile/StrengthTagsDisplay.jsx",
+        "src/pages/Profile.jsx",
+        "src/pages/ProfileV2.jsx",
+        "src/pages/index.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "81bb2880a6bd4de4a6f8a7a03097fc2b8bae9ae1",
+      "created_at": "2026-01-27T14:24:58.000Z"
     }
   ],
-  "nextId": 190
+  "nextId": 191
 }

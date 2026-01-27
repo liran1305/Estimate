@@ -1,16 +1,15 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-27T14:24:30.806Z
+> Last updated: 2026-01-27T14:29:22.056Z
 
 ## Project Stats
-- Total memories: 189
-- Commits tracked: 189
+- Total memories: 190
+- Commits tracked: 190
 - Decisions recorded: 0
 
-## Relevant to Current Work
-- **1/27/2026**: Redesign review form - simple, fun, one question at a time (backend/database/migrations/scoring-redesign.sql, src/components/review/ReviewFormBehavioral.jsx)
-
 ## Recent Changes
+- `81bb288` 1/27/2026: Fix ProfileV2: thinner badge, add colleague comments
+  Files: backend/database/migrations/migrate-existing-reviews.js, src/components/profile/ColleagueQuotes.jsx, src/components/profile/DimensionCard.jsx
 - `f982030` 1/27/2026: Add all V2 Profile components matching design mockups
   Files: src/components/profile/DimensionCard.jsx, src/components/profile/SkillsThatMatter.jsx, src/components/profile/StrengthTagsDisplay.jsx
 - `6370ba3` 1/27/2026: Integrate V2 behavioral scoring into Profile page
@@ -39,13 +38,11 @@
   Files: backend/routes/dataValidation.js
 - `3c10471` 1/27/2026: Fix: Remove COLLATE clause causing collation mismatch in review request query
   Files: backend/routes/requestTokens.js
-- `15f66b4` 1/27/2026: Fix: Use consistent VITE_BACKEND_API_URL across all frontend files
-  Files: src/components/review/ReviewFormDynamic.jsx, src/components/tokens/PendingRequestsList.jsx, src/components/tokens/RequestReviewModal.jsx
 
 ## Do Not Repeat
 These issues have already been solved:
+- Fix ProfileV2: thinner badge, add colleague comments
 - Fix progress bar and add skip option to questions
 - Refresh user avatar on every login to prevent expired LinkedIn URLs
 - Fetch requester avatar from users table instead of linkedin_profiles
 - Use BINARY casting in JOINs to prevent collation mismatch
-- Remove all COLLATE clauses in dataValidation queries

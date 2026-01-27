@@ -63,6 +63,18 @@ const QUICK_QUESTIONS = [
       { value: 2, emoji: '🤔', label: 'Maybe' },
       { value: 3, emoji: '🚀', label: 'Yes!' }
     ]
+  },
+  {
+    id: 'never_worry',
+    question: 'With {name}, you never worry about...',
+    type: 'choice',
+    options: [
+      { value: 'commitments', label: 'Dropping the ball on commitments' },
+      { value: 'feedback', label: 'Getting defensive about feedback' },
+      { value: 'cracks', label: 'Things slipping through the cracks' },
+      { value: 'drama', label: 'Creating unnecessary drama' },
+      { value: 'quality', label: 'Cutting corners on quality' }
+    ]
   }
 ];
 
@@ -81,6 +93,7 @@ export default function ReviewFormBehavioral({
   const [showTags, setShowTags] = useState(false);
   const [showFreeText, setShowFreeText] = useState(false);
   const [freeText, setFreeText] = useState('');
+  const [roomToGrow, setRoomToGrow] = useState('');
   const [isPolishing, setIsPolishing] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   
@@ -178,12 +191,18 @@ export default function ReviewFormBehavioral({
     
     setShowConfetti(true);
     
+    // Get the never_worry answer - map value to display text
+    const neverWorryOption = QUICK_QUESTIONS.find(q => q.id === 'never_worry')?.options.find(o => o.value === answers.never_worry);
+    const neverWorryText = neverWorryOption?.label || null;
+    
     setTimeout(() => {
       onSubmit({
         behavioral_answers,
         high_signal_answers,
         strength_tags: selectedTags,
         optional_comment: freeText.trim() || null,
+        never_worry_about: neverWorryText,
+        room_to_grow: roomToGrow.trim() || null,
         other_answers: Object.keys(otherTexts).length > 0 ? otherTexts : null,
         time_spent_seconds: timeSpent,
         review_version: 2
@@ -455,6 +474,25 @@ export default function ReviewFormBehavioral({
                 <Wand2 className={`w-3.5 h-3.5 ${isPolishing ? 'animate-spin' : ''}`} />
                 {isPolishing ? 'Fixing...' : 'AI Grammar Fix'}
               </button>
+            </div>
+            
+            {/* Room to Grow - Optional private feedback */}
+            <div className="mt-4 pt-4 border-t border-gray-100">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-sm font-medium text-gray-700">🌱 Room to Grow</span>
+                <span className="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">Optional • Private</span>
+              </div>
+              <p className="text-xs text-gray-500 mb-2">
+                Any constructive feedback? Only {firstName} will see this.
+              </p>
+              <Textarea
+                value={roomToGrow}
+                onChange={(e) => setRoomToGrow(e.target.value)}
+                placeholder={`What could ${firstName} improve? (optional)`}
+                className="w-full min-h-[60px] resize-none rounded-lg border-gray-200 text-sm"
+                maxLength={300}
+              />
+              <span className="text-[10px] text-gray-400">{roomToGrow.length}/300</span>
             </div>
             
             <Button

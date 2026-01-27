@@ -38,6 +38,7 @@ ALTER TABLE anonymous_reviews
   ADD COLUMN behavioral_answers JSON DEFAULT NULL,
   ADD COLUMN high_signal_answers JSON DEFAULT NULL,
   ADD COLUMN never_worry_about VARCHAR(200) DEFAULT NULL,
+  ADD COLUMN room_to_grow VARCHAR(500) DEFAULT NULL,
   ADD COLUMN review_version INT DEFAULT 1;
 
 -- ============================================================================
@@ -57,6 +58,7 @@ ALTER TABLE reviews
   ADD COLUMN behavioral_answers JSON DEFAULT NULL,
   ADD COLUMN high_signal_answers JSON DEFAULT NULL,
   ADD COLUMN never_worry_about VARCHAR(200) DEFAULT NULL,
+  ADD COLUMN room_to_grow VARCHAR(500) DEFAULT NULL,
   ADD COLUMN review_version INT DEFAULT 1;
 
 -- ============================================================================

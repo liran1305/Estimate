@@ -372,6 +372,31 @@ async function aggregateStrengthTags(connection, linkedinProfileId) {
     .sort((a, b) => b.votes - a.votes);
 }
 
+/**
+ * Aggregate "room to grow" feedback (private, only visible to profile owner)
+ */
+async function aggregateRoomToGrow(connection, linkedinProfileId) {
+  const [reviews] = await connection.query(`
+    SELECT room_to_grow
+    FROM anonymous_reviews 
+    WHERE reviewee_id = ? AND room_to_grow IS NOT NULL AND room_to_grow != ''
+    UNION ALL
+    SELECT room_to_grow
+    FROM reviews 
+    WHERE reviewee_id = ? AND room_to_grow IS NOT NULL AND room_to_grow != ''
+  `, [linkedinProfileId, linkedinProfileId]);
+
+  if (reviews.length === 0) {
+    return [];
+  }
+
+  // Return as structured feedback items
+  return reviews.map((r, idx) => ({
+    title: idx === 0 ? 'Growth Area' : null,
+    text: r.room_to_grow
+  })).slice(0, 3); // Max 3 items
+}
+
 module.exports = {
   calculateDimensionScores,
   calculateBadge,
@@ -380,6 +405,7 @@ module.exports = {
   updateDimensionScores,
   getDimensionScores,
   aggregateNeverWorryAbout,
+  aggregateRoomToGrow,
   aggregateStrengthTags,
   DIMENSIONS,
   LEVEL_THRESHOLDS,

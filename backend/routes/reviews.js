@@ -13,6 +13,7 @@ const {
 const {
   getDimensionScores,
   aggregateNeverWorryAbout,
+  aggregateRoomToGrow,
   aggregateStrengthTags
 } = require('../services/dimensionScoring');
 
@@ -1679,6 +1680,8 @@ router.get('/score/me', async (req, res) => {
         dimension_scores: await getDimensionScores(connection, scoreData.linkedin_profile_id),
         // V2: Aggregated "never worry about" responses
         never_worry_about: await aggregateNeverWorryAbout(connection, scoreData.linkedin_profile_id),
+        // V2: Room to grow (private feedback) - only for profile owner
+        room_to_grow: await aggregateRoomToGrow(connection, scoreData.linkedin_profile_id),
         // V2: New qualitative badge and high-signal percentages
         qualitative_badge: scoreData.qualitative_badge,
         startup_hire_pct: scoreData.startup_hire_pct,

@@ -175,6 +175,7 @@ router.post('/review/submit', async (req, res) => {
       behavioral_answers,
       high_signal_answers,
       never_worry_about,
+      room_to_grow,
       review_version = 1  // 1 = old slider system, 2 = new behavioral system
     } = req.body;
 
@@ -296,8 +297,8 @@ router.post('/review/submit', async (req, res) => {
         (id, reviewee_id, company_name, company_context, interaction_type,
          scores, strength_tags, would_work_again, would_promote, optional_comment,
          overall_score, review_weight, review_type, request_id, created_date,
-         behavioral_answers, high_signal_answers, never_worry_about, review_version)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURDATE(), ?, ?, ?, ?)
+         behavioral_answers, high_signal_answers, never_worry_about, room_to_grow, review_version)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURDATE(), ?, ?, ?, ?, ?)
       `, [
         reviewId,
         reviewee_id,
@@ -316,6 +317,7 @@ router.post('/review/submit', async (req, res) => {
         behavioral_answers ? JSON.stringify(behavioral_answers) : null,
         high_signal_answers ? JSON.stringify(high_signal_answers) : null,
         never_worry_about || null,
+        room_to_grow || null,
         review_version
       ]);
 
