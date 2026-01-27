@@ -219,20 +219,22 @@ export default function ProfileLinkedIn() {
             
             {/* Content next to avatar - Mobile: below avatar, Desktop: beside */}
             <div className="pt-10 sm:pt-12 md:pt-0 md:ml-32 lg:ml-36">
-              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 sm:gap-3">
-                <div className="min-w-0">
-                  <h1 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-900 truncate">{user?.name}</h1>
+              {/* Name row with badge */}
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h1 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-900">{user?.name}</h1>
+                    {/* Peer Verified Badge - inline with name */}
+                    <div className="flex items-center gap-1 px-2 py-1 bg-blue-50 rounded border border-blue-200 flex-shrink-0">
+                      <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" viewBox="0 0 16 16" fill="#0a66c2">
+                        <path d="M8 0L10.2 2.4H13.6V5.8L16 8L13.6 10.2V13.6H10.2L8 16L5.8 13.6H2.4V10.2L0 8L2.4 5.8V2.4H5.8L8 0Z"/>
+                        <path d="M7 9.5L5.5 8L4.5 9L7 11.5L12 6.5L11 5.5L7 9.5Z" fill="white"/>
+                      </svg>
+                      <span className="text-[10px] sm:text-xs font-semibold text-[#0a66c2]">Peer Verified</span>
+                    </div>
+                  </div>
                   <p className="text-sm sm:text-base text-gray-700 mt-0.5 line-clamp-2">{profileData?.position || user?.position}</p>
                   <p className="text-xs sm:text-sm text-gray-500 mt-0.5">{profileData?.location || scoreData?.location || 'Professional'}</p>
-                </div>
-                
-                {/* Peer Verified Badge */}
-                <div className="flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 bg-blue-50 rounded border border-blue-200 self-start flex-shrink-0">
-                  <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" viewBox="0 0 16 16" fill="#0a66c2">
-                    <path d="M8 0L10.2 2.4H13.6V5.8L16 8L13.6 10.2V13.6H10.2L8 16L5.8 13.6H2.4V10.2L0 8L2.4 5.8V2.4H5.8L8 0Z"/>
-                    <path d="M7 9.5L5.5 8L4.5 9L7 11.5L12 6.5L11 5.5L7 9.5Z" fill="white"/>
-                  </svg>
-                  <span className="text-xs sm:text-sm font-semibold text-[#0a66c2]">Peer Verified</span>
                 </div>
               </div>
               

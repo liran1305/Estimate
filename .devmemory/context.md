@@ -1,16 +1,18 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-27T16:05:59.834Z
+> Last updated: 2026-01-27T16:07:26.046Z
 
 ## Project Stats
-- Total memories: 208
-- Commits tracked: 208
+- Total memories: 209
+- Commits tracked: 209
 - Decisions recorded: 0
 
 ## Relevant to Current Work
 - **1/27/2026**: Add test review scripts and recalculation utility (backend/database/migrations/add-test-review-liran.sql, backend/database/migrations/find-liran-naim-exact.sql, backend/database/migrations/find-liran-profile.sql)
 
 ## Recent Changes
+- `0bbb02a` 1/27/2026: Fix ConsentModal prop name from isOpen to open and add isLoading prop
+  Files: src/pages/ProfileLinkedIn.jsx
 - `c0bb6a2` 1/27/2026: Remove redundant Verified badge from Credibility Summary section
   Files: src/pages/ProfileLinkedIn.jsx
 - `1e2cc68` 1/27/2026: Add Open for Recruiters toggle to ProfileLinkedIn page
@@ -39,13 +41,11 @@
   Files: src/pages/ProfileLinkedIn.jsx
 - `64e6267` 1/27/2026: Fix profile avatar to use scoreData.avatar from linkedin_profiles
   Files: backend/routes/reviews.js, src/pages/ProfileLinkedIn.jsx
-- `b728b8c` 1/27/2026: Add LinkedIn-styled ProfileLinkedIn page
-  Files: src/pages/ProfileLinkedIn.jsx, src/pages/ProfileV2.jsx, src/pages/index.jsx
 
 ## Do Not Repeat
 These issues have already been solved:
+- Fix ConsentModal prop name from isOpen to open and add isLoading prop
 - Fix company names wrapping on mobile - use line-clamp-2 instead of truncate
 - Fix high-signal percentage calculation to only count answered questions
 - Fix avatar display and clean up debug logs
 - Fix profile avatar with ui-avatars fallback
-- Fix percentile display - use actual database values, no hardcoded fallback

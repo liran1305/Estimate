@@ -3018,7 +3018,19 @@
       "tags": [],
       "commit_hash": "c0bb6a25e55dd9fca4edb59a07ae139ed092eb62",
       "created_at": "2026-01-27T16:03:52.000Z"
+    },
+    {
+      "id": 209,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix ConsentModal prop name from isOpen to open and add isLoading prop",
+      "files": [
+        "src/pages/ProfileLinkedIn.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "0bbb02ab2a5db3d07c20bc0cab75b52b0bede9f1",
+      "created_at": "2026-01-27T16:06:08.000Z"
     }
   ],
-  "nextId": 209
+  "nextId": 210
 }
