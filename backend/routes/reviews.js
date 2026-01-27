@@ -10,6 +10,11 @@ const {
   getDisplayNameForRole,
   DEFAULT_CATEGORY_AVERAGES
 } = require('../utils/jobTitlesSystem');
+const {
+  getDimensionScores,
+  aggregateNeverWorryAbout,
+  aggregateStrengthTags
+} = require('../services/dimensionScoring');
 
 let pool;
 
@@ -1669,7 +1674,16 @@ router.get('/score/me', async (req, res) => {
         // New: Role display name for UI (pluralized for "Avg Product Managers")
         role_display_name: roleDisplayName,
         // New: Canonical position title for percentile badge (e.g., "Product Manager")
-        user_position: canonicalPosition
+        user_position: canonicalPosition,
+        // V2 Scoring System: Dimension scores
+        dimension_scores: await getDimensionScores(connection, scoreData.linkedin_profile_id),
+        // V2: Aggregated "never worry about" responses
+        never_worry_about: await aggregateNeverWorryAbout(connection, scoreData.linkedin_profile_id),
+        // V2: New qualitative badge and high-signal percentages
+        qualitative_badge: scoreData.qualitative_badge,
+        startup_hire_pct: scoreData.startup_hire_pct,
+        harder_job_pct: scoreData.harder_job_pct,
+        work_again_absolutely_pct: scoreData.work_again_absolutely_pct
       });
 
     } finally {

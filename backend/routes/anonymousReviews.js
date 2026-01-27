@@ -19,6 +19,7 @@ const mysql = require('mysql2/promise');
 const crypto = require('crypto');
 const { v4: uuidv4 } = require('uuid');
 const { sendNewReviewNotification, sendScoreUnlockedNotification, sendTestEmail } = require('../services/emailService');
+const { updateDimensionScores } = require('../services/dimensionScoring');
 
 let pool;
 
@@ -169,7 +170,12 @@ router.post('/review/submit', async (req, res) => {
       optional_comment,
       time_spent_seconds,
       review_type,      // 'organic' or 'requested'
-      request_id        // ID of review_request if this is a requested review
+      request_id,       // ID of review_request if this is a requested review
+      // V2 Behavioral review fields
+      behavioral_answers,
+      high_signal_answers,
+      never_worry_about,
+      review_version = 1  // 1 = old slider system, 2 = new behavioral system
     } = req.body;
 
     if (!token) {
@@ -280,12 +286,18 @@ router.post('/review/submit', async (req, res) => {
       const reviewId = uuidv4();
       const finalReviewType = isRequestedReview ? 'requested' : 'organic';
       
+      // For V2 behavioral reviews, extract would_work_again from high_signal_answers
+      const finalWouldWorkAgain = review_version === 2 
+        ? (high_signal_answers?.work_again || would_work_again || null)
+        : (would_work_again || null);
+      
       await connection.query(`
         INSERT INTO anonymous_reviews 
         (id, reviewee_id, company_name, company_context, interaction_type,
          scores, strength_tags, would_work_again, would_promote, optional_comment,
-         overall_score, review_weight, review_type, request_id, created_date)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURDATE())
+         overall_score, review_weight, review_type, request_id, created_date,
+         behavioral_answers, high_signal_answers, never_worry_about, review_version)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURDATE(), ?, ?, ?, ?)
       `, [
         reviewId,
         reviewee_id,
@@ -294,13 +306,17 @@ router.post('/review/submit', async (req, res) => {
         interaction_type,
         JSON.stringify(scores || {}),
         JSON.stringify(strength_tags || []),
-        would_work_again || null,
+        finalWouldWorkAgain,
         would_promote || null,
         optional_comment || null,
         overallScore,
         reviewWeight,
         finalReviewType,
-        request_id || null
+        request_id || null,
+        behavioral_answers ? JSON.stringify(behavioral_answers) : null,
+        high_signal_answers ? JSON.stringify(high_signal_answers) : null,
+        never_worry_about || null,
+        review_version
       ]);
 
       // ❌ REMOVED: review_pair_hashes insert (vulnerable to rainbow attack!)
@@ -399,6 +415,16 @@ router.post('/review/submit', async (req, res) => {
       }
 
       await connection.commit();
+
+      // 11b. Update dimension scores for reviewee (V2 scoring system)
+      // This happens after commit to not block the transaction
+      try {
+        await updateDimensionScores(connection, reviewee_id);
+        console.log(`[ANON] Dimension scores updated for reviewee ${reviewee_id}`);
+      } catch (dimErr) {
+        console.error('[ANON] Failed to update dimension scores:', dimErr);
+        // Don't fail the request if dimension scoring fails
+      }
 
       // 12. Send email notification to reviewee (if they have an account)
       // This happens AFTER commit to not block the response
