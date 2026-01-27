@@ -1,16 +1,18 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-27T16:10:21.125Z
+> Last updated: 2026-01-27T16:13:34.141Z
 
 ## Project Stats
-- Total memories: 210
-- Commits tracked: 210
+- Total memories: 211
+- Commits tracked: 211
 - Decisions recorded: 0
 
 ## Relevant to Current Work
 - **1/27/2026**: Add test review scripts and recalculation utility (backend/database/migrations/add-test-review-liran.sql, backend/database/migrations/find-liran-naim-exact.sql, backend/database/migrations/find-liran-profile.sql)
 
 ## Recent Changes
+- `870944b` 1/27/2026: Improve leaderboard category matching to prioritize specific matches
+  Files: src/pages/Leaderboard.jsx
 - `95ea9c3` 1/27/2026: Move Peer Verified badge inline with name on mobile
   Files: src/pages/ProfileLinkedIn.jsx
 - `0bbb02a` 1/27/2026: Fix ConsentModal prop name from isOpen to open and add isLoading prop
@@ -39,8 +41,6 @@
   Files: src/pages/ProfileLinkedIn.jsx
 - `d2a241b` 1/27/2026: Fix profile avatar with ui-avatars fallback
   Files: backend/routes/reviews.js, src/pages/ProfileLinkedIn.jsx
-- `c2d5153` 1/27/2026: Fix percentile display - use actual database values, no hardcoded fallback
-  Files: src/pages/ProfileLinkedIn.jsx
 
 ## Do Not Repeat
 These issues have already been solved:

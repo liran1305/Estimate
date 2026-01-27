@@ -25,11 +25,12 @@ const BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhos
 
 // Hexagon component - Favikon-style with gradient borders and soft glow
 const ProfileHexagon = ({ user, size = 'md', currentUser, isMobile = false }) => {
-  const isCurrentUser = currentUser && user.userId === currentUser.id;
+  // Use isCurrentUser from backend OR check userId match
+  const isCurrentUser = user.isCurrentUser || (currentUser && user.userId === currentUser.id);
   const isPublic = user.isPublic || isCurrentUser;
   
-  // Use original photo URL - browser can display it even with CORS
-  const imageUrl = user.photoUrl;
+  // Use photo URL from backend, or fallback to currentUser's picture from localStorage
+  const imageUrl = user.photoUrl || (isCurrentUser && currentUser?.picture) || null;
   
   // Responsive hexagon sizes - smaller on mobile
   const s = isMobile 
@@ -367,7 +368,16 @@ export default function Leaderboard() {
         const myEntry = data.leaderboard.find(u => u.isCurrentUser);
         console.log('My leaderboard entry:', myEntry);
         console.log('Current user ID:', userId);
-        setLeaderboard(data.leaderboard);
+        
+        // Enhance current user's entry with photo from localStorage if missing
+        const enhancedLeaderboard = data.leaderboard.map(entry => {
+          if (entry.isCurrentUser && !entry.photoUrl && currentUser?.picture) {
+            return { ...entry, photoUrl: currentUser.picture };
+          }
+          return entry;
+        });
+        
+        setLeaderboard(enhancedLeaderboard);
       }
     } catch (err) {
       console.error('Failed to fetch leaderboard:', err);
