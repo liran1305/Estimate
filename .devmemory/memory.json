@@ -2935,7 +2935,27 @@
       "tags": [],
       "commit_hash": "674bc72e805c82f02f4dd8cb5b92bb813d99a519",
       "created_at": "2026-01-27T15:14:57.000Z"
+    },
+    {
+      "id": 203,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add test review scripts and recalculation utility",
+      "files": [
+        "backend/database/migrations/add-test-review-liran.sql",
+        "backend/database/migrations/find-liran-naim-exact.sql",
+        "backend/database/migrations/find-liran-profile.sql",
+        "backend/scripts/add-test-review.js",
+        "backend/scripts/check-table-structure.js",
+        "backend/scripts/recalculate-liran-scores.js",
+        "src/pages/ProfileLinkedIn.jsx"
+      ],
+      "tags": [
+        "test"
+      ],
+      "commit_hash": "48f7944632b9e089b2ae7a8b04875f94257e79c2",
+      "created_at": "2026-01-27T15:38:44.000Z"
     }
   ],
-  "nextId": 203
+  "nextId": 204
 }

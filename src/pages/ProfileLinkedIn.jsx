@@ -108,12 +108,22 @@ export default function ProfileLinkedIn() {
 
   // Role-based skills comparison
   const roleConfig = getRoleConfig(userPosition);
+  console.log('Role config:', roleConfig);
+  console.log('User position:', userPosition);
+  
   const skillsComparison = roleConfig.allSkills.map(skillKey => {
     const dim = behavioralConfig.dimensions[skillKey];
     const userPercentile = dimensionScores?.[skillKey]?.percentile;
     const avgPercentile = roleConfig.avgBenchmarks[skillKey];
     const comparison = userPercentile ? calculateSkillComparison(userPercentile, avgPercentile) : null;
     const isKeySkill = roleConfig.keySkills.includes(skillKey);
+    
+    console.log(`Skill ${skillKey}:`, {
+      userPercentile,
+      avgPercentile,
+      comparison,
+      isKeySkill
+    });
     
     return {
       key: skillKey,
@@ -127,12 +137,16 @@ export default function ProfileLinkedIn() {
     };
   }).filter(s => s.userPercentile); // Only show skills with data
   
+  console.log('Skills comparison:', skillsComparison);
+  
   // Sort: above average first, then by difference
   const sortedSkills = [...skillsComparison].sort((a, b) => {
     if (a.isAboveAverage && !b.isAboveAverage) return -1;
     if (!a.isAboveAverage && b.isAboveAverage) return 1;
     return (b.comparison?.difference || 0) - (a.comparison?.difference || 0);
   });
+  
+  console.log('Sorted skills:', sortedSkills);
   
   // Count standout skills (above average)
   const standoutSkills = sortedSkills.filter(s => s.isAboveAverage);

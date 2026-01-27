@@ -30,8 +30,11 @@ async function recalculateScores() {
     const dimensionTotals = {};
     const dimensionCounts = {};
     let startupHireCount = 0;
+    let startupHireTotal = 0;
     let harderJobCount = 0;
+    let harderJobTotal = 0;
     let workAgainAbsolutelyCount = 0;
+    let workAgainTotal = 0;
 
     for (const review of reviews) {
       if (review.behavioral_answers) {
@@ -52,9 +55,21 @@ async function recalculateScores() {
           ? JSON.parse(review.high_signal_answers)
           : review.high_signal_answers;
         
-        if (highSignal.startup_hire >= 2) startupHireCount++;
-        if (highSignal.harder_job >= 4) harderJobCount++;
-        if (highSignal.work_again === 5) workAgainAbsolutelyCount++;
+        // Only count reviews that answered each question
+        if (highSignal.startup_hire !== undefined && highSignal.startup_hire !== null) {
+          startupHireTotal++;
+          if (highSignal.startup_hire >= 2) startupHireCount++;
+        }
+        
+        if (highSignal.harder_job !== undefined && highSignal.harder_job !== null) {
+          harderJobTotal++;
+          if (highSignal.harder_job >= 4) harderJobCount++;
+        }
+        
+        if (highSignal.work_again !== undefined && highSignal.work_again !== null) {
+          workAgainTotal++;
+          if (highSignal.work_again === 5) workAgainAbsolutelyCount++;
+        }
       }
     }
 
@@ -89,11 +104,10 @@ async function recalculateScores() {
       }
     }
 
-    // Update high-signal percentages
-    const totalReviews = reviews.length;
-    const workAgainPct = totalReviews > 0 ? Math.round((workAgainAbsolutelyCount / totalReviews) * 100) : 0;
-    const startupHirePct = totalReviews > 0 ? Math.round((startupHireCount / totalReviews) * 100) : 0;
-    const harderJobPct = totalReviews > 0 ? Math.round((harderJobCount / totalReviews) * 100) : 0;
+    // Update high-signal percentages (only count reviews that answered each question)
+    const workAgainPct = workAgainTotal > 0 ? Math.round((workAgainAbsolutelyCount / workAgainTotal) * 100) : 0;
+    const startupHirePct = startupHireTotal > 0 ? Math.round((startupHireCount / startupHireTotal) * 100) : 0;
+    const harderJobPct = harderJobTotal > 0 ? Math.round((harderJobCount / harderJobTotal) * 100) : 0;
 
     await connection.query(`
       UPDATE user_scores 
@@ -103,12 +117,12 @@ async function recalculateScores() {
         harder_job_pct = ?,
         reviews_received = ?
       WHERE linkedin_profile_id = ?
-    `, [workAgainPct, startupHirePct, harderJobPct, totalReviews, profileId]);
+    `, [workAgainPct, startupHirePct, harderJobPct, reviews.length, profileId]);
 
     console.log('\n=== High-Signal Metrics ===');
-    console.log(`Work again absolutely: ${workAgainPct}%`);
-    console.log(`Startup hire: ${startupHirePct}%`);
-    console.log(`Harder job: ${harderJobPct}%`);
+    console.log(`Work again absolutely: ${workAgainPct}% (${workAgainAbsolutelyCount}/${workAgainTotal} answered)`);
+    console.log(`Startup hire: ${startupHirePct}% (${startupHireCount}/${startupHireTotal} answered)`);
+    console.log(`Harder job: ${harderJobPct}% (${harderJobCount}/${harderJobTotal} answered)`);
     console.log(`\n✅ Scores recalculated! Refresh your profile page.`);
 
   } catch (error) {

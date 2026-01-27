@@ -1,13 +1,18 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-27T15:38:15.989Z
+> Last updated: 2026-01-27T15:53:51.828Z
 
 ## Project Stats
-- Total memories: 202
-- Commits tracked: 202
+- Total memories: 203
+- Commits tracked: 203
 - Decisions recorded: 0
 
+## Relevant to Current Work
+- **1/27/2026**: Add test review scripts and recalculation utility (backend/database/migrations/add-test-review-liran.sql, backend/database/migrations/find-liran-naim-exact.sql, backend/database/migrations/find-liran-profile.sql)
+
 ## Recent Changes
+- `48f7944` 1/27/2026: Add test review scripts and recalculation utility
+  Files: backend/database/migrations/add-test-review-liran.sql, backend/database/migrations/find-liran-naim-exact.sql, backend/database/migrations/find-liran-profile.sql
 - `674bc72` 1/27/2026: Add role-based skills comparison table (You vs Avg PM)
   Files: src/config/roleSkillsConfig.js, src/pages/ProfileLinkedIn.jsx
 - `854dd6d` 1/27/2026: Redesign Credibility Summary with professional LinkedIn styling
@@ -36,8 +41,6 @@
   Files: backend/database/migrations/migrate-existing-reviews.js, src/components/profile/ColleagueQuotes.jsx, src/components/profile/DimensionCard.jsx
 - `f982030` 1/27/2026: Add all V2 Profile components matching design mockups
   Files: src/components/profile/DimensionCard.jsx, src/components/profile/SkillsThatMatter.jsx, src/components/profile/StrengthTagsDisplay.jsx
-- `6370ba3` 1/27/2026: Integrate V2 behavioral scoring into Profile page
-  Files: backend/routes/reviews.js, src/pages/Profile.jsx
 
 ## Do Not Repeat
 These issues have already been solved:
