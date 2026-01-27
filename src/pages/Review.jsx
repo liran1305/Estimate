@@ -5,7 +5,7 @@ import { linkedinAuth } from "@/lib/linkedinAuth";
 import { Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ColleagueCard from "@/components/review/ColleagueCard";
-import ReviewFormDynamic from "@/components/review/ReviewFormDynamic";
+import ReviewFormBehavioral from "@/components/review/ReviewFormBehavioral";
 import ReviewSuccess from "@/components/review/ReviewSuccess";
 
 const BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:3001';
@@ -387,7 +387,7 @@ export default function Review() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
             >
-              <ReviewFormDynamic
+              <ReviewFormBehavioral
                 colleague={currentColleague}
                 interactionType={interactionType}
                 onBack={handleBack}
