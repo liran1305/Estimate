@@ -377,6 +377,85 @@ router.get('/request/:link', async (req, res) => {
 });
 
 // ============================================================================
+// 4b. GET /api/tokens/request/:link/colleague - Get requester as colleague to review
+// Returns the person who sent the review request as a colleague object
+// ============================================================================
+router.get('/request/:link/colleague', async (req, res) => {
+  try {
+    const { link } = req.params;
+    const { user_id } = req.query;
+
+    if (!user_id) {
+      return res.status(400).json({ success: false, error: 'user_id is required' });
+    }
+
+    const pool = await getPool();
+    const connection = await pool.getConnection();
+
+    try {
+      // Get the review request details
+      const [request] = await connection.query(
+        `SELECT rr.*, u.linkedin_profile_id as requester_linkedin_id
+         FROM review_requests rr
+         JOIN users u ON BINARY u.id = BINARY rr.requester_id
+         WHERE rr.unique_link = ? AND rr.status = 'pending'`,
+        [link]
+      );
+
+      if (request.length === 0) {
+        return res.status(404).json({ success: false, error: 'Request not found or already completed' });
+      }
+
+      const req_data = request[0];
+
+      // Check if expired
+      if (new Date(req_data.expires_at) < new Date()) {
+        return res.status(400).json({ success: false, error: 'Request has expired' });
+      }
+
+      // Get the requester's LinkedIn profile as a colleague
+      const [colleague] = await connection.query(
+        `SELECT 
+          lp.id,
+          lp.name,
+          lp.avatar,
+          lp.current_company_name,
+          lp.position
+         FROM linkedin_profiles lp
+         WHERE lp.id = ?`,
+        [req_data.requester_linkedin_id]
+      );
+
+      if (colleague.length === 0) {
+        return res.status(404).json({ success: false, error: 'Requester profile not found' });
+      }
+
+      // Return the requester as a colleague object with request context
+      res.json({
+        success: true,
+        colleague: {
+          id: colleague[0].id,
+          name: colleague[0].name,
+          avatar: colleague[0].avatar,
+          company_name: req_data.company_context || colleague[0].current_company_name,
+          company_context: req_data.company_context || 'current',
+          position: colleague[0].position,
+          is_from_request: true,
+          request_id: req_data.id
+        }
+      });
+
+    } finally {
+      connection.release();
+    }
+
+  } catch (error) {
+    console.error('Error getting request colleague:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ============================================================================
 // 5. GET /api/tokens/my-requests - Get user's pending/completed requests
 // ============================================================================
 router.get('/my-requests', async (req, res) => {

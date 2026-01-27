@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { linkedinAuth } from "@/lib/linkedinAuth";
 import { Loader2 } from "lucide-react";
@@ -12,6 +12,7 @@ const BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhos
 
 export default function Review() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isLoading, setIsLoading] = useState(true);
   const [isSkipping, setIsSkipping] = useState(false);
   const [error, setError] = useState(null);
@@ -37,6 +38,15 @@ export default function Review() {
           return;
         }
         setUser(currentUser);
+
+        // Check for review request context (from ReviewRequest page or localStorage)
+        const reviewRequest = location.state?.reviewRequest || 
+          JSON.parse(localStorage.getItem('pendingReviewRequest') || 'null');
+        
+        // Clear pending review request from localStorage after reading
+        if (reviewRequest) {
+          localStorage.removeItem('pendingReviewRequest');
+        }
 
         // Start review session
         const sessionRes = await fetch(`${BACKEND_API_URL}/api/session/start?user_id=${currentUser.id}`);
@@ -65,8 +75,12 @@ export default function Review() {
           setReviewsGiven(0);
         }
 
-        // Get first colleague
-        await fetchNextColleague(currentUser.id, sessionData.session.id);
+        // Get first colleague - if from review request, fetch the requester
+        if (reviewRequest?.linkId) {
+          await fetchRequestedColleague(currentUser.id, reviewRequest.linkId);
+        } else {
+          await fetchNextColleague(currentUser.id, sessionData.session.id);
+        }
         setIsLoading(false);
       } catch (err) {
         console.error('Init error:', err);
@@ -75,7 +89,28 @@ export default function Review() {
       }
     };
     init();
-  }, [navigate]);
+  }, [navigate, location]);
+
+  const fetchRequestedColleague = async (userId, linkId) => {
+    const res = await fetch(`${BACKEND_API_URL}/api/tokens/request/${linkId}/colleague?user_id=${userId}`);
+    const data = await res.json();
+    
+    if (data.success && data.colleague) {
+      setCurrentColleague({
+        id: data.colleague.id,
+        name: data.colleague.name,
+        job_title: data.colleague.position,
+        company: data.colleague.company_name,
+        photo_url: data.colleague.avatar,
+        overlap_months: null,
+        is_from_request: true,
+        request_id: data.colleague.request_id
+      });
+    } else {
+      setError(data.error || 'Failed to load requested colleague');
+      setCurrentColleague(null);
+    }
+  };
 
   const fetchNextColleague = async (userId, sessionId) => {
     const res = await fetch(`${BACKEND_API_URL}/api/colleague/next?user_id=${userId}&session_id=${sessionId}`);
