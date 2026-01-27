@@ -172,64 +172,66 @@ export default function ProfileLinkedIn() {
           </div>
         </div>
 
-        {/* Recruiter Credibility Bar - Overall tier + reviewer breakdown + companies + time */}
-        <div className="bg-white rounded-lg p-3 sm:p-4 md:p-5 shadow-[0_0_0_1px_rgba(0,0,0,0.08)]">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
-            {/* Overall Tier Badge */}
-            <div className="flex items-center gap-2 sm:gap-3">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-[#0a66c2] to-[#004182] flex items-center justify-center flex-shrink-0">
-                <span className="text-white text-sm sm:text-lg font-bold">
-                  {percentileTier.replace('Top ', '').replace('%', '')}
-                </span>
-              </div>
-              <div>
-                <div className="text-sm sm:text-base font-semibold text-gray-900">{percentileTier} of {userPosition}s</div>
-                <div className="text-[10px] sm:text-xs text-gray-500">Based on peer assessments</div>
+        {/* Credibility Summary - LinkedIn Professional Style */}
+        <div className="bg-white rounded-lg shadow-[0_0_0_1px_rgba(0,0,0,0.08)] overflow-hidden">
+          {/* Main Content */}
+          <div className="p-4 sm:p-5">
+            {/* Title Row */}
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-base sm:text-lg font-semibold text-[#191919]">Credibility Summary</h2>
+              <div className="flex items-center gap-1.5 text-[#0a66c2]">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
+                </svg>
+                <span className="text-xs sm:text-sm font-medium">Verified</span>
               </div>
             </div>
             
-            {/* Quick Stats */}
-            <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-[10px] sm:text-xs">
-              {/* Reviewer Types */}
-              {reviewerTypes.length > 0 && (
-                <div className="flex items-center gap-1.5 px-2 py-1 bg-blue-50 rounded-full text-[#0a66c2]">
-                  <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
-                  </svg>
-                  <span className="font-medium">{reviewerTypes.join(', ')}</span>
+            {/* Stats Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+              {/* Overall Ranking */}
+              <div className="col-span-2 sm:col-span-1 bg-gradient-to-br from-[#0a66c2] to-[#004182] rounded-lg p-3 sm:p-4 text-white">
+                <div className="text-2xl sm:text-3xl font-bold">{percentileTier.replace('Top ', '')}</div>
+                <div className="text-xs sm:text-sm opacity-90 mt-0.5">of {userPosition}s</div>
+              </div>
+              
+              {/* Reviewed By */}
+              <div className="bg-[#f3f2ef] rounded-lg p-3 sm:p-4">
+                <div className="text-lg sm:text-xl font-semibold text-[#191919]">
+                  {(reviewerBreakdown.manager || 0) + (reviewerBreakdown.peer || 0) + (reviewerBreakdown.direct_report || 0) + (reviewerBreakdown.cross_team || 0) + (reviewerBreakdown.other || 0)}
                 </div>
-              )}
+                <div className="text-xs sm:text-sm text-[#666666] mt-0.5">Reviewers</div>
+                {reviewerTypes.length > 0 && (
+                  <div className="text-[10px] sm:text-xs text-[#0a66c2] mt-1 font-medium">{reviewerTypes.slice(0, 2).join(', ')}</div>
+                )}
+              </div>
               
               {/* Companies */}
-              {companyCount > 0 && (
-                <div className="flex items-center gap-1.5 px-2 py-1 bg-green-50 rounded-full text-green-700">
-                  <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clipRule="evenodd"/>
-                  </svg>
-                  <span className="font-medium">{companyCount} {companyCount === 1 ? 'company' : 'companies'}</span>
-                </div>
-              )}
+              <div className="bg-[#f3f2ef] rounded-lg p-3 sm:p-4">
+                <div className="text-lg sm:text-xl font-semibold text-[#191919]">{companyCount}</div>
+                <div className="text-xs sm:text-sm text-[#666666] mt-0.5">{companyCount === 1 ? 'Company' : 'Companies'}</div>
+                {companies.length > 0 && (
+                  <div className="text-[10px] sm:text-xs text-[#0a66c2] mt-1 font-medium truncate">{companies[0]}</div>
+                )}
+              </div>
               
-              {/* Time Context */}
-              {timeContext && (
-                <div className="flex items-center gap-1.5 px-2 py-1 bg-amber-50 rounded-full text-amber-700">
-                  <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd"/>
-                  </svg>
-                  <span className="font-medium">{timeContext.years_of_data}+ year{timeContext.years_of_data > 1 ? 's' : ''} of data</span>
-                </div>
-              )}
+              {/* Time Span */}
+              <div className="bg-[#f3f2ef] rounded-lg p-3 sm:p-4">
+                <div className="text-lg sm:text-xl font-semibold text-[#191919]">{timeContext?.years_of_data || 1}+</div>
+                <div className="text-xs sm:text-sm text-[#666666] mt-0.5">{(timeContext?.years_of_data || 1) === 1 ? 'Year' : 'Years'} of data</div>
+                <div className="text-[10px] sm:text-xs text-[#666666] mt-1">Working relationships</div>
+              </div>
             </div>
           </div>
           
-          {/* Companies List */}
-          {companies.length > 0 && (
-            <div className="mt-3 pt-3 border-t border-gray-100">
-              <div className="text-[10px] sm:text-xs text-gray-500 mb-1.5">Verified at:</div>
-              <div className="flex flex-wrap gap-1.5 sm:gap-2">
+          {/* Companies Footer */}
+          {companies.length > 1 && (
+            <div className="px-4 sm:px-5 py-3 bg-[#f9fafb] border-t border-[#e5e5e5]">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-xs text-[#666666]">Verified at:</span>
                 {companies.map((company, idx) => (
-                  <span key={idx} className="px-2 py-0.5 sm:py-1 bg-gray-100 rounded text-[10px] sm:text-xs text-gray-700 font-medium">
-                    {company}
+                  <span key={idx} className="text-xs font-medium text-[#191919]">
+                    {company}{idx < companies.length - 1 ? ' · ' : ''}
                   </span>
                 ))}
               </div>

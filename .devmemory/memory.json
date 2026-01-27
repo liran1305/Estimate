@@ -2895,7 +2895,22 @@
       "tags": [],
       "commit_hash": "a98ea0b0921e1dfe905f2784cb7f815722aa10de",
       "created_at": "2026-01-27T14:56:11.000Z"
+    },
+    {
+      "id": 200,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add recruiter-focused credibility data to profile",
+      "files": [
+        "backend/routes/reviews.js",
+        "src/pages/ProfileLinkedIn.jsx"
+      ],
+      "tags": [
+        "ui"
+      ],
+      "commit_hash": "6bbd85998d1a167ef88aa87ef28d0bf36da194ff",
+      "created_at": "2026-01-27T15:03:53.000Z"
     }
   ],
-  "nextId": 200
+  "nextId": 201
 }
