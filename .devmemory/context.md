@@ -1,16 +1,18 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-27T14:30:18.266Z
+> Last updated: 2026-01-27T14:33:07.723Z
 
 ## Project Stats
-- Total memories: 191
-- Commits tracked: 191
+- Total memories: 192
+- Commits tracked: 192
 - Decisions recorded: 0
 
 ## Relevant to Current Work
 - **1/27/2026**: Add Never Worry About and Room to Grow features (backend/database/migrations/add-room-to-grow.sql, backend/database/migrations/scoring-redesign.sql, backend/routes/anonymousReviews.js)
 
 ## Recent Changes
+- `f207b48` 1/27/2026: Update StrengthTagsDisplay to professional style
+  Files: src/components/profile/StrengthTagsDisplay.jsx
 - `ceaa6d1` 1/27/2026: Add Never Worry About and Room to Grow features
   Files: backend/database/migrations/add-room-to-grow.sql, backend/database/migrations/scoring-redesign.sql, backend/routes/anonymousReviews.js
 - `81bb288` 1/27/2026: Fix ProfileV2: thinner badge, add colleague comments
@@ -39,8 +41,6 @@
   Files: backend/routes/requestTokens.js
 - `0a3a328` 1/27/2026: Fix: Use BINARY casting in JOINs to prevent collation mismatch
   Files: backend/routes/requestTokens.js
-- `c18f6c5` 1/27/2026: Fix: Remove all COLLATE clauses in dataValidation queries
-  Files: backend/routes/dataValidation.js
 
 ## Do Not Repeat
 These issues have already been solved:

@@ -28,20 +28,24 @@ export default function StrengthTagsDisplay({ tags, maxDisplay = 6 }) {
         Top Strengths
       </h3>
       
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2.5">
         {displayTags.map((tag, idx) => {
           const tagId = tag.id || tag.tag;
           const tagConfig = behavioralConfig?.strengthTags?.[tagId] || {};
           const tagLabel = tagConfig.label || tag.tag || tag.label;
           const icon = TAG_ICONS[tagLabel] || tagConfig.icon || '⚙️';
+          const votes = tag.votes || tag.count || 0;
           
           return (
             <div
               key={tagId || idx}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm border border-amber-300 bg-amber-50 text-amber-900"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-md text-base border border-amber-300 bg-amber-50 text-amber-900"
             >
-              <span className="text-sm opacity-70">{icon}</span>
+              <span className="text-base opacity-70">{icon}</span>
               <span className="font-medium">{tagLabel}</span>
+              {votes > 0 && (
+                <span className="text-sm text-amber-600 font-semibold">×{votes}</span>
+              )}
             </div>
           );
         })}
