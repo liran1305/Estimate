@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { linkedinAuth } from "@/lib/linkedinAuth";
-import { Loader2, Lock, CheckCircle, User } from "lucide-react";
+import { Loader2, Lock, CheckCircle, User, CheckCircle2 } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 import WaitingState from "@/components/profile/WaitingState";
+import ConsentModal from "@/components/profile/ConsentModal";
 import { RequestReviewModal } from "@/components/tokens";
 import { behavioralConfig } from "@/config/behavioralConfig";
 import { getRoleConfig, calculateSkillComparison } from "@/config/roleSkillsConfig";
@@ -31,6 +33,8 @@ export default function ProfileLinkedIn() {
   const [scoreData, setScoreData] = useState(null);
   const [dimensionScores, setDimensionScores] = useState(null);
   const [showRequestModal, setShowRequestModal] = useState(false);
+  const [showConsent, setShowConsent] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     const init = async () => {
@@ -74,8 +78,35 @@ export default function ProfileLinkedIn() {
   }
 
   const hasAnyReviews = (scoreData?.reviews_received || 0) > 0;
+  const hasEnoughForRecruiters = (scoreData?.reviews_received || 0) >= 3;
   const firstName = user?.name?.split(' ')[0] || 'User';
   const initials = user?.name?.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'U';
+
+  // Recruiter consent handlers
+  const handleConsentToggle = (checked) => {
+    if (checked) {
+      setShowConsent(true);
+    } else {
+      updateConsent(false);
+    }
+  };
+
+  const updateConsent = async (value) => {
+    setIsUpdating(true);
+    const updatedUser = { ...user, recruitment_consent: value };
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+    setUser(updatedUser);
+    
+    if (window.dataLayer) {
+      window.dataLayer.push({
+        event: value ? 'recruiter_consent_enabled' : 'recruiter_consent_disabled',
+        reviews_received: scoreData?.reviews_received || 0
+      });
+    }
+    
+    setIsUpdating(false);
+    setShowConsent(false);
+  };
   
   // Get avatar from multiple sources - prioritize user.picture (from localStorage) like header does
   const avatarUrl = user?.picture || scoreData?.avatar || profileData?.avatar || user?.avatar;
@@ -206,7 +237,7 @@ export default function ProfileLinkedIn() {
               </div>
               
               {/* Stats */}
-              <div className="flex gap-4 sm:gap-6 mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-200 text-sm">
+              <div className="flex flex-wrap gap-3 sm:gap-6 mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-200 text-sm items-center">
                 <div>
                   <span className="font-semibold text-gray-900">{scoreData?.reviews_received || 0}</span>
                   <span className="text-gray-500"> peer reviews</span>
@@ -215,10 +246,65 @@ export default function ProfileLinkedIn() {
                   <span className="font-semibold text-gray-900">{scoreData?.reviews_given || 0}</span>
                   <span className="text-gray-500"> reviews given</span>
                 </div>
+                
+                {/* Open for Recruiters Toggle */}
+                <div className="relative group ml-auto">
+                  <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border-2 ${
+                    user?.recruitment_consent 
+                      ? 'bg-green-50 border-green-500' 
+                      : hasEnoughForRecruiters 
+                        ? 'bg-blue-50 border-blue-500 hover:bg-blue-100 cursor-pointer' 
+                        : 'bg-gray-50 border-gray-300 opacity-70'
+                  }`}
+                  onClick={() => {
+                    if (hasEnoughForRecruiters) {
+                      handleConsentToggle(!user?.recruitment_consent);
+                    }
+                  }}
+                  >
+                    <CheckCircle2 className={`w-4 h-4 ${
+                      user?.recruitment_consent 
+                        ? 'text-green-600' 
+                        : hasEnoughForRecruiters 
+                          ? 'text-blue-600' 
+                          : 'text-gray-400'
+                    }`} />
+                    <span className={`text-xs sm:text-sm font-medium ${
+                      user?.recruitment_consent 
+                        ? 'text-green-700' 
+                        : hasEnoughForRecruiters 
+                          ? 'text-blue-700' 
+                          : 'text-gray-500'
+                    }`}>
+                      {user?.recruitment_consent ? 'Visible to Recruiters' : 'Open for Recruiters'}
+                    </span>
+                    <Switch 
+                      checked={user?.recruitment_consent || false}
+                      onCheckedChange={handleConsentToggle}
+                      disabled={isUpdating || !hasEnoughForRecruiters}
+                      className="scale-75 sm:scale-90"
+                    />
+                  </div>
+                  {/* Tooltip for locked state */}
+                  {!hasEnoughForRecruiters && (
+                    <div className="absolute right-0 bottom-full mb-2 w-56 p-2.5 bg-gray-900 text-white text-xs rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none">
+                      <p className="font-medium mb-1">🔒 Locked</p>
+                      <p>Need 3+ reviews to enable. You have {scoreData?.reviews_received || 0}.</p>
+                      <div className="absolute -bottom-1 right-4 w-2 h-2 bg-gray-900 rotate-45"></div>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
         </div>
+        
+        {/* Consent Modal */}
+        <ConsentModal 
+          isOpen={showConsent}
+          onClose={() => setShowConsent(false)}
+          onConfirm={() => updateConsent(true)}
+        />
 
         {/* Credibility Summary - LinkedIn Professional Style */}
         <div className="bg-white rounded-lg shadow-[0_0_0_1px_rgba(0,0,0,0.08)] overflow-hidden">

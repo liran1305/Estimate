@@ -2980,7 +2980,19 @@
       "tags": [],
       "commit_hash": "a51fb4dbba033709b67e13cb689dabd2c21d5f72",
       "created_at": "2026-01-27T15:56:10.000Z"
+    },
+    {
+      "id": 206,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix company names wrapping on mobile - use line-clamp-2 instead of truncate",
+      "files": [
+        "src/pages/ProfileLinkedIn.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "7656ea6cdef6e68875a92dffb0f771b1877da89c",
+      "created_at": "2026-01-27T15:58:26.000Z"
     }
   ],
-  "nextId": 206
+  "nextId": 207
 }
