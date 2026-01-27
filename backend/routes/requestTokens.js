@@ -315,8 +315,8 @@ router.get('/request/:link', async (req, res) => {
         `SELECT rr.*, u.name as requester_name, lp.avatar as requester_avatar,
                 lp.current_company_name as requester_company
          FROM review_requests rr
-         JOIN users u ON u.id = rr.requester_id
-         LEFT JOIN linkedin_profiles lp ON lp.id = u.linkedin_profile_id
+         JOIN users u ON BINARY u.id = BINARY rr.requester_id
+         LEFT JOIN linkedin_profiles lp ON BINARY lp.id = BINARY u.linkedin_profile_id
          WHERE rr.unique_link = ?`,
         [link]
       );
