@@ -425,7 +425,7 @@ export default function ReviewFormDynamic({
               if (comment.length <= 10) return;
               setIsPolishing(true);
               try {
-                const apiUrl = import.meta.env.VITE_API_URL || 'https://estimate-mio1.onrender.com';
+                const apiUrl = import.meta.env.VITE_BACKEND_API_URL || 'https://estimate-mio1.onrender.com';
                 const response = await fetch(`${apiUrl}/api/review/polish-comment`, {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { User, Clock, AlertCircle, CheckCircle, Loader2, ArrowRight } from 'lucide-react';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+const API_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:3001';
 
 /**
  * ReviewRequest - Landing page for invited users who click a review request link

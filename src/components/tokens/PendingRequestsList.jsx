@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Clock, CheckCircle, XCircle, Trash2, ExternalLink, Loader2 } from 'lucide-react';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+const API_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:3001';
 
 /**
  * PendingRequestsList - Shows user's pending and completed review requests
