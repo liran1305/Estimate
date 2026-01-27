@@ -10,6 +10,10 @@ import { motion } from "framer-motion";
 import WaitingState from "@/components/profile/WaitingState";
 import ConsentModal from "@/components/profile/ConsentModal";
 import { TokenProgressBar, RequestReviewModal } from "@/components/tokens";
+import DimensionCard from "@/components/profile/DimensionCard";
+import QualitativeBadge from "@/components/profile/QualitativeBadge";
+import KeyMetrics from "@/components/profile/KeyMetrics";
+import StrengthTagsDisplay from "@/components/profile/StrengthTagsDisplay";
 
 const BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:3001';
 
@@ -565,6 +569,35 @@ export default function Profile() {
                   })}
                 </div>
               </div>
+
+              {/* NEW V2: Behavioral Dimensions Section */}
+              {scoreData?.dimension_scores && Object.keys(scoreData.dimension_scores).length > 0 && (
+                <div className="py-4 sm:py-6 border-b border-gray-100">
+                  <p className="text-sm sm:text-base font-semibold text-gray-900 mb-3">How Colleagues See You</p>
+                  <div className="space-y-2">
+                    {Object.entries(scoreData.dimension_scores).map(([dimension, data]) => (
+                      <DimensionCard 
+                        key={dimension}
+                        dimension={dimension}
+                        level={data.level}
+                        percentile={data.percentile}
+                        compact
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* NEW V2: Key Metrics - High Signal Questions */}
+              {scoreData?.high_signal_metrics && (
+                <div className="py-4 sm:py-6 border-b border-gray-100">
+                  <KeyMetrics 
+                    startupHirePct={scoreData.high_signal_metrics.startup_hire_pct}
+                    harderJobPct={scoreData.high_signal_metrics.harder_job_pct}
+                    workAgainAbsolutelyPct={scoreData.high_signal_metrics.work_again_absolutely_pct}
+                  />
+                </div>
+              )}
 
               {/* Comments Section */}
               {scoreData?.comments && scoreData.comments.length > 0 && (

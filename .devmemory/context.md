@@ -1,16 +1,18 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-27T14:03:47.528Z
+> Last updated: 2026-01-27T14:07:07.304Z
 
 ## Project Stats
-- Total memories: 186
-- Commits tracked: 186
+- Total memories: 187
+- Commits tracked: 187
 - Decisions recorded: 0
 
 ## Relevant to Current Work
 - **1/27/2026**: Redesign review form - simple, fun, one question at a time (backend/database/migrations/scoring-redesign.sql, src/components/review/ReviewFormBehavioral.jsx)
 
 ## Recent Changes
+- `d413aa2` 1/27/2026: Make AI Grammar Fix button always visible, disabled until 10+ chars
+  Files: src/components/review/ReviewFormBehavioral.jsx
 - `37b20c5` 1/27/2026: Show Other option only for choice-type questions, not emoji questions
   Files: src/components/review/ReviewFormBehavioral.jsx
 - `87a2ec2` 1/27/2026: Add Other option with free text input to questions
@@ -39,8 +41,6 @@
   Files: backend/routes/reviews.js
 - `3659f4a` 1/26/2026: Fix collation error in review request query
   Files: backend/routes/requestTokens.js
-- `f4ed234` 1/26/2026: Add token request feature to profile page
-  Files: PROJECT_CONTEXT.md, backend/OAUTH_MATCHING_IMPROVEMENT.md, backend/routes/anonymousReviews.js
 
 ## Do Not Repeat
 These issues have already been solved:

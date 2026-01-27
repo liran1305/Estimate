@@ -2710,7 +2710,19 @@
       "tags": [],
       "commit_hash": "37b20c531227b76e5a3c3453d45b7201d377c843",
       "created_at": "2026-01-27T13:58:29.000Z"
+    },
+    {
+      "id": 187,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Make AI Grammar Fix button always visible, disabled until 10+ chars",
+      "files": [
+        "src/components/review/ReviewFormBehavioral.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "d413aa2c027aaca7132d2968fcaf5fd554bbab53",
+      "created_at": "2026-01-27T14:03:54.000Z"
     }
   ],
-  "nextId": 187
+  "nextId": 188
 }

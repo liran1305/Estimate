@@ -1683,7 +1683,13 @@ router.get('/score/me', async (req, res) => {
         qualitative_badge: scoreData.qualitative_badge,
         startup_hire_pct: scoreData.startup_hire_pct,
         harder_job_pct: scoreData.harder_job_pct,
-        work_again_absolutely_pct: scoreData.work_again_absolutely_pct
+        work_again_absolutely_pct: scoreData.work_again_absolutely_pct,
+        // V2: High signal metrics grouped for easy frontend use
+        high_signal_metrics: {
+          startup_hire_pct: scoreData.startup_hire_pct,
+          harder_job_pct: scoreData.harder_job_pct,
+          work_again_absolutely_pct: scoreData.work_again_absolutely_pct
+        }
       });
 
     } finally {
