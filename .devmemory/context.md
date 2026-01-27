@@ -1,16 +1,18 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-27T14:33:07.723Z
+> Last updated: 2026-01-27T14:37:07.970Z
 
 ## Project Stats
-- Total memories: 192
-- Commits tracked: 192
+- Total memories: 193
+- Commits tracked: 193
 - Decisions recorded: 0
 
 ## Relevant to Current Work
 - **1/27/2026**: Add Never Worry About and Room to Grow features (backend/database/migrations/add-room-to-grow.sql, backend/database/migrations/scoring-redesign.sql, backend/routes/anonymousReviews.js)
 
 ## Recent Changes
+- `b7ea1d4` 1/27/2026: Add vote counts back to StrengthTagsDisplay and make tags larger
+  Files: src/components/profile/StrengthTagsDisplay.jsx
 - `f207b48` 1/27/2026: Update StrengthTagsDisplay to professional style
   Files: src/components/profile/StrengthTagsDisplay.jsx
 - `ceaa6d1` 1/27/2026: Add Never Worry About and Room to Grow features
@@ -39,8 +41,6 @@
   Files: backend/server.js
 - `c75ea87` 1/27/2026: Fix: Fetch requester avatar from users table instead of linkedin_profiles
   Files: backend/routes/requestTokens.js
-- `0a3a328` 1/27/2026: Fix: Use BINARY casting in JOINs to prevent collation mismatch
-  Files: backend/routes/requestTokens.js
 
 ## Do Not Repeat
 These issues have already been solved:
@@ -48,4 +48,3 @@ These issues have already been solved:
 - Fix progress bar and add skip option to questions
 - Refresh user avatar on every login to prevent expired LinkedIn URLs
 - Fetch requester avatar from users table instead of linkedin_profiles
-- Use BINARY casting in JOINs to prevent collation mismatch

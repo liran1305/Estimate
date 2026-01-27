@@ -8,7 +8,7 @@ const Landing = React.lazy(() => import("./Landing"));
 const Onboarding = React.lazy(() => import("./Onboarding"));
 const LinkedInAuth = React.lazy(() => import("./LinkedInAuth"));
 const Review = React.lazy(() => import("./Review"));
-const Profile = React.lazy(() => import("./ProfileV2"));
+const Profile = React.lazy(() => import("./ProfileLinkedIn"));
 const TermsOfService = React.lazy(() => import("./TermsOfService"));
 const PrivacyPolicy = React.lazy(() => import("./PrivacyPolicy"));
 const Disclaimer = React.lazy(() => import("./Disclaimer"));

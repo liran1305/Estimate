@@ -2,34 +2,39 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { linkedinAuth } from "@/lib/linkedinAuth";
-import { Loader2, Ticket } from "lucide-react";
-import { motion } from "framer-motion";
-
-// V2 Profile components
-import { 
-  SkillsThatMatter,
-  KeyMetrics, 
-  QualitativeBadge, 
-  StrengthTagsDisplay,
-  NeverWorryAbout,
-  ColleagueQuotes,
-  RoomToGrow
-} from "@/components/profile";
+import { Loader2, Lock, Check, User } from "lucide-react";
 import WaitingState from "@/components/profile/WaitingState";
 import { RequestReviewModal } from "@/components/tokens";
+import { behavioralConfig } from "@/config/behavioralConfig";
 
 const BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:3001';
 
-// Extract canonical job title from position
-const extractCanonicalTitle = (position) => {
-  if (!position) return 'Professional';
-  const lowerPos = position.toLowerCase();
-  if (lowerPos.includes('product manager') || lowerPos.includes('pm')) return 'Product Manager';
-  if (lowerPos.includes('engineer') || lowerPos.includes('developer')) return 'Software Engineer';
-  if (lowerPos.includes('designer')) return 'Designer';
-  if (lowerPos.includes('founder') || lowerPos.includes('ceo')) return 'Founder';
-  return 'Professional';
-};
+// LinkedIn blue color
+const LINKEDIN_BLUE = '#0a66c2';
+const LINKEDIN_DARK_BLUE = '#004182';
+
+// Percentile bar component
+const PercentileBar = ({ percentile }) => (
+  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '8px' }}>
+    <div style={{ 
+      flex: 1, 
+      height: '4px', 
+      backgroundColor: '#e5e5e5', 
+      borderRadius: '2px',
+      overflow: 'hidden'
+    }}>
+      <div style={{ 
+        width: `${percentile}%`, 
+        height: '100%', 
+        backgroundColor: LINKEDIN_BLUE,
+        borderRadius: '2px'
+      }} />
+    </div>
+    <span style={{ fontSize: '13px', color: '#666666', minWidth: '65px' }}>
+      Top {100 - percentile}%
+    </span>
+  </div>
+);
 
 export default function ProfileV2() {
   const navigate = useNavigate();
