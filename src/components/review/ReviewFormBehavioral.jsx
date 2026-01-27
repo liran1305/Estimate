@@ -443,16 +443,18 @@ export default function ReviewFormBehavioral({
             
             <div className="flex items-center justify-between mt-2 mb-4">
               <span className="text-xs text-gray-400">{freeText.length}/500</span>
-              {freeText.trim().length > 10 && (
-                <button
-                  onClick={handlePolishText}
-                  disabled={isPolishing}
-                  className="flex items-center gap-1.5 text-xs text-blue-600 hover:text-blue-700 transition-colors"
-                >
-                  <Wand2 className={`w-3.5 h-3.5 ${isPolishing ? 'animate-spin' : ''}`} />
-                  {isPolishing ? 'Fixing...' : 'AI Grammar Fix'}
-                </button>
-              )}
+              <button
+                onClick={handlePolishText}
+                disabled={freeText.trim().length < 10 || isPolishing}
+                className={`flex items-center gap-1.5 text-xs transition-colors ${
+                  freeText.trim().length < 10 
+                    ? 'text-gray-300 cursor-not-allowed' 
+                    : 'text-blue-600 hover:text-blue-700'
+                }`}
+              >
+                <Wand2 className={`w-3.5 h-3.5 ${isPolishing ? 'animate-spin' : ''}`} />
+                {isPolishing ? 'Fixing...' : 'AI Grammar Fix'}
+              </button>
             </div>
             
             <Button

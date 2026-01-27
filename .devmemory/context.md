@@ -1,16 +1,18 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-27T13:56:59.095Z
+> Last updated: 2026-01-27T14:03:47.528Z
 
 ## Project Stats
-- Total memories: 185
-- Commits tracked: 185
+- Total memories: 186
+- Commits tracked: 186
 - Decisions recorded: 0
 
 ## Relevant to Current Work
 - **1/27/2026**: Redesign review form - simple, fun, one question at a time (backend/database/migrations/scoring-redesign.sql, src/components/review/ReviewFormBehavioral.jsx)
 
 ## Recent Changes
+- `37b20c5` 1/27/2026: Show Other option only for choice-type questions, not emoji questions
+  Files: src/components/review/ReviewFormBehavioral.jsx
 - `87a2ec2` 1/27/2026: Add Other option with free text input to questions
   Files: src/components/review/ReviewFormBehavioral.jsx
 - `b6659c7` 1/27/2026: Fix progress bar and add skip option to questions
@@ -39,8 +41,6 @@
   Files: backend/routes/requestTokens.js
 - `f4ed234` 1/26/2026: Add token request feature to profile page
   Files: PROJECT_CONTEXT.md, backend/OAUTH_MATCHING_IMPROVEMENT.md, backend/routes/anonymousReviews.js
-- `b000fa6` 1/26/2026: Improve colleague matching: increase overlap to 6 months and add smart skip detection
-  Files: DATA_STRUCTURES.md, backend/routes/colleagues.js, backend/routes/reviews.js
 
 ## Do Not Repeat
 These issues have already been solved:
