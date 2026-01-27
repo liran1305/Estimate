@@ -1,16 +1,18 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-27T14:50:58.653Z
+> Last updated: 2026-01-27T14:55:57.336Z
 
 ## Project Stats
-- Total memories: 197
-- Commits tracked: 197
+- Total memories: 198
+- Commits tracked: 198
 - Decisions recorded: 0
 
 ## Relevant to Current Work
 - **1/27/2026**: Add Never Worry About and Room to Grow features (backend/database/migrations/add-room-to-grow.sql, backend/database/migrations/scoring-redesign.sql, backend/routes/anonymousReviews.js)
 
 ## Recent Changes
+- `6b9691b` 1/27/2026: Fix avatar display and clean up debug logs
+  Files: src/pages/ProfileLinkedIn.jsx
 - `d2a241b` 1/27/2026: Fix profile avatar with ui-avatars fallback
   Files: backend/routes/reviews.js, src/pages/ProfileLinkedIn.jsx
 - `c2d5153` 1/27/2026: Fix percentile display - use actual database values, no hardcoded fallback
@@ -39,13 +41,11 @@
   Files: src/components/review/ReviewFormBehavioral.jsx
 - `b6659c7` 1/27/2026: Fix progress bar and add skip option to questions
   Files: src/components/review/ReviewFormBehavioral.jsx
-- `e32fa57` 1/27/2026: Redesign review form - simple, fun, one question at a time
-  Files: backend/database/migrations/scoring-redesign.sql, src/components/review/ReviewFormBehavioral.jsx
 
 ## Do Not Repeat
 These issues have already been solved:
+- Fix avatar display and clean up debug logs
 - Fix profile avatar with ui-avatars fallback
 - Fix percentile display - use actual database values, no hardcoded fallback
 - Fix profile avatar to use scoreData.avatar from linkedin_profiles
 - Fix ProfileV2: thinner badge, add colleague comments
-- Fix progress bar and add skip option to questions

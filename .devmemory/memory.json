@@ -2871,7 +2871,19 @@
       ],
       "commit_hash": "d2a241b7943a57312d4291b902df22ab539e1c5f",
       "created_at": "2026-01-27T14:47:42.000Z"
+    },
+    {
+      "id": 198,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix avatar display and clean up debug logs",
+      "files": [
+        "src/pages/ProfileLinkedIn.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "6b9691be76beafda655c605de1b95a960c6a82c6",
+      "created_at": "2026-01-27T14:51:43.000Z"
     }
   ],
-  "nextId": 198
+  "nextId": 199
 }
