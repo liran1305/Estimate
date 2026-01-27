@@ -10,22 +10,22 @@ export default function DimensionCard({ dimension, level, percentile, compact = 
   if (compact) {
     return (
       <div 
-        className="flex items-center justify-between p-3 rounded-lg"
+        className="flex items-center justify-between p-2.5 md:p-3 rounded-lg"
         style={{ 
           backgroundColor: levelConfig.bgColor,
           borderLeft: `4px solid ${levelConfig.color}`
         }}
       >
-        <div className="flex items-center gap-3">
-          <span className="text-2xl">{dimensionConfig.icon}</span>
-          <div>
-            <span className="font-semibold text-gray-900">{dimensionConfig.name}</span>
-            <p className="text-xs text-gray-500 mt-0.5">{dimensionConfig.description}</p>
+        <div className="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
+          <span className="text-xl md:text-2xl flex-shrink-0">{dimensionConfig.icon}</span>
+          <div className="min-w-0">
+            <span className="font-semibold text-gray-900 text-sm md:text-base block truncate">{dimensionConfig.name}</span>
+            <p className="text-[10px] md:text-xs text-gray-500 mt-0.5 line-clamp-2">{dimensionConfig.description}</p>
           </div>
         </div>
-        <div className="text-right flex-shrink-0 ml-3">
+        <div className="text-right flex-shrink-0 ml-2 md:ml-3">
           <span 
-            className="text-sm font-semibold px-3 py-1 rounded-full inline-block"
+            className="text-xs md:text-sm font-semibold px-2 md:px-3 py-0.5 md:py-1 rounded-full inline-block"
             style={{ 
               color: levelConfig.color,
               backgroundColor: 'white',
@@ -35,7 +35,7 @@ export default function DimensionCard({ dimension, level, percentile, compact = 
             {levelConfig.label}
           </span>
           {percentile && (
-            <div className="text-xs text-gray-500 mt-1">
+            <div className="text-[10px] md:text-xs text-gray-500 mt-0.5 md:mt-1">
               Top {percentile}%
             </div>
           )}

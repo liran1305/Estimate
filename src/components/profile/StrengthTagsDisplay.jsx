@@ -9,11 +9,11 @@ export default function StrengthTagsDisplay({ tags, maxDisplay = 6 }) {
   const displayTags = sortedTags.slice(0, maxDisplay);
   
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-sm">
-      <h3 className="text-xl font-semibold text-gray-900 mb-1">
+    <div className="bg-white rounded-xl md:rounded-2xl p-4 md:p-6 shadow-sm">
+      <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-0.5 md:mb-1">
         What Colleagues Notice First
       </h3>
-      <p className="text-sm text-gray-500 mb-5">
+      <p className="text-xs md:text-sm text-gray-500 mb-4 md:mb-5">
         Most frequently selected strengths
       </p>
       

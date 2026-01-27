@@ -4,25 +4,25 @@ export default function ColleagueQuotes({ quotes }) {
   if (!quotes || quotes.length === 0) return null;
   
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-sm">
-      <h3 className="text-xl font-semibold text-gray-900 mb-2">
+    <div className="bg-white rounded-xl md:rounded-2xl p-4 md:p-6 shadow-sm">
+      <h3 className="text-lg md:text-xl font-semibold text-gray-900 mb-0.5 md:mb-2">
         What Colleagues Actually Said
       </h3>
-      <p className="text-sm text-gray-500 mb-4">
+      <p className="text-xs md:text-sm text-amber-600 mb-3 md:mb-4">
         Direct quotes from reviews
       </p>
       
-      <div className="space-y-4">
+      <div className="space-y-3 md:space-y-4">
         {quotes.map((quote, idx) => (
           <div 
             key={idx}
-            className="p-4 bg-amber-50 rounded-xl border-l-4 border-amber-400"
+            className="p-3 md:p-4 bg-amber-50 rounded-lg md:rounded-xl border-l-4 border-amber-400"
           >
-            <p className="text-gray-800 italic leading-relaxed">
+            <p className="text-gray-800 italic leading-relaxed text-sm md:text-base">
               "{quote.text}"
             </p>
             {quote.context && (
-              <p className="text-sm text-gray-500 mt-3">
+              <p className="text-xs md:text-sm text-amber-600 mt-2 md:mt-3">
                 Context: {quote.context}
               </p>
             )}

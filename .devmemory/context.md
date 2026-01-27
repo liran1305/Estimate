@@ -1,16 +1,18 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-27T14:10:20.455Z
+> Last updated: 2026-01-27T14:24:30.806Z
 
 ## Project Stats
-- Total memories: 188
-- Commits tracked: 188
+- Total memories: 189
+- Commits tracked: 189
 - Decisions recorded: 0
 
 ## Relevant to Current Work
 - **1/27/2026**: Redesign review form - simple, fun, one question at a time (backend/database/migrations/scoring-redesign.sql, src/components/review/ReviewFormBehavioral.jsx)
 
 ## Recent Changes
+- `f982030` 1/27/2026: Add all V2 Profile components matching design mockups
+  Files: src/components/profile/DimensionCard.jsx, src/components/profile/SkillsThatMatter.jsx, src/components/profile/StrengthTagsDisplay.jsx
 - `6370ba3` 1/27/2026: Integrate V2 behavioral scoring into Profile page
   Files: backend/routes/reviews.js, src/pages/Profile.jsx
 - `d413aa2` 1/27/2026: Make AI Grammar Fix button always visible, disabled until 10+ chars
@@ -39,8 +41,6 @@
   Files: backend/routes/requestTokens.js
 - `15f66b4` 1/27/2026: Fix: Use consistent VITE_BACKEND_API_URL across all frontend files
   Files: src/components/review/ReviewFormDynamic.jsx, src/components/tokens/PendingRequestsList.jsx, src/components/tokens/RequestReviewModal.jsx
-- `86c2629` 1/27/2026: Fix: Auto-repair corrupted skip budget records (initial_budget=0)
-  Files: backend/routes/reviews.js
 
 ## Do Not Repeat
 These issues have already been solved:

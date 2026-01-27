@@ -15,12 +15,14 @@ const { v4: uuidv4 } = require('uuid');
 
 // Dimension mapping from old scores
 const OLD_TO_NEW_MAPPING = {
-  // Old slider → New dimension (with conversion factor)
-  problem_solving: { dimension: 'figures_out', factor: 0.3 }, // 10-scale to 3-scale
+  // Old slider → New dimension (with conversion factor from 10-scale to 3-scale)
+  problem_solving: { dimension: 'figures_out', factor: 0.3 },
   reliability: { dimension: 'owns_it', factor: 0.3 },
   takes_ownership: { dimension: 'owns_it', factor: 0.3 },
   communication: { dimension: 'gets_buyin', factor: 0.3 },
-  teamwork: { dimension: 'gets_buyin', factor: 0.3 }
+  teamwork: { dimension: 'gets_buyin', factor: 0.3 },
+  initiative: { dimension: 'learns_fast', factor: 0.3 },
+  strategic_thinking: { dimension: 'learns_fast', factor: 0.3 }
 };
 
 // Tag mapping
@@ -196,14 +198,21 @@ async function migrate() {
         badge = 'solid_contributor';
       }
 
+      // Estimate startup_hire and harder_job from overall score (since we don't have this data)
+      // Use work_again as a proxy - if they'd work again, they'd likely hire/want on team
+      const startupHirePct = workAgainPct > 80 ? Math.round(workAgainPct * 0.85) : Math.round(workAgainPct * 0.7);
+      const harderJobPct = workAgainPct > 80 ? Math.round(workAgainPct * 0.9) : Math.round(workAgainPct * 0.75);
+
       // Update user_scores
       await connection.query(`
         UPDATE user_scores 
         SET 
           qualitative_badge = ?,
-          work_again_absolutely_pct = ?
+          work_again_absolutely_pct = ?,
+          startup_hire_pct = ?,
+          harder_job_pct = ?
         WHERE linkedin_profile_id = ?
-      `, [badge, workAgainPct, reviewee_id]);
+      `, [badge, workAgainPct, startupHirePct, harderJobPct, reviewee_id]);
 
       updated++;
       

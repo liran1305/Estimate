@@ -520,8 +520,8 @@ export default function Profile() {
                 </div>
               </div>
 
-              {/* Score Breakdown Row - Bar Chart Style */}
-              <div className="py-4 sm:py-6 border-b border-gray-100">
+              {/* Score Breakdown Row - Bar Chart Style - HIDE when V2 data available */}
+              {!scoreData?.dimension_scores && <div className="py-4 sm:py-6 border-b border-gray-100">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3 sm:mb-4">
                   <p className="text-sm sm:text-base font-semibold text-gray-900">Score Breakdown</p>
                   <div className="flex items-center gap-3 sm:gap-4 text-[9px] sm:text-[10px]">
@@ -573,7 +573,7 @@ export default function Profile() {
                     );
                   })}
                 </div>
-              </div>
+              </div>}
 
               {/* V2: Qualitative Badge */}
               {scoreData?.qualitative_badge && (
