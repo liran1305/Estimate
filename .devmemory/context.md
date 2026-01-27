@@ -1,13 +1,18 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-27T13:43:50.552Z
+> Last updated: 2026-01-27T13:46:44.492Z
 
 ## Project Stats
-- Total memories: 182
-- Commits tracked: 182
+- Total memories: 183
+- Commits tracked: 183
 - Decisions recorded: 0
 
+## Relevant to Current Work
+- **1/27/2026**: Redesign review form - simple, fun, one question at a time (backend/database/migrations/scoring-redesign.sql, src/components/review/ReviewFormBehavioral.jsx)
+
 ## Recent Changes
+- `e32fa57` 1/27/2026: Redesign review form - simple, fun, one question at a time
+  Files: backend/database/migrations/scoring-redesign.sql, src/components/review/ReviewFormBehavioral.jsx
 - `9977d65` 1/27/2026: Add profile components index.js exports
   Files: src/components/profile/index.js
 - `263e7d4` 1/27/2026: Feature: Implement proper review request flow
@@ -36,8 +41,6 @@
   Files: backend/database/add-profile-photo.sql, backend/package.json, backend/routes/profilePhoto.js
 - `c43a518` 1/25/2026: Enable SSL for all database connections (Level 1 Security)
   Files: backend/config/database.js, backend/routes/admin.js, backend/routes/anonymousReviews.js
-- `e13a67b` 1/25/2026: Add anonymity trust message to colleague selection screen
-  Files: src/components/review/ColleagueCard.jsx
 
 ## Do Not Repeat
 These issues have already been solved:

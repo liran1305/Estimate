@@ -2661,7 +2661,20 @@
       "tags": [],
       "commit_hash": "9977d659ad04a4ba3041a55ec9906775757d28e1",
       "created_at": "2026-01-27T13:34:42.000Z"
+    },
+    {
+      "id": 183,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Redesign review form - simple, fun, one question at a time",
+      "files": [
+        "backend/database/migrations/scoring-redesign.sql",
+        "src/components/review/ReviewFormBehavioral.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "e32fa5729cb6402741e316ca41c596ba29de8c56",
+      "created_at": "2026-01-27T13:44:23.000Z"
     }
   ],
-  "nextId": 183
+  "nextId": 184
 }

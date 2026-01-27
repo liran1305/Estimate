@@ -83,7 +83,7 @@ export default function ReviewFormBehavioral({
   const totalSteps = QUICK_QUESTIONS.length + 1; // +1 for tags
   const progress = showTags 
     ? 100 
-    : Math.round((currentQuestion / totalSteps) * 100);
+    : Math.round(((currentQuestion + 1) / totalSteps) * 100);
   
   const formatQuestion = (text) => text.replace(/{name}/g, firstName);
   
@@ -248,12 +248,13 @@ export default function ReviewFormBehavioral({
               ))}
             </div>
             
-            {/* Skip hint for optional */}
-            {currentQuestion > 0 && (
-              <p className="text-center text-xs text-gray-400 mt-4">
-                Tap an answer to continue
-              </p>
-            )}
+            {/* Skip option */}
+            <button
+              onClick={() => handleAnswer(currentQ.id, null)}
+              className="w-full mt-4 py-2 text-sm text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              🤷 Can't say / Skip this one
+            </button>
           </motion.div>
         ) : (
           /* Tags Selection */
