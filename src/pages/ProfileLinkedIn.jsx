@@ -259,7 +259,9 @@ export default function ProfileLinkedIn() {
                 <div className="text-lg sm:text-xl font-semibold text-[#191919]">{companyCount}</div>
                 <div className="text-xs sm:text-sm text-[#666666] mt-0.5">{companyCount === 1 ? 'Company' : 'Companies'}</div>
                 {companies.length > 0 && (
-                  <div className="text-[10px] sm:text-xs text-[#0a66c2] mt-1 font-medium truncate">{companies[0]}</div>
+                  <div className="text-[10px] sm:text-xs text-[#0a66c2] mt-1 font-medium truncate">
+                    {companies.slice(0, 2).join(' · ')}
+                  </div>
                 )}
               </div>
               
@@ -271,20 +273,6 @@ export default function ProfileLinkedIn() {
               </div>
             </div>
           </div>
-          
-          {/* Companies Footer */}
-          {companies.length > 1 && (
-            <div className="px-4 sm:px-5 py-3 bg-[#f9fafb] border-t border-[#e5e5e5]">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-xs text-[#666666]">Verified at:</span>
-                {companies.map((company, idx) => (
-                  <span key={idx} className="text-xs font-medium text-[#191919]">
-                    {company}{idx < companies.length - 1 ? ' · ' : ''}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
 
         {/* Key Metrics Card */}

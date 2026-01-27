@@ -2955,7 +2955,20 @@
       ],
       "commit_hash": "48f7944632b9e089b2ae7a8b04875f94257e79c2",
       "created_at": "2026-01-27T15:38:44.000Z"
+    },
+    {
+      "id": 204,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix high-signal percentage calculation to only count answered questions",
+      "files": [
+        "backend/scripts/recalculate-liran-scores.js",
+        "src/pages/ProfileLinkedIn.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "e836ab0bbc3a2ebbbc77df39885847bb22bbfcde",
+      "created_at": "2026-01-27T15:54:48.000Z"
     }
   ],
-  "nextId": 204
+  "nextId": 205
 }
