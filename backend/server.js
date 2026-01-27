@@ -409,6 +409,12 @@ app.post('/api/auth/linkedin/callback', async (req, res) => {
     let userId;
     if (existingUsers.length > 0) {
       userId = existingUsers[0].id;
+      // Update user data on every login to keep avatar fresh (LinkedIn URLs expire)
+      await connection.query(
+        'UPDATE users SET name = ?, avatar = ?, last_login = CURRENT_TIMESTAMP WHERE id = ?',
+        [profile.name, profile.picture, userId]
+      );
+      
       // Update linkedin_profile_id if we found a match and it wasn't set
       if (linkedinProfileId && !existingUsers[0].linkedin_profile_id) {
         await connection.query(
