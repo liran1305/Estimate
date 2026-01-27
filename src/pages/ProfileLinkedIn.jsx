@@ -259,7 +259,7 @@ export default function ProfileLinkedIn() {
                 <div className="text-lg sm:text-xl font-semibold text-[#191919]">{companyCount}</div>
                 <div className="text-xs sm:text-sm text-[#666666] mt-0.5">{companyCount === 1 ? 'Company' : 'Companies'}</div>
                 {companies.length > 0 && (
-                  <div className="text-[10px] sm:text-xs text-[#0a66c2] mt-1 font-medium truncate">
+                  <div className="text-[10px] sm:text-xs text-[#0a66c2] mt-1 font-medium line-clamp-2">
                     {companies.slice(0, 2).join(' · ')}
                   </div>
                 )}

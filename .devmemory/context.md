@@ -1,16 +1,18 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-27T15:55:58.809Z
+> Last updated: 2026-01-27T15:56:58.083Z
 
 ## Project Stats
-- Total memories: 204
-- Commits tracked: 204
+- Total memories: 205
+- Commits tracked: 205
 - Decisions recorded: 0
 
 ## Relevant to Current Work
 - **1/27/2026**: Add test review scripts and recalculation utility (backend/database/migrations/add-test-review-liran.sql, backend/database/migrations/find-liran-naim-exact.sql, backend/database/migrations/find-liran-profile.sql)
 
 ## Recent Changes
+- `a51fb4d` 1/27/2026: Remove redundant Companies Footer and show both companies in tile
+  Files: src/pages/ProfileLinkedIn.jsx
 - `e836ab0` 1/27/2026: Fix high-signal percentage calculation to only count answered questions
   Files: backend/scripts/recalculate-liran-scores.js, src/pages/ProfileLinkedIn.jsx
 - `48f7944` 1/27/2026: Add test review scripts and recalculation utility
@@ -39,8 +41,6 @@
   Files: src/components/profile/StrengthTagsDisplay.jsx
 - `ceaa6d1` 1/27/2026: Add Never Worry About and Room to Grow features
   Files: backend/database/migrations/add-room-to-grow.sql, backend/database/migrations/scoring-redesign.sql, backend/routes/anonymousReviews.js
-- `81bb288` 1/27/2026: Fix ProfileV2: thinner badge, add colleague comments
-  Files: backend/database/migrations/migrate-existing-reviews.js, src/components/profile/ColleagueQuotes.jsx, src/components/profile/DimensionCard.jsx
 
 ## Do Not Repeat
 These issues have already been solved:
