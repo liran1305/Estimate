@@ -3066,7 +3066,19 @@
       "tags": [],
       "commit_hash": "556883222e07cd7e7e844c2eb2d2eaeb0da95d5e",
       "created_at": "2026-01-27T16:13:42.000Z"
+    },
+    {
+      "id": 213,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix leaderboard photo: prioritize localStorage picture for current user",
+      "files": [
+        "src/pages/Leaderboard.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "daa6a5c4553c4ef7333924bb33f8ce655f491b0c",
+      "created_at": "2026-01-28T07:19:25.000Z"
     }
   ],
-  "nextId": 213
+  "nextId": 214
 }
