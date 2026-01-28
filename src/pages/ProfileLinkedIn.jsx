@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { linkedinAuth } from "@/lib/linkedinAuth";
@@ -137,45 +137,53 @@ export default function ProfileLinkedIn() {
   if (reviewerBreakdown.cross_team > 0) reviewerTypes.push(`${reviewerBreakdown.cross_team} cross-team`);
   if (reviewerBreakdown.other > 0) reviewerTypes.push(`${reviewerBreakdown.other} other`);
 
-  // Role-based skills comparison
+  // Role-based skills comparison - use useMemo to recalculate when scoreData changes
   const roleConfig = getRoleConfig(userPosition);
-  console.log('Role config:', roleConfig);
-  console.log('User position:', userPosition);
   
-  const skillsComparison = roleConfig.allSkills.map(skillKey => {
-    const dim = behavioralConfig.dimensions[skillKey];
-    const userPercentile = dimensionScores?.[skillKey]?.percentile;
-    const avgPercentile = roleConfig.avgBenchmarks[skillKey];
-    const comparison = userPercentile ? calculateSkillComparison(userPercentile, avgPercentile) : null;
-    const isKeySkill = roleConfig.keySkills.includes(skillKey);
+  const { skillsComparison, sortedSkills } = useMemo(() => {
+    // Use scoreData.dimension_scores directly to avoid state timing issues
+    const dims = scoreData?.dimension_scores;
+    console.log('Role config:', roleConfig);
+    console.log('User position:', userPosition);
+    console.log('Dimension scores for skills:', dims);
     
-    console.log(`Skill ${skillKey}:`, {
-      userPercentile,
-      avgPercentile,
-      comparison,
-      isKeySkill
+    const comparison = roleConfig.allSkills.map(skillKey => {
+      const dim = behavioralConfig.dimensions[skillKey];
+      const userPercentile = dims?.[skillKey]?.percentile;
+      const avgPercentile = roleConfig.avgBenchmarks[skillKey];
+      const comp = userPercentile ? calculateSkillComparison(userPercentile, avgPercentile) : null;
+      const isKeySkill = roleConfig.keySkills.includes(skillKey);
+      
+      console.log(`Skill ${skillKey}:`, {
+        userPercentile,
+        avgPercentile,
+        comparison: comp,
+        isKeySkill
+      });
+      
+      return {
+        key: skillKey,
+        name: dim?.name || skillKey,
+        description: dim?.description || '',
+        userPercentile,
+        avgPercentile,
+        comparison: comp,
+        isKeySkill,
+        isAboveAverage: comp?.isAboveAverage || false
+      };
+    }).filter(s => s.userPercentile); // Only show skills with data
+    
+    console.log('Skills comparison:', comparison);
+    
+    // Sort: above average first, then by difference
+    const sorted = [...comparison].sort((a, b) => {
+      if (a.isAboveAverage && !b.isAboveAverage) return -1;
+      if (!a.isAboveAverage && b.isAboveAverage) return 1;
+      return (b.comparison?.difference || 0) - (a.comparison?.difference || 0);
     });
     
-    return {
-      key: skillKey,
-      name: dim?.name || skillKey,
-      description: dim?.description || '',
-      userPercentile,
-      avgPercentile,
-      comparison,
-      isKeySkill,
-      isAboveAverage: comparison?.isAboveAverage || false
-    };
-  }).filter(s => s.userPercentile); // Only show skills with data
-  
-  console.log('Skills comparison:', skillsComparison);
-  
-  // Sort: above average first, then by difference
-  const sortedSkills = [...skillsComparison].sort((a, b) => {
-    if (a.isAboveAverage && !b.isAboveAverage) return -1;
-    if (!a.isAboveAverage && b.isAboveAverage) return 1;
-    return (b.comparison?.difference || 0) - (a.comparison?.difference || 0);
-  });
+    return { skillsComparison: comparison, sortedSkills: sorted };
+  }, [scoreData?.dimension_scores, userPosition, roleConfig]);
   
   console.log('Sorted skills:', sortedSkills);
   

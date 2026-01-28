@@ -1,16 +1,18 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-28T08:42:20.097Z
+> Last updated: 2026-01-28T08:54:25.559Z
 
 ## Project Stats
-- Total memories: 217
-- Commits tracked: 217
+- Total memories: 218
+- Commits tracked: 218
 - Decisions recorded: 0
 
 ## Relevant to Current Work
 - **1/27/2026**: Add test review scripts and recalculation utility (backend/database/migrations/add-test-review-liran.sql, backend/database/migrations/find-liran-naim-exact.sql, backend/database/migrations/find-liran-profile.sql)
 
 ## Recent Changes
+- `f27a15b` 1/28/2026: Fix review request flow - pass linkId to Review page
+  Files: backend/database/migration-request-tokens.sql, src/components/RewardsModal.jsx, src/pages/LinkedInCallback.jsx
 - `2471cbf` 1/28/2026: Add Rewards feature to profile dropdown with shareable link
   Files: src/components/RewardsModal.jsx, src/pages/Layout.jsx
 - `3323ea2` 1/28/2026: Make strength tags optional in review form
@@ -39,13 +41,11 @@
   Files: src/pages/ProfileLinkedIn.jsx
 - `e836ab0` 1/27/2026: Fix high-signal percentage calculation to only count answered questions
   Files: backend/scripts/recalculate-liran-scores.js, src/pages/ProfileLinkedIn.jsx
-- `48f7944` 1/27/2026: Add test review scripts and recalculation utility
-  Files: backend/database/migrations/add-test-review-liran.sql, backend/database/migrations/find-liran-naim-exact.sql, backend/database/migrations/find-liran-profile.sql
 
 ## Do Not Repeat
 These issues have already been solved:
+- Fix review request flow - pass linkId to Review page
 - Fix leaderboard photo: prioritize localStorage picture for current user
 - Fix leaderboard profile picture for current user
 - Fix ConsentModal prop name from isOpen to open and add isLoading prop
 - Fix company names wrapping on mobile - use line-clamp-2 instead of truncate
-- Fix high-signal percentage calculation to only count answered questions
