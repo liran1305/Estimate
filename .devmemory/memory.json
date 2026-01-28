@@ -3182,7 +3182,19 @@
       "tags": [],
       "commit_hash": "97bf0dad38a53a22731f6c64f10347329474cfc0",
       "created_at": "2026-01-28T08:59:59.000Z"
+    },
+    {
+      "id": 222,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix review request avatar - use fresher avatar from users table",
+      "files": [
+        "backend/routes/requestTokens.js"
+      ],
+      "tags": [],
+      "commit_hash": "8cf81e0aa7b9a6401ac212c72cf91b1339fdc486",
+      "created_at": "2026-01-28T09:05:18.000Z"
     }
   ],
-  "nextId": 222
+  "nextId": 223
 }
