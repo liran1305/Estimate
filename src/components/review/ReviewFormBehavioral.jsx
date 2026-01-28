@@ -18,7 +18,7 @@ const QUICK_QUESTIONS = [
       { value: 2, emoji: '😐', label: 'Maybe' },
       { value: 3, emoji: '🙂', label: 'Sure' },
       { value: 4, emoji: '😊', label: 'Gladly' },
-      { value: 5, emoji: '🤩', label: 'Absolutely!' }
+      { value: 5, emoji: '🤩', label: 'Hell\nYes!' }
     ]
   },
   {
@@ -258,10 +258,10 @@ export default function ReviewFormBehavioral({
             <img 
               src={colleague.photo_url} 
               alt={colleague.name}
-              className="w-12 h-12 rounded-full object-cover"
+              className="w-16 h-16 rounded-full object-cover"
             />
           ) : (
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-amber-500 flex items-center justify-center text-white font-bold">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-400 to-amber-500 flex items-center justify-center text-white font-bold text-xl">
               {firstName.charAt(0)}
             </div>
           )}
@@ -288,28 +288,28 @@ export default function ReviewFormBehavioral({
             transition={{ duration: 0.2 }}
             className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100"
           >
-            <h2 className="text-xl font-semibold text-gray-900 mb-6 text-center">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6 text-center leading-snug">
               {formatQuestion(currentQ.question)}
             </h2>
             
-            <div className={`grid gap-3 ${currentQ.type === 'emoji' ? 'grid-cols-' + Math.min(currentQ.options.length, 5) : 'grid-cols-1'}`}>
+            <div className={`grid gap-1.5 sm:gap-2 max-w-full ${currentQ.type === 'emoji' ? 'grid-cols-' + Math.min(currentQ.options.length, 5) : 'grid-cols-1'}`}>
               {currentQ.options.map((option) => (
                 <motion.button
                   key={option.value}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => handleAnswer(currentQ.id, option.value)}
-                  className={`relative p-4 rounded-xl border-2 transition-all ${
+                  className={`relative py-3 px-1 sm:py-4 sm:px-2 rounded-xl border-2 transition-all ${
                     answers[currentQ.id] === option.value
                       ? 'border-amber-500 bg-amber-50'
                       : 'border-gray-200 hover:border-amber-300 hover:bg-amber-50/50'
-                  } ${currentQ.type === 'emoji' ? 'flex flex-col items-center' : ''}`}
+                  } ${currentQ.type === 'emoji' ? 'flex flex-col items-center min-h-[90px] sm:min-h-[100px]' : ''}`}
                 >
                   {currentQ.type === 'emoji' && (
-                    <span className="text-3xl mb-1">{option.emoji}</span>
+                    <span className="text-3xl sm:text-4xl mb-1.5">{option.emoji}</span>
                   )}
-                  <span className={`font-medium ${
-                    currentQ.type === 'emoji' ? 'text-xs text-gray-600' : 'text-gray-700'
+                  <span className={`font-medium leading-tight text-center whitespace-pre-line w-full ${
+                    currentQ.type === 'emoji' ? 'text-[10.5px] sm:text-xs text-gray-600' : 'text-sm sm:text-base text-gray-700'
                   }`}>
                     {option.label}
                   </span>
