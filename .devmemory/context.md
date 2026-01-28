@@ -1,16 +1,18 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-28T09:08:18.024Z
+> Last updated: 2026-01-28T11:40:15.273Z
 
 ## Project Stats
-- Total memories: 222
-- Commits tracked: 222
+- Total memories: 223
+- Commits tracked: 223
 - Decisions recorded: 0
 
 ## Relevant to Current Work
 - **1/27/2026**: Add test review scripts and recalculation utility (backend/database/migrations/add-test-review-liran.sql, backend/database/migrations/find-liran-naim-exact.sql, backend/database/migrations/find-liran-profile.sql)
 
 ## Recent Changes
+- `1e5fbbb` 1/28/2026: Make colleague profile picture circular in review card
+  Files: src/components/review/ColleagueCard.jsx
 - `8cf81e0` 1/28/2026: Fix review request avatar - use fresher avatar from users table
   Files: backend/routes/requestTokens.js
 - `97bf0da` 1/28/2026: Fix React hooks error #310 - move useMemo before early return
@@ -38,8 +40,6 @@
 - `95ea9c3` 1/27/2026: Move Peer Verified badge inline with name on mobile
   Files: src/pages/ProfileLinkedIn.jsx
 - `0bbb02a` 1/27/2026: Fix ConsentModal prop name from isOpen to open and add isLoading prop
-  Files: src/pages/ProfileLinkedIn.jsx
-- `c0bb6a2` 1/27/2026: Remove redundant Verified badge from Credibility Summary section
   Files: src/pages/ProfileLinkedIn.jsx
 
 ## Do Not Repeat

@@ -98,7 +98,22 @@ async function calculateDimensionScores(connection, linkedinProfileId) {
     work_again: { sum: 0, count: 0, maxValue: 5 }
   };
 
+  // Aggregates for would_work_again and would_promote (stored directly in review tables)
+  let workAgainSum = 0, workAgainCount = 0;
+  let promoteSum = 0, promoteCount = 0;
+
   for (const review of reviews) {
+    // Aggregate would_work_again (1-5 scale)
+    if (review.would_work_again) {
+      workAgainSum += parseInt(review.would_work_again);
+      workAgainCount++;
+    }
+    
+    // Aggregate would_promote (0-2 scale: 0=No, 1=Yes for harder, 2=Yes definitely)
+    if (review.would_promote !== null && review.would_promote !== undefined) {
+      promoteSum += parseInt(review.would_promote);
+      promoteCount++;
+    }
     // Handle new behavioral reviews (version 2)
     if (review.review_version === 2 && review.behavioral_answers) {
       const answers = typeof review.behavioral_answers === 'string' 
@@ -177,17 +192,21 @@ async function calculateDimensionScores(connection, linkedinProfileId) {
       // Calculate percentage of max possible score
       const maxPossible = agg.count * agg.maxValue;
       highSignalPcts[key] = Math.round((agg.sum / maxPossible) * 100);
-      
-      // For work_again, also calculate "Absolutely!" percentage (value 5)
-      if (key === 'work_again') {
-        // This would need a separate query to count 5s specifically
-        // For now, estimate based on average
-        const avgScore = agg.sum / agg.count;
-        highSignalPcts.work_again_absolutely = avgScore >= 4.5 ? 100 : 
-          avgScore >= 4 ? 75 : avgScore >= 3.5 ? 50 : avgScore >= 3 ? 25 : 0;
-      }
     }
   });
+  
+  // Calculate would_work_again percentage (1-5 scale = 20%-100%)
+  if (workAgainCount > 0) {
+    const avgScore = workAgainSum / workAgainCount;
+    highSignalPcts.work_again_absolutely = Math.round(avgScore * 20);
+  }
+  
+  // Calculate would_promote percentage (0-2 scale = 0%-100%)
+  if (promoteCount > 0) {
+    const avgScore = promoteSum / promoteCount;
+    highSignalPcts.harder_job = Math.round((avgScore / 2) * 100);
+    highSignalPcts.startup_hire = highSignalPcts.harder_job; // Same metric
+  }
 
   return {
     dimensions: dimensionScores,

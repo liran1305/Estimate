@@ -1576,7 +1576,7 @@ router.get('/score/me', async (req, res) => {
         
         // Aggregate would_work_again (1-5 scale maps to verbal responses)
         if (review.would_work_again) {
-          wouldWorkAgainSum += review.would_work_again >= 4 ? 1 : 0;
+          wouldWorkAgainSum += parseInt(review.would_work_again);
           wouldWorkAgainCount++;
           // Map 1-5 scale to verbal responses
           const wwaValue = parseInt(review.would_work_again);
@@ -1645,9 +1645,9 @@ router.get('/score/me', async (req, res) => {
         .slice(0, 5)
         .map(([tag, tagCount]) => ({ tag, count: tagCount }));
       
-      // Calculate would work again percentage
+      // Calculate would work again percentage (1-5 scale = 20%-100%)
       const wouldWorkAgainPercent = wouldWorkAgainCount > 0 
-        ? Math.round((wouldWorkAgainSum / wouldWorkAgainCount) * 100) 
+        ? Math.round((wouldWorkAgainSum / wouldWorkAgainCount) * 20) 
         : 0;
 
       // Calculate percentile tier based on overall score
