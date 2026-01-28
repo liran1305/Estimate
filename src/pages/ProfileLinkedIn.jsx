@@ -138,28 +138,20 @@ export default function ProfileLinkedIn() {
   if (reviewerBreakdown.other > 0) reviewerTypes.push(`${reviewerBreakdown.other} other`);
 
   // Role-based skills comparison - use useMemo to recalculate when scoreData changes
-  const roleConfig = getRoleConfig(userPosition);
-  
-  const { skillsComparison, sortedSkills } = useMemo(() => {
-    // Use scoreData.dimension_scores directly to avoid state timing issues
+  const { skillsComparison, sortedSkills, roleConfig } = useMemo(() => {
+    const config = getRoleConfig(userPosition);
     const dims = scoreData?.dimension_scores;
-    console.log('Role config:', roleConfig);
-    console.log('User position:', userPosition);
-    console.log('Dimension scores for skills:', dims);
     
-    const comparison = roleConfig.allSkills.map(skillKey => {
+    if (!dims) {
+      return { skillsComparison: [], sortedSkills: [], roleConfig: config };
+    }
+    
+    const comparison = config.allSkills.map(skillKey => {
       const dim = behavioralConfig.dimensions[skillKey];
-      const userPercentile = dims?.[skillKey]?.percentile;
-      const avgPercentile = roleConfig.avgBenchmarks[skillKey];
+      const userPercentile = dims[skillKey]?.percentile;
+      const avgPercentile = config.avgBenchmarks[skillKey];
       const comp = userPercentile ? calculateSkillComparison(userPercentile, avgPercentile) : null;
-      const isKeySkill = roleConfig.keySkills.includes(skillKey);
-      
-      console.log(`Skill ${skillKey}:`, {
-        userPercentile,
-        avgPercentile,
-        comparison: comp,
-        isKeySkill
-      });
+      const isKeySkill = config.keySkills.includes(skillKey);
       
       return {
         key: skillKey,
@@ -171,19 +163,16 @@ export default function ProfileLinkedIn() {
         isKeySkill,
         isAboveAverage: comp?.isAboveAverage || false
       };
-    }).filter(s => s.userPercentile); // Only show skills with data
+    }).filter(s => s.userPercentile);
     
-    console.log('Skills comparison:', comparison);
-    
-    // Sort: above average first, then by difference
     const sorted = [...comparison].sort((a, b) => {
       if (a.isAboveAverage && !b.isAboveAverage) return -1;
       if (!a.isAboveAverage && b.isAboveAverage) return 1;
       return (b.comparison?.difference || 0) - (a.comparison?.difference || 0);
     });
     
-    return { skillsComparison: comparison, sortedSkills: sorted };
-  }, [scoreData?.dimension_scores, userPosition, roleConfig]);
+    return { skillsComparison: comparison, sortedSkills: sorted, roleConfig: config };
+  }, [scoreData?.dimension_scores, userPosition]);
   
   console.log('Sorted skills:', sortedSkills);
   

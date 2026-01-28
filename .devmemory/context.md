@@ -1,16 +1,18 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-28T08:54:25.559Z
+> Last updated: 2026-01-28T08:56:37.847Z
 
 ## Project Stats
-- Total memories: 218
-- Commits tracked: 218
+- Total memories: 219
+- Commits tracked: 219
 - Decisions recorded: 0
 
 ## Relevant to Current Work
 - **1/27/2026**: Add test review scripts and recalculation utility (backend/database/migrations/add-test-review-liran.sql, backend/database/migrations/find-liran-naim-exact.sql, backend/database/migrations/find-liran-profile.sql)
 
 ## Recent Changes
+- `359a75b` 1/28/2026: Fix skills comparison using useMemo to handle state timing
+  Files: src/pages/ProfileLinkedIn.jsx
 - `f27a15b` 1/28/2026: Fix review request flow - pass linkId to Review page
   Files: backend/database/migration-request-tokens.sql, src/components/RewardsModal.jsx, src/pages/LinkedInCallback.jsx
 - `2471cbf` 1/28/2026: Add Rewards feature to profile dropdown with shareable link
@@ -39,13 +41,11 @@
   Files: src/pages/ProfileLinkedIn.jsx
 - `a51fb4d` 1/27/2026: Remove redundant Companies Footer and show both companies in tile
   Files: src/pages/ProfileLinkedIn.jsx
-- `e836ab0` 1/27/2026: Fix high-signal percentage calculation to only count answered questions
-  Files: backend/scripts/recalculate-liran-scores.js, src/pages/ProfileLinkedIn.jsx
 
 ## Do Not Repeat
 These issues have already been solved:
+- Fix skills comparison using useMemo to handle state timing
 - Fix review request flow - pass linkId to Review page
 - Fix leaderboard photo: prioritize localStorage picture for current user
 - Fix leaderboard profile picture for current user
 - Fix ConsentModal prop name from isOpen to open and add isLoading prop
-- Fix company names wrapping on mobile - use line-clamp-2 instead of truncate
