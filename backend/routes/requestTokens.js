@@ -414,14 +414,16 @@ router.get('/request/:link/colleague', async (req, res) => {
       }
 
       // Get the requester's LinkedIn profile as a colleague
+      // Also get avatar from users table as it may be fresher from OAuth
       const [colleague] = await connection.query(
         `SELECT 
           lp.id,
           lp.name,
-          lp.avatar,
+          COALESCE(u.avatar, lp.avatar) as avatar,
           lp.current_company_name,
           lp.position
          FROM linkedin_profiles lp
+         LEFT JOIN users u ON u.linkedin_profile_id = lp.id
          WHERE lp.id = ?`,
         [req_data.requester_linkedin_id]
       );

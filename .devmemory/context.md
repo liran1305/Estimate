@@ -1,16 +1,18 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-28T08:59:53.610Z
+> Last updated: 2026-01-28T09:04:55.354Z
 
 ## Project Stats
-- Total memories: 220
-- Commits tracked: 220
+- Total memories: 221
+- Commits tracked: 221
 - Decisions recorded: 0
 
 ## Relevant to Current Work
 - **1/27/2026**: Add test review scripts and recalculation utility (backend/database/migrations/add-test-review-liran.sql, backend/database/migrations/find-liran-naim-exact.sql, backend/database/migrations/find-liran-profile.sql)
 
 ## Recent Changes
+- `97bf0da` 1/28/2026: Fix React hooks error #310 - move useMemo before early return
+  Files: src/pages/ProfileLinkedIn.jsx
 - `aca8e43` 1/28/2026: Fix React hooks error - move roleConfig inside useMemo
   Files: src/pages/ProfileLinkedIn.jsx
 - `359a75b` 1/28/2026: Fix skills comparison using useMemo to handle state timing
@@ -39,13 +41,11 @@
   Files: src/pages/ProfileLinkedIn.jsx
 - `1e2cc68` 1/27/2026: Add Open for Recruiters toggle to ProfileLinkedIn page
   Files: src/pages/ProfileLinkedIn.jsx
-- `7656ea6` 1/27/2026: Fix company names wrapping on mobile - use line-clamp-2 instead of truncate
-  Files: src/pages/ProfileLinkedIn.jsx
 
 ## Do Not Repeat
 These issues have already been solved:
+- Fix React hooks error #310 - move useMemo before early return
 - Fix React hooks error - move roleConfig inside useMemo
 - Fix skills comparison using useMemo to handle state timing
 - Fix review request flow - pass linkId to Review page
 - Fix leaderboard photo: prioritize localStorage picture for current user
-- Fix leaderboard profile picture for current user
