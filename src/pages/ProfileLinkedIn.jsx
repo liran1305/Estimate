@@ -69,6 +69,44 @@ export default function ProfileLinkedIn() {
     init();
   }, [navigate]);
 
+  // Role-based skills comparison - MUST be before any early returns (hooks rule)
+  const { skillsComparison, sortedSkills, roleConfig } = useMemo(() => {
+    const userPos = scoreData?.user_position || 'Professional';
+    const config = getRoleConfig(userPos);
+    const dims = scoreData?.dimension_scores;
+    
+    if (!dims) {
+      return { skillsComparison: [], sortedSkills: [], roleConfig: config };
+    }
+    
+    const comparison = config.allSkills.map(skillKey => {
+      const dim = behavioralConfig.dimensions[skillKey];
+      const userPercentile = dims[skillKey]?.percentile;
+      const avgPercentile = config.avgBenchmarks[skillKey];
+      const comp = userPercentile ? calculateSkillComparison(userPercentile, avgPercentile) : null;
+      const isKeySkill = config.keySkills.includes(skillKey);
+      
+      return {
+        key: skillKey,
+        name: dim?.name || skillKey,
+        description: dim?.description || '',
+        userPercentile,
+        avgPercentile,
+        comparison: comp,
+        isKeySkill,
+        isAboveAverage: comp?.isAboveAverage || false
+      };
+    }).filter(s => s.userPercentile);
+    
+    const sorted = [...comparison].sort((a, b) => {
+      if (a.isAboveAverage && !b.isAboveAverage) return -1;
+      if (!a.isAboveAverage && b.isAboveAverage) return 1;
+      return (b.comparison?.difference || 0) - (a.comparison?.difference || 0);
+    });
+    
+    return { skillsComparison: comparison, sortedSkills: sorted, roleConfig: config };
+  }, [scoreData]);
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#f3f2ef] flex items-center justify-center">
@@ -137,45 +175,6 @@ export default function ProfileLinkedIn() {
   if (reviewerBreakdown.cross_team > 0) reviewerTypes.push(`${reviewerBreakdown.cross_team} cross-team`);
   if (reviewerBreakdown.other > 0) reviewerTypes.push(`${reviewerBreakdown.other} other`);
 
-  // Role-based skills comparison - use useMemo to recalculate when scoreData changes
-  const { skillsComparison, sortedSkills, roleConfig } = useMemo(() => {
-    const config = getRoleConfig(userPosition);
-    const dims = scoreData?.dimension_scores;
-    
-    if (!dims) {
-      return { skillsComparison: [], sortedSkills: [], roleConfig: config };
-    }
-    
-    const comparison = config.allSkills.map(skillKey => {
-      const dim = behavioralConfig.dimensions[skillKey];
-      const userPercentile = dims[skillKey]?.percentile;
-      const avgPercentile = config.avgBenchmarks[skillKey];
-      const comp = userPercentile ? calculateSkillComparison(userPercentile, avgPercentile) : null;
-      const isKeySkill = config.keySkills.includes(skillKey);
-      
-      return {
-        key: skillKey,
-        name: dim?.name || skillKey,
-        description: dim?.description || '',
-        userPercentile,
-        avgPercentile,
-        comparison: comp,
-        isKeySkill,
-        isAboveAverage: comp?.isAboveAverage || false
-      };
-    }).filter(s => s.userPercentile);
-    
-    const sorted = [...comparison].sort((a, b) => {
-      if (a.isAboveAverage && !b.isAboveAverage) return -1;
-      if (!a.isAboveAverage && b.isAboveAverage) return 1;
-      return (b.comparison?.difference || 0) - (a.comparison?.difference || 0);
-    });
-    
-    return { skillsComparison: comparison, sortedSkills: sorted, roleConfig: config };
-  }, [scoreData?.dimension_scores, userPosition]);
-  
-  console.log('Sorted skills:', sortedSkills);
-  
   // Count standout skills (above average)
   const standoutSkills = sortedSkills.filter(s => s.isAboveAverage);
 

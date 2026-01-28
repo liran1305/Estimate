@@ -3156,7 +3156,21 @@
       "tags": [],
       "commit_hash": "359a75bd1360d7355a4aef9cb9e43e2f69501c08",
       "created_at": "2026-01-28T08:54:44.000Z"
+    },
+    {
+      "id": 220,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix React hooks error - move roleConfig inside useMemo",
+      "files": [
+        "src/pages/ProfileLinkedIn.jsx"
+      ],
+      "tags": [
+        "config"
+      ],
+      "commit_hash": "aca8e436d12166190f86158f32232cf3e6710d24",
+      "created_at": "2026-01-28T08:56:43.000Z"
     }
   ],
-  "nextId": 220
+  "nextId": 221
 }
