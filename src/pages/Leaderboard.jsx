@@ -29,8 +29,11 @@ const ProfileHexagon = ({ user, size = 'md', currentUser, isMobile = false }) =>
   const isCurrentUser = user.isCurrentUser || (currentUser && user.userId === currentUser.id);
   const isPublic = user.isPublic || isCurrentUser;
   
-  // Use photo URL from backend, or fallback to currentUser's picture from localStorage
-  const imageUrl = user.photoUrl || (isCurrentUser && currentUser?.picture) || null;
+  // For current user: prioritize localStorage picture (fresh from OAuth) over backend photoUrl (may be expired)
+  // For other users: use backend photoUrl
+  const imageUrl = isCurrentUser 
+    ? (currentUser?.picture || user.photoUrl) 
+    : user.photoUrl;
   
   // Responsive hexagon sizes - smaller on mobile
   const s = isMobile 

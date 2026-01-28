@@ -3054,7 +3054,19 @@
       "tags": [],
       "commit_hash": "870944b9a22127f5b1848c92e6b657c9bfc70fde",
       "created_at": "2026-01-27T16:10:29.000Z"
+    },
+    {
+      "id": 212,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix leaderboard profile picture for current user",
+      "files": [
+        "src/pages/Leaderboard.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "556883222e07cd7e7e844c2eb2d2eaeb0da95d5e",
+      "created_at": "2026-01-27T16:13:42.000Z"
     }
   ],
-  "nextId": 212
+  "nextId": 213
 }
