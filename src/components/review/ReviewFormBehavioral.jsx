@@ -409,7 +409,7 @@ export default function ReviewFormBehavioral({
             </div>
             
             <div className="flex items-center justify-between text-sm text-gray-500 mb-4 px-1">
-              <span>{selectedTags.length}/3 selected</span>
+              <span>{selectedTags.length}/3 selected {selectedTags.length === 0 && '(optional)'}</span>
               {selectedTags.length > 0 && (
                 <button 
                   onClick={() => setSelectedTags([])}
@@ -422,10 +422,9 @@ export default function ReviewFormBehavioral({
             
             <Button
               onClick={handleTagsContinue}
-              disabled={selectedTags.length === 0}
               className="w-full bg-amber-500 hover:bg-amber-600 text-white py-5 text-base rounded-lg"
             >
-              Continue
+              {selectedTags.length === 0 ? 'Skip' : 'Continue'}
             </Button>
           </motion.div>
         ) : (

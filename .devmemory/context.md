@@ -1,16 +1,18 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-28T08:02:37.415Z
+> Last updated: 2026-01-28T08:05:34.839Z
 
 ## Project Stats
-- Total memories: 214
-- Commits tracked: 214
+- Total memories: 215
+- Commits tracked: 215
 - Decisions recorded: 0
 
 ## Relevant to Current Work
 - **1/27/2026**: Add test review scripts and recalculation utility (backend/database/migrations/add-test-review-liran.sql, backend/database/migrations/find-liran-naim-exact.sql, backend/database/migrations/find-liran-profile.sql)
 
 ## Recent Changes
+- `e957751` 1/28/2026: Increase profile picture size in review form header
+  Files: src/components/review/QuestionRenderer.jsx, src/components/review/ReviewFormBehavioral.jsx
 - `0005961` 1/28/2026: Add comprehensive V2 Question Framework with relationship + role mapping
   Files: src/config/questionsConfigV2.js
 - `daa6a5c` 1/28/2026: Fix leaderboard photo: prioritize localStorage picture for current user
@@ -39,8 +41,6 @@
   Files: src/config/roleSkillsConfig.js, src/pages/ProfileLinkedIn.jsx
 - `854dd6d` 1/27/2026: Redesign Credibility Summary with professional LinkedIn styling
   Files: src/pages/ProfileLinkedIn.jsx
-- `6bbd859` 1/27/2026: Add recruiter-focused credibility data to profile
-  Files: backend/routes/reviews.js, src/pages/ProfileLinkedIn.jsx
 
 ## Do Not Repeat
 These issues have already been solved:
