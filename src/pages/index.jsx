@@ -19,6 +19,7 @@ const Leaderboard = React.lazy(() => import("./Leaderboard"));
 const Contact = React.lazy(() => import("./Contact"));
 const BadgeCreator = React.lazy(() => import("./BadgeCreator"));
 const ReviewRequest = React.lazy(() => import("./ReviewRequest"));
+const FutureFitQuiz = React.lazy(() => import("./FutureFitQuiz"));
 
 // Minimal loading fallback
 const PageLoader = () => (
@@ -72,6 +73,20 @@ function _getCurrentPage(url) {
 function PagesContent() {
     const location = useLocation();
     const currentPage = _getCurrentPage(location.pathname);
+    
+    // Quiz pages render without Layout (full-screen experience)
+    const isQuizPage = location.pathname === '/quiz' || location.pathname === '/future-fit';
+    
+    if (isQuizPage) {
+        return (
+            <Suspense fallback={<PageLoader />}>
+                <Routes>
+                    <Route path="/quiz" element={<FutureFitQuiz />} />
+                    <Route path="/future-fit" element={<FutureFitQuiz />} />
+                </Routes>
+            </Suspense>
+        );
+    }
     
     return (
         <Layout currentPageName={currentPage}>

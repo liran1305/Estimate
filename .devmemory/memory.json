@@ -3244,7 +3244,19 @@
       "tags": [],
       "commit_hash": "4db13f0cf723b4abb0dba691cda45abcc3f00400",
       "created_at": "2026-01-28T12:02:33.000Z"
+    },
+    {
+      "id": 227,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix colleague endorsement percentages and dimension score calculations",
+      "files": [
+        "backend/services/dimensionScoring.js"
+      ],
+      "tags": [],
+      "commit_hash": "4d91ebf245a0d938885e3030c9464d047129ebcf",
+      "created_at": "2026-01-28T12:21:25.000Z"
     }
   ],
-  "nextId": 227
+  "nextId": 228
 }
