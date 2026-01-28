@@ -5,7 +5,8 @@
 
 const { v4: uuidv4 } = require('uuid');
 
-// Dimension definitions (mirror of frontend config)
+// Dimension definitions (mirror of frontend behavioralConfig.js)
+// Only 5 dimensions - these are the "Future-Fit" skills
 const DIMENSIONS = {
   learns_fast: { name: 'Picks Things Up Fast', weight: 1.0 },
   figures_out: { name: 'Figures It Out', weight: 1.0 },
@@ -139,13 +140,16 @@ async function calculateDimensionScores(connection, linkedinProfileId) {
         ? JSON.parse(review.scores) 
         : review.scores;
       
-      // Map old scores to dimensions
-      if (scores.problem_solving) {
-        const converted = (scores.problem_solving / 10) * 3;
+      // Map old scores to new dimensions (0-10 scale → 0-3 scale)
+      // figures_out ← problem_solving, strategic_thinking
+      if (scores.problem_solving || scores.strategic_thinking) {
+        const avg = scores.problem_solving || scores.strategic_thinking;
+        const converted = (avg / 10) * 3;
         dimensionAggregates.figures_out.sum += converted;
         dimensionAggregates.figures_out.count += 1;
       }
       
+      // gets_buyin ← communication, teamwork
       if (scores.communication || scores.teamwork) {
         const avg = ((scores.communication || 5) + (scores.teamwork || 5)) / 2;
         const converted = (avg / 10) * 3;
@@ -153,12 +157,22 @@ async function calculateDimensionScores(connection, linkedinProfileId) {
         dimensionAggregates.gets_buyin.count += 1;
       }
       
-      if (scores.reliability || scores.takes_ownership) {
-        const avg = ((scores.reliability || 5) + (scores.takes_ownership || 5)) / 2;
-        const converted = (avg / 10) * 3;
+      // owns_it ← reliability, delivers_on_time
+      if (scores.reliability || scores.delivers_on_time) {
+        const val = scores.reliability || scores.delivers_on_time;
+        const converted = (val / 10) * 3;
         dimensionAggregates.owns_it.sum += converted;
         dimensionAggregates.owns_it.count += 1;
       }
+      
+      // learns_fast ← initiative (taking initiative suggests quick learning)
+      if (scores.initiative) {
+        const converted = (scores.initiative / 10) * 3;
+        dimensionAggregates.learns_fast.sum += converted;
+        dimensionAggregates.learns_fast.count += 1;
+      }
+      
+      // Note: ai_ready has no old equivalent - only shows for new behavioral reviews
     }
 
     // Aggregate high-signal answers

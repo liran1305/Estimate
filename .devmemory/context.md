@@ -1,16 +1,18 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-28T11:59:12.584Z
+> Last updated: 2026-01-28T12:17:22.217Z
 
 ## Project Stats
-- Total memories: 225
-- Commits tracked: 225
+- Total memories: 226
+- Commits tracked: 226
 - Decisions recorded: 0
 
 ## Relevant to Current Work
 - **1/27/2026**: Add test review scripts and recalculation utility (backend/database/migrations/add-test-review-liran.sql, backend/database/migrations/find-liran-naim-exact.sql, backend/database/migrations/find-liran-profile.sql)
 
 ## Recent Changes
+- `4db13f0` 1/28/2026: Fix dimension scoring to include would_work_again and would_promote in query
+  Files: DATABASE_SCHEMA.md, backend/services/dimensionScoring.js
 - `14d6235` 1/28/2026: Fix would_promote scale from 0-2 to 1-4
   Files: backend/services/dimensionScoring.js
 - `cbc4914` 1/28/2026: Fix colleague endorsement percentages to use average scores
@@ -39,13 +41,11 @@
   Files: src/pages/Leaderboard.jsx
 - `5568832` 1/27/2026: Fix leaderboard profile picture for current user
   Files: src/pages/Leaderboard.jsx
-- `870944b` 1/27/2026: Improve leaderboard category matching to prioritize specific matches
-  Files: src/pages/Leaderboard.jsx
 
 ## Do Not Repeat
 These issues have already been solved:
+- Fix dimension scoring to include would_work_again and would_promote in query
 - Fix would_promote scale from 0-2 to 1-4
 - Fix colleague endorsement percentages to use average scores
 - Fix review request avatar - use fresher avatar from users table
 - Fix React hooks error #310 - move useMemo before early return
-- Fix React hooks error - move roleConfig inside useMemo

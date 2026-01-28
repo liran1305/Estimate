@@ -3231,7 +3231,20 @@
       "tags": [],
       "commit_hash": "14d62357dc080fb2ee8c6506756f720ba75b5af5",
       "created_at": "2026-01-28T11:50:30.000Z"
+    },
+    {
+      "id": 226,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix dimension scoring to include would_work_again and would_promote in query",
+      "files": [
+        "DATABASE_SCHEMA.md",
+        "backend/services/dimensionScoring.js"
+      ],
+      "tags": [],
+      "commit_hash": "4db13f0cf723b4abb0dba691cda45abcc3f00400",
+      "created_at": "2026-01-28T12:02:33.000Z"
     }
   ],
-  "nextId": 226
+  "nextId": 227
 }
