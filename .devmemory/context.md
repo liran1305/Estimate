@@ -1,16 +1,18 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-28T08:05:34.839Z
+> Last updated: 2026-01-28T08:26:55.969Z
 
 ## Project Stats
-- Total memories: 215
-- Commits tracked: 215
+- Total memories: 216
+- Commits tracked: 216
 - Decisions recorded: 0
 
 ## Relevant to Current Work
 - **1/27/2026**: Add test review scripts and recalculation utility (backend/database/migrations/add-test-review-liran.sql, backend/database/migrations/find-liran-naim-exact.sql, backend/database/migrations/find-liran-profile.sql)
 
 ## Recent Changes
+- `3323ea2` 1/28/2026: Make strength tags optional in review form
+  Files: src/components/review/ReviewFormBehavioral.jsx
 - `e957751` 1/28/2026: Increase profile picture size in review form header
   Files: src/components/review/QuestionRenderer.jsx, src/components/review/ReviewFormBehavioral.jsx
 - `0005961` 1/28/2026: Add comprehensive V2 Question Framework with relationship + role mapping
@@ -39,8 +41,6 @@
   Files: backend/database/migrations/add-test-review-liran.sql, backend/database/migrations/find-liran-naim-exact.sql, backend/database/migrations/find-liran-profile.sql
 - `674bc72` 1/27/2026: Add role-based skills comparison table (You vs Avg PM)
   Files: src/config/roleSkillsConfig.js, src/pages/ProfileLinkedIn.jsx
-- `854dd6d` 1/27/2026: Redesign Credibility Summary with professional LinkedIn styling
-  Files: src/pages/ProfileLinkedIn.jsx
 
 ## Do Not Repeat
 These issues have already been solved:

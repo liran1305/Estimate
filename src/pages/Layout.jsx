@@ -11,7 +11,8 @@ import {
   DropdownMenuItem, 
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
-import { Users, User, LogOut, ChevronDown, Trophy } from "lucide-react";
+import { Users, User, LogOut, ChevronDown, Trophy, Gift } from "lucide-react";
+import RewardsModal from "@/components/RewardsModal";
 
 const publicPages = ['Landing', 'LinkedInAuth', 'LinkedInCallback'];
 const blockedOnlyPage = 'Blocked';
@@ -21,6 +22,7 @@ export default function Layout({ children, currentPageName }) {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [hasReceivedReviews, setHasReceivedReviews] = useState(false);
+  const [showRewardsModal, setShowRewardsModal] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -139,6 +141,10 @@ export default function Layout({ children, currentPageName }) {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem onClick={() => setShowRewardsModal(true)}>
+                    <Gift className="w-4 h-4 mr-2 text-amber-500" />
+                    Rewards
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleLogout} className="text-red-600">
                     <LogOut className="w-4 h-4 mr-2" />
                     Sign Out
@@ -152,6 +158,13 @@ export default function Layout({ children, currentPageName }) {
         <main className="pt-16">
           {children}
         </main>
+
+        {/* Rewards Modal */}
+        <RewardsModal 
+          isOpen={showRewardsModal} 
+          onClose={() => setShowRewardsModal(false)} 
+          user={user}
+        />
       </div>
     );
   }
