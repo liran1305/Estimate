@@ -3256,7 +3256,23 @@
       "tags": [],
       "commit_hash": "4d91ebf245a0d938885e3030c9464d047129ebcf",
       "created_at": "2026-01-28T12:21:25.000Z"
+    },
+    {
+      "id": 228,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add Future-Fit Quiz: gamified soft skills assessment with instant feedback, demo video, and Estimate CTA",
+      "files": [
+        "src/App.css",
+        "src/pages/FutureFitQuiz.jsx",
+        "src/pages/index.jsx"
+      ],
+      "tags": [
+        "ui"
+      ],
+      "commit_hash": "49301e57b08d810ddf6c7be8731c90210b580ca3",
+      "created_at": "2026-01-28T14:02:24.000Z"
     }
   ],
-  "nextId": 228
+  "nextId": 229
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // Quiz data with leader quotes and questions
@@ -236,6 +236,33 @@ export default function FutureFitQuiz() {
 
   const totalQuestions = QUESTIONS.length;
   const progress = ((currentQuestion + 1) / totalQuestions) * 100;
+
+  // SEO Meta Tags
+  useEffect(() => {
+    document.title = 'Future-Fit Quiz: Are You Ready for 2026? | Estimate';
+    
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', 'Take the 2-minute quiz to discover your readiness for the AI era. Test your soft skills, adaptability, and collaboration abilities based on insights from top tech CEOs.');
+    }
+
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) {
+      ogTitle.setAttribute('content', 'Future-Fit Quiz: Are You Ready for 2026?');
+    }
+
+    const ogDescription = document.querySelector('meta[property="og:description"]');
+    if (ogDescription) {
+      ogDescription.setAttribute('content', 'Take the 2-minute quiz to discover your readiness for the AI era. Test your soft skills, adaptability, and collaboration abilities.');
+    }
+
+    return () => {
+      document.title = 'Estimate - Professional Peer Review';
+      if (metaDescription) {
+        metaDescription.setAttribute('content', 'Discover how colleagues really perceive you. Get your professional score through anonymous peer reviews.');
+      }
+    };
+  }, []);
 
   const handleRoleSelect = (role) => {
     setSelectedRole(role);

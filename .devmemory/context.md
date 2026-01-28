@@ -1,13 +1,15 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-28T14:00:40.571Z
+> Last updated: 2026-01-28T14:13:17.431Z
 
 ## Project Stats
-- Total memories: 227
-- Commits tracked: 227
+- Total memories: 228
+- Commits tracked: 228
 - Decisions recorded: 0
 
 ## Recent Changes
+- `49301e5` 1/28/2026: Add Future-Fit Quiz: gamified soft skills assessment with instant feedback, demo video, and Estimate CTA
+  Files: src/App.css, src/pages/FutureFitQuiz.jsx, src/pages/index.jsx
 - `4d91ebf` 1/28/2026: Fix colleague endorsement percentages and dimension score calculations
   Files: backend/services/dimensionScoring.js
 - `4db13f0` 1/28/2026: Fix dimension scoring to include would_work_again and would_promote in query
@@ -36,8 +38,6 @@
   Files: src/components/review/QuestionRenderer.jsx, src/components/review/ReviewFormBehavioral.jsx
 - `0005961` 1/28/2026: Add comprehensive V2 Question Framework with relationship + role mapping
   Files: src/config/questionsConfigV2.js
-- `daa6a5c` 1/28/2026: Fix leaderboard photo: prioritize localStorage picture for current user
-  Files: src/pages/Leaderboard.jsx
 
 ## Do Not Repeat
 These issues have already been solved:
