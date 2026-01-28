@@ -8,19 +8,16 @@ const BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhos
 const REVIEWS_PER_TOKEN = 5;
 
 export default function RewardsModal({ isOpen, onClose, user }) {
+  const [availableRequests, setAvailableRequests] = useState(0);
+  const [tokensEarned, setTokensEarned] = useState(0);
   const [reviewsGiven, setReviewsGiven] = useState(0);
-  const [tokensUsed, setTokensUsed] = useState(0);
+  const [progressInCurrentCycle, setProgressInCurrentCycle] = useState(0);
+  const [reviewsToNextToken, setReviewsToNextToken] = useState(5);
   const [isLoading, setIsLoading] = useState(true);
   const [requestLink, setRequestLink] = useState('');
   const [isGeneratingLink, setIsGeneratingLink] = useState(false);
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState('');
-
-  // Calculate tokens: earned - used
-  const tokensEarned = Math.floor(reviewsGiven / REVIEWS_PER_TOKEN);
-  const availableRequests = Math.max(0, tokensEarned - tokensUsed);
-  const progressInCurrentCycle = reviewsGiven % REVIEWS_PER_TOKEN;
-  const reviewsToNextToken = REVIEWS_PER_TOKEN - progressInCurrentCycle;
 
   useEffect(() => {
     if (isOpen && user) {
@@ -35,9 +32,14 @@ export default function RewardsModal({ isOpen, onClose, user }) {
     try {
       const response = await fetch(`${BACKEND_API_URL}/api/tokens/balance?user_id=${user.id}`);
       const data = await response.json();
+      console.log('Token balance response:', data);
       if (data.success) {
+        // Use values directly from backend
+        setAvailableRequests(data.tokens?.available || 0);
+        setTokensEarned(data.tokens?.earned_total || 0);
         setReviewsGiven(data.progress?.reviews_given || 0);
-        setTokensUsed(data.tokens?.used_total || 0);
+        setReviewsToNextToken(data.progress?.reviews_to_next_token || 5);
+        setProgressInCurrentCycle(data.progress?.reviews_given % REVIEWS_PER_TOKEN || 0);
       }
     } catch (err) {
       console.error('Failed to fetch rewards status:', err);
@@ -60,7 +62,7 @@ export default function RewardsModal({ isOpen, onClose, user }) {
       
       if (data.success && data.request?.full_url) {
         setRequestLink(data.request.full_url);
-        setTokensUsed(prev => prev + 1);
+        setAvailableRequests(prev => Math.max(0, prev - 1));
       } else {
         setError(data.error || 'Failed to generate link');
       }

@@ -71,6 +71,7 @@ export default function Onboarding() {
       navigate('/Review', { 
         state: { 
           reviewRequest: {
+            linkId: requestData.linkId,
             id: requestData.requestId,
             requesterName: requestData.requesterName,
             isRequested: true

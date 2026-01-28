@@ -1,16 +1,18 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-28T08:26:55.969Z
+> Last updated: 2026-01-28T08:42:20.097Z
 
 ## Project Stats
-- Total memories: 216
-- Commits tracked: 216
+- Total memories: 217
+- Commits tracked: 217
 - Decisions recorded: 0
 
 ## Relevant to Current Work
 - **1/27/2026**: Add test review scripts and recalculation utility (backend/database/migrations/add-test-review-liran.sql, backend/database/migrations/find-liran-naim-exact.sql, backend/database/migrations/find-liran-profile.sql)
 
 ## Recent Changes
+- `2471cbf` 1/28/2026: Add Rewards feature to profile dropdown with shareable link
+  Files: src/components/RewardsModal.jsx, src/pages/Layout.jsx
 - `3323ea2` 1/28/2026: Make strength tags optional in review form
   Files: src/components/review/ReviewFormBehavioral.jsx
 - `e957751` 1/28/2026: Increase profile picture size in review form header
@@ -39,8 +41,6 @@
   Files: backend/scripts/recalculate-liran-scores.js, src/pages/ProfileLinkedIn.jsx
 - `48f7944` 1/27/2026: Add test review scripts and recalculation utility
   Files: backend/database/migrations/add-test-review-liran.sql, backend/database/migrations/find-liran-naim-exact.sql, backend/database/migrations/find-liran-profile.sql
-- `674bc72` 1/27/2026: Add role-based skills comparison table (You vs Avg PM)
-  Files: src/config/roleSkillsConfig.js, src/pages/ProfileLinkedIn.jsx
 
 ## Do Not Repeat
 These issues have already been solved:

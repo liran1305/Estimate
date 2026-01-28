@@ -67,6 +67,7 @@ export default function ReviewRequest() {
       navigate('/review', { 
         state: { 
           reviewRequest: {
+            linkId,
             id: requestData?.id,
             requesterName: requestData?.requester_name,
             isRequested: true
