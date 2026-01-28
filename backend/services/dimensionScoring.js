@@ -109,7 +109,7 @@ async function calculateDimensionScores(connection, linkedinProfileId) {
       workAgainCount++;
     }
     
-    // Aggregate would_promote (0-2 scale: 0=No, 1=Yes for harder, 2=Yes definitely)
+    // Aggregate would_promote (1-4 scale: 1=Not yet, 2=Maybe 1-2 years, 3=Yes ready, 4=Above level)
     if (review.would_promote !== null && review.would_promote !== undefined) {
       promoteSum += parseInt(review.would_promote);
       promoteCount++;
@@ -201,10 +201,10 @@ async function calculateDimensionScores(connection, linkedinProfileId) {
     highSignalPcts.work_again_absolutely = Math.round(avgScore * 20);
   }
   
-  // Calculate would_promote percentage (0-2 scale = 0%-100%)
+  // Calculate would_promote percentage (1-4 scale = 25%-100%)
   if (promoteCount > 0) {
     const avgScore = promoteSum / promoteCount;
-    highSignalPcts.harder_job = Math.round((avgScore / 2) * 100);
+    highSignalPcts.harder_job = Math.round((avgScore / 4) * 100);
     highSignalPcts.startup_hire = highSignalPcts.harder_job; // Same metric
   }
 

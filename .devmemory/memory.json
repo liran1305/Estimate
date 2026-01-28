@@ -3206,7 +3206,20 @@
       "tags": [],
       "commit_hash": "1e5fbbbe24bc4ff0616bff85c8f7133f592a03be",
       "created_at": "2026-01-28T09:08:26.000Z"
+    },
+    {
+      "id": 224,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix colleague endorsement percentages to use average scores",
+      "files": [
+        "backend/routes/reviews.js",
+        "backend/services/dimensionScoring.js"
+      ],
+      "tags": [],
+      "commit_hash": "cbc491468c74615e7cb1fc26a3602e5d112bf7fd",
+      "created_at": "2026-01-28T11:40:50.000Z"
     }
   ],
-  "nextId": 224
+  "nextId": 225
 }
