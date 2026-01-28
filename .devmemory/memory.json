@@ -3219,7 +3219,19 @@
       "tags": [],
       "commit_hash": "cbc491468c74615e7cb1fc26a3602e5d112bf7fd",
       "created_at": "2026-01-28T11:40:50.000Z"
+    },
+    {
+      "id": 225,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix would_promote scale from 0-2 to 1-4",
+      "files": [
+        "backend/services/dimensionScoring.js"
+      ],
+      "tags": [],
+      "commit_hash": "14d62357dc080fb2ee8c6506756f720ba75b5af5",
+      "created_at": "2026-01-28T11:50:30.000Z"
     }
   ],
-  "nextId": 225
+  "nextId": 226
 }

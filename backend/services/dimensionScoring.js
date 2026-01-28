@@ -68,7 +68,9 @@ async function calculateDimensionScores(connection, linkedinProfileId) {
       behavioral_answers,
       high_signal_answers,
       scores,
-      review_version
+      review_version,
+      would_work_again,
+      would_promote
     FROM anonymous_reviews 
     WHERE reviewee_id = ?
     UNION ALL
@@ -76,7 +78,9 @@ async function calculateDimensionScores(connection, linkedinProfileId) {
       behavioral_answers,
       high_signal_answers,
       scores,
-      review_version
+      review_version,
+      would_work_again,
+      would_promote
     FROM reviews 
     WHERE reviewee_id = ?
   `, [linkedinProfileId, linkedinProfileId]);
@@ -110,8 +114,10 @@ async function calculateDimensionScores(connection, linkedinProfileId) {
     }
     
     // Aggregate would_promote (1-4 scale: 1=Not yet, 2=Maybe 1-2 years, 3=Yes ready, 4=Above level)
+    // Cap at 4 for legacy data that may have invalid values like 5
     if (review.would_promote !== null && review.would_promote !== undefined) {
-      promoteSum += parseInt(review.would_promote);
+      const promoteValue = Math.min(parseInt(review.would_promote), 4);
+      promoteSum += promoteValue;
       promoteCount++;
     }
     // Handle new behavioral reviews (version 2)
