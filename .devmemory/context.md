@@ -1,13 +1,19 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-28T14:13:17.431Z
+> Last updated: 2026-01-28T18:10:44.280Z
 
 ## Project Stats
-- Total memories: 228
-- Commits tracked: 228
+- Total memories: 229
+- Commits tracked: 229
 - Decisions recorded: 0
 
+## Relevant to Current Work
+- **1/28/2026**: Add Future-Fit Quiz to sitemap with SEO meta tags for Google indexing (public/sitemap.xml, src/pages/FutureFitQuiz.jsx)
+- **1/28/2026**: Add Future-Fit Quiz: gamified soft skills assessment with instant feedback, demo video, and Estimate (src/App.css, src/pages/FutureFitQuiz.jsx, src/pages/index.jsx)
+
 ## Recent Changes
+- `aadf91e` 1/28/2026: Add Future-Fit Quiz to sitemap with SEO meta tags for Google indexing
+  Files: public/sitemap.xml, src/pages/FutureFitQuiz.jsx
 - `49301e5` 1/28/2026: Add Future-Fit Quiz: gamified soft skills assessment with instant feedback, demo video, and Estimate CTA
   Files: src/App.css, src/pages/FutureFitQuiz.jsx, src/pages/index.jsx
 - `4d91ebf` 1/28/2026: Fix colleague endorsement percentages and dimension score calculations
@@ -36,8 +42,6 @@
   Files: src/components/review/ReviewFormBehavioral.jsx
 - `e957751` 1/28/2026: Increase profile picture size in review form header
   Files: src/components/review/QuestionRenderer.jsx, src/components/review/ReviewFormBehavioral.jsx
-- `0005961` 1/28/2026: Add comprehensive V2 Question Framework with relationship + role mapping
-  Files: src/config/questionsConfigV2.js
 
 ## Do Not Repeat
 These issues have already been solved:

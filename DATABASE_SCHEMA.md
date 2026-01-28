@@ -250,8 +250,11 @@ Company-based colleague connections.
 | id | int PK | Auto-increment |
 | profile_id | varchar(255) | FK to linkedin_profiles.id |
 | company_name | varchar(255) | Company name |
+| location | varchar(255) | Work location (city/branch) |
 | is_current | tinyint(1) | Currently employed |
 | is_excluded | tinyint(1) | Excluded from matching |
+
+**NOTE:** Location is critical for large companies with multiple branches (e.g., Bank Discount, Shufersal). Colleagues are prioritized by location match score.
 
 ### 13. `companies`
 Company metadata.

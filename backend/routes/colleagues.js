@@ -103,15 +103,31 @@ router.get('/profile/:profileId/colleagues', async (req, res) => {
       // Get colleagues from each company - must have 3+ months overlap
       const colleaguesByCompany = {};
       for (const company of workHistory) {
+        // Get user's location for this company
+        const [userLocation] = await connection.query(`
+          SELECT location FROM company_connections 
+          WHERE profile_id = ? AND company_name = ?
+          LIMIT 1
+        `, [profileId, company.company_name]);
+        
+        const userLoc = userLocation[0]?.location;
+        
         // Get all potential colleagues at this company
+        // If user has location data, prioritize same location (for large companies with multiple branches)
         const [potentialColleagues] = await connection.query(`
           SELECT 
             lp.id, lp.name, lp.position, lp.avatar, lp.current_company_name,
-            cc.worked_from, cc.worked_to, cc.is_current
+            cc.worked_from, cc.worked_to, cc.is_current, cc.location,
+            CASE 
+              WHEN ? IS NOT NULL AND cc.location = ? THEN 1
+              WHEN ? IS NULL OR cc.location IS NULL THEN 0.5
+              ELSE 0.2
+            END as location_match_score
           FROM linkedin_profiles lp
           JOIN company_connections cc ON cc.profile_id = lp.id
           WHERE cc.company_name = ? AND lp.id != ?
-        `, [company.company_name, profileId]);
+          ORDER BY location_match_score DESC
+        `, [userLoc, userLoc, userLoc, company.company_name, profileId]);
 
         // Filter colleagues with 6+ months overlap
         const colleaguesWithOverlap = potentialColleagues.filter(colleague => {

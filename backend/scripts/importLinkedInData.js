@@ -74,6 +74,7 @@ async function importProfiles(connection, profiles) {
             exp.company_id || null,
             exp.start_date || null,
             exp.end_date || null,
+            exp.location || null,
             isCurrent
           ]);
         }
@@ -180,7 +181,7 @@ async function importProfiles(connection, profiles) {
   if (companyConnectionValues.length > 0) {
     const companySql = `
       INSERT IGNORE INTO company_connections 
-      (profile_id, company_name, company_id, worked_from, worked_to, is_current)
+      (profile_id, company_name, company_id, worked_from, worked_to, location, is_current)
       VALUES ?
     `;
     await connection.query(companySql, [companyConnectionValues]);

@@ -3272,7 +3272,22 @@
       ],
       "commit_hash": "49301e57b08d810ddf6c7be8731c90210b580ca3",
       "created_at": "2026-01-28T14:02:24.000Z"
+    },
+    {
+      "id": 229,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add Future-Fit Quiz to sitemap with SEO meta tags for Google indexing",
+      "files": [
+        "public/sitemap.xml",
+        "src/pages/FutureFitQuiz.jsx"
+      ],
+      "tags": [
+        "ui"
+      ],
+      "commit_hash": "aadf91e2a488088f821ea0d9fbe1240a69aa7749",
+      "created_at": "2026-01-28T14:13:51.000Z"
     }
   ],
-  "nextId": 229
+  "nextId": 230
 }
