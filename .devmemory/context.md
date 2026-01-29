@@ -1,13 +1,15 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-29T09:04:29.764Z
+> Last updated: 2026-01-29T11:11:07.397Z
 
 ## Project Stats
-- Total memories: 231
-- Commits tracked: 231
+- Total memories: 232
+- Commits tracked: 232
 - Decisions recorded: 0
 
 ## Recent Changes
+- `40d6f01` 1/29/2026: Simplify review data: remove high_signal_answers JSON, use only columns (would_work_again, would_promote)
+  Files: backend/routes/anonymousReviews.js, backend/services/dimensionScoring.js, src/components/review/ReviewFormBehavioral.jsx
 - `5ad3306` 1/29/2026: Add highlighted background to KEY SKILL rows on profile page
   Files: src/pages/ProfileLinkedIn.jsx
 - `f412017` 1/28/2026: Add location-based colleague matching for large companies with multiple branches
@@ -36,8 +38,6 @@
   Files: src/pages/ProfileLinkedIn.jsx
 - `f27a15b` 1/28/2026: Fix review request flow - pass linkId to Review page
   Files: backend/database/migration-request-tokens.sql, src/components/RewardsModal.jsx, src/pages/LinkedInCallback.jsx
-- `2471cbf` 1/28/2026: Add Rewards feature to profile dropdown with shareable link
-  Files: src/components/RewardsModal.jsx, src/pages/Layout.jsx
 
 ## Do Not Repeat
 These issues have already been solved:
