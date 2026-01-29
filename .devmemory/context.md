@@ -1,13 +1,15 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-29T11:11:07.397Z
+> Last updated: 2026-01-29T11:15:57.954Z
 
 ## Project Stats
-- Total memories: 232
-- Commits tracked: 232
+- Total memories: 233
+- Commits tracked: 233
 - Decisions recorded: 0
 
 ## Recent Changes
+- `377378e` 1/29/2026: Update LP and quiz videos to new_estimate_video 2.mp4
+  Files: public/videos/new_estimate_video 2.mp4, src/components/landing/VideoDemo.jsx, src/pages/FutureFitQuiz.jsx
 - `40d6f01` 1/29/2026: Simplify review data: remove high_signal_answers JSON, use only columns (would_work_again, would_promote)
   Files: backend/routes/anonymousReviews.js, backend/services/dimensionScoring.js, src/components/review/ReviewFormBehavioral.jsx
 - `5ad3306` 1/29/2026: Add highlighted background to KEY SKILL rows on profile page
@@ -36,8 +38,6 @@
   Files: src/pages/ProfileLinkedIn.jsx
 - `359a75b` 1/28/2026: Fix skills comparison using useMemo to handle state timing
   Files: src/pages/ProfileLinkedIn.jsx
-- `f27a15b` 1/28/2026: Fix review request flow - pass linkId to Review page
-  Files: backend/database/migration-request-tokens.sql, src/components/RewardsModal.jsx, src/pages/LinkedInCallback.jsx
 
 ## Do Not Repeat
 These issues have already been solved:

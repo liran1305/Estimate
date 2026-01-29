@@ -3328,7 +3328,23 @@
       "tags": [],
       "commit_hash": "40d6f01c490686584bd85315b93fef09608d8403",
       "created_at": "2026-01-29T09:05:48.000Z"
+    },
+    {
+      "id": 233,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Update LP and quiz videos to new_estimate_video 2.mp4",
+      "files": [
+        "public/videos/new_estimate_video 2.mp4",
+        "src/components/landing/VideoDemo.jsx",
+        "src/pages/FutureFitQuiz.jsx"
+      ],
+      "tags": [
+        "ui"
+      ],
+      "commit_hash": "377378e778fba271dcf9e9f44e32d3dd8a276eb0",
+      "created_at": "2026-01-29T11:11:44.000Z"
     }
   ],
-  "nextId": 233
+  "nextId": 234
 }
