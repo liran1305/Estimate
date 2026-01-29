@@ -1,17 +1,15 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-28T18:10:44.280Z
+> Last updated: 2026-01-29T08:14:34.659Z
 
 ## Project Stats
-- Total memories: 229
-- Commits tracked: 229
+- Total memories: 230
+- Commits tracked: 230
 - Decisions recorded: 0
 
-## Relevant to Current Work
-- **1/28/2026**: Add Future-Fit Quiz to sitemap with SEO meta tags for Google indexing (public/sitemap.xml, src/pages/FutureFitQuiz.jsx)
-- **1/28/2026**: Add Future-Fit Quiz: gamified soft skills assessment with instant feedback, demo video, and Estimate (src/App.css, src/pages/FutureFitQuiz.jsx, src/pages/index.jsx)
-
 ## Recent Changes
+- `f412017` 1/28/2026: Add location-based colleague matching for large companies with multiple branches
+  Files: DATABASE_SCHEMA.md, backend/routes/colleagues.js, backend/scripts/check-alex-location.js
 - `aadf91e` 1/28/2026: Add Future-Fit Quiz to sitemap with SEO meta tags for Google indexing
   Files: public/sitemap.xml, src/pages/FutureFitQuiz.jsx
 - `49301e5` 1/28/2026: Add Future-Fit Quiz: gamified soft skills assessment with instant feedback, demo video, and Estimate CTA
@@ -40,8 +38,6 @@
   Files: src/components/RewardsModal.jsx, src/pages/Layout.jsx
 - `3323ea2` 1/28/2026: Make strength tags optional in review form
   Files: src/components/review/ReviewFormBehavioral.jsx
-- `e957751` 1/28/2026: Increase profile picture size in review form header
-  Files: src/components/review/QuestionRenderer.jsx, src/components/review/ReviewFormBehavioral.jsx
 
 ## Do Not Repeat
 These issues have already been solved:

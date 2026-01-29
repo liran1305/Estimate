@@ -410,7 +410,7 @@ export default function ProfileLinkedIn() {
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   {sortedSkills.map((skill, idx) => (
-                    <tr key={skill.key} className={skill.isAboveAverage ? 'bg-green-50/30' : ''}>
+                    <tr key={skill.key} className={skill.isKeySkill ? 'bg-blue-50/50' : skill.isAboveAverage ? 'bg-green-50/30' : ''}>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
                           <span className="font-medium text-sm text-[#191919]">{skill.name}</span>

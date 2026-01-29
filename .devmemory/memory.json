@@ -3287,7 +3287,22 @@
       ],
       "commit_hash": "aadf91e2a488088f821ea0d9fbe1240a69aa7749",
       "created_at": "2026-01-28T14:13:51.000Z"
+    },
+    {
+      "id": 230,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add location-based colleague matching for large companies with multiple branches",
+      "files": [
+        "DATABASE_SCHEMA.md",
+        "backend/routes/colleagues.js",
+        "backend/scripts/check-alex-location.js",
+        "backend/scripts/importLinkedInData.js"
+      ],
+      "tags": [],
+      "commit_hash": "f4120172465040869e7e063969f5bc52329224ec",
+      "created_at": "2026-01-28T18:35:52.000Z"
     }
   ],
-  "nextId": 230
+  "nextId": 231
 }
