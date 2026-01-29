@@ -96,14 +96,7 @@ async function calculateDimensionScores(connection, linkedinProfileId) {
     dimensionAggregates[dim] = { sum: 0, count: 0 };
   });
 
-  // High-signal aggregates
-  const highSignalAggregates = {
-    startup_hire: { sum: 0, count: 0, maxValue: 3 },
-    harder_job: { sum: 0, count: 0, maxValue: 4 },
-    work_again: { sum: 0, count: 0, maxValue: 5 }
-  };
-
-  // Aggregates for would_work_again and would_promote (stored directly in review tables)
+  // Use only columns: would_work_again (1-5) and would_promote (1-3 for startup_hire)
   let workAgainSum = 0, workAgainCount = 0;
   let promoteSum = 0, promoteCount = 0;
 
@@ -175,19 +168,7 @@ async function calculateDimensionScores(connection, linkedinProfileId) {
       // Note: ai_ready has no old equivalent - only shows for new behavioral reviews
     }
 
-    // Aggregate high-signal answers
-    if (review.high_signal_answers) {
-      const highSignal = typeof review.high_signal_answers === 'string'
-        ? JSON.parse(review.high_signal_answers)
-        : review.high_signal_answers;
-      
-      Object.entries(highSignal).forEach(([key, value]) => {
-        if (highSignalAggregates[key] && value !== null && value !== undefined) {
-          highSignalAggregates[key].sum += value;
-          highSignalAggregates[key].count += 1;
-        }
-      });
-    }
+    // REMOVED: high_signal_answers processing - now using columns directly
   }
 
   // Calculate final dimension scores
@@ -205,15 +186,8 @@ async function calculateDimensionScores(connection, linkedinProfileId) {
     }
   });
 
-  // Calculate high-signal percentages
+  // Calculate high-signal percentages from columns only (no more high_signal_answers JSON)
   const highSignalPcts = {};
-  Object.entries(highSignalAggregates).forEach(([key, agg]) => {
-    if (agg.count > 0) {
-      // Calculate percentage of max possible score
-      const maxPossible = agg.count * agg.maxValue;
-      highSignalPcts[key] = Math.round((agg.sum / maxPossible) * 100);
-    }
-  });
   
   // Calculate would_work_again percentage (1-5 scale = 20%-100%)
   if (workAgainCount > 0) {
@@ -221,11 +195,12 @@ async function calculateDimensionScores(connection, linkedinProfileId) {
     highSignalPcts.work_again_absolutely = Math.round(avgScore * 20);
   }
   
-  // Calculate would_promote percentage (1-4 scale = 25%-100%)
+  // Calculate startup_hire and harder_job from would_promote column (1-3 scale = 33%-100%)
+  // would_promote now stores the "startup_hire" question answer (1-3)
   if (promoteCount > 0) {
     const avgScore = promoteSum / promoteCount;
-    highSignalPcts.harder_job = Math.round((avgScore / 4) * 100);
-    highSignalPcts.startup_hire = highSignalPcts.harder_job; // Same metric
+    highSignalPcts.startup_hire = Math.round((avgScore / 3) * 100);
+    highSignalPcts.harder_job = highSignalPcts.startup_hire; // Same metric
   }
 
   return {

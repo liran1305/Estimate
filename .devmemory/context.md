@@ -1,13 +1,15 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-29T08:14:34.659Z
+> Last updated: 2026-01-29T09:04:29.764Z
 
 ## Project Stats
-- Total memories: 230
-- Commits tracked: 230
+- Total memories: 231
+- Commits tracked: 231
 - Decisions recorded: 0
 
 ## Recent Changes
+- `5ad3306` 1/29/2026: Add highlighted background to KEY SKILL rows on profile page
+  Files: src/pages/ProfileLinkedIn.jsx
 - `f412017` 1/28/2026: Add location-based colleague matching for large companies with multiple branches
   Files: DATABASE_SCHEMA.md, backend/routes/colleagues.js, backend/scripts/check-alex-location.js
 - `aadf91e` 1/28/2026: Add Future-Fit Quiz to sitemap with SEO meta tags for Google indexing
@@ -36,8 +38,6 @@
   Files: backend/database/migration-request-tokens.sql, src/components/RewardsModal.jsx, src/pages/LinkedInCallback.jsx
 - `2471cbf` 1/28/2026: Add Rewards feature to profile dropdown with shareable link
   Files: src/components/RewardsModal.jsx, src/pages/Layout.jsx
-- `3323ea2` 1/28/2026: Make strength tags optional in review form
-  Files: src/components/review/ReviewFormBehavioral.jsx
 
 ## Do Not Repeat
 These issues have already been solved:

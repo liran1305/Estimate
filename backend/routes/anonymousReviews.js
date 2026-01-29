@@ -173,7 +173,6 @@ router.post('/review/submit', async (req, res) => {
       request_id,       // ID of review_request if this is a requested review
       // V2 Behavioral review fields
       behavioral_answers,
-      high_signal_answers,
       never_worry_about,
       room_to_grow,
       review_version = 1  // 1 = old slider system, 2 = new behavioral system
@@ -287,18 +286,17 @@ router.post('/review/submit', async (req, res) => {
       const reviewId = uuidv4();
       const finalReviewType = isRequestedReview ? 'requested' : 'organic';
       
-      // For V2 behavioral reviews, extract would_work_again from high_signal_answers
-      const finalWouldWorkAgain = review_version === 2 
-        ? (high_signal_answers?.work_again || would_work_again || null)
-        : (would_work_again || null);
+      // Use would_work_again and would_promote columns directly (no more high_signal_answers JSON)
+      const finalWouldWorkAgain = would_work_again || null;
+      const finalWouldPromote = would_promote || null;
       
       await connection.query(`
         INSERT INTO anonymous_reviews 
         (id, reviewee_id, company_name, company_context, interaction_type,
          scores, strength_tags, would_work_again, would_promote, optional_comment,
          overall_score, review_weight, review_type, request_id, created_date,
-         behavioral_answers, high_signal_answers, never_worry_about, room_to_grow, review_version)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURDATE(), ?, ?, ?, ?, ?)
+         behavioral_answers, never_worry_about, room_to_grow, review_version)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURDATE(), ?, ?, ?, ?)
       `, [
         reviewId,
         reviewee_id,
@@ -308,14 +306,13 @@ router.post('/review/submit', async (req, res) => {
         JSON.stringify(scores || {}),
         JSON.stringify(strength_tags || []),
         finalWouldWorkAgain,
-        would_promote || null,
+        finalWouldPromote,
         optional_comment || null,
         overallScore,
         reviewWeight,
         finalReviewType,
         request_id || null,
         behavioral_answers ? JSON.stringify(behavioral_answers) : null,
-        high_signal_answers ? JSON.stringify(high_signal_answers) : null,
         never_worry_about || null,
         room_to_grow || null,
         review_version

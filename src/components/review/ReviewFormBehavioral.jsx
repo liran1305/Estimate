@@ -183,12 +183,6 @@ export default function ReviewFormBehavioral({
       gets_buyin: answers.gets_buyin
     };
     
-    const high_signal_answers = {
-      work_again: answers.work_again,
-      startup_hire: answers.startup_hire,
-      harder_job: answers.startup_hire // Use startup as proxy
-    };
-    
     setShowConfetti(true);
     
     // Get the never_worry answer - map value to display text
@@ -198,7 +192,9 @@ export default function ReviewFormBehavioral({
     setTimeout(() => {
       onSubmit({
         behavioral_answers,
-        high_signal_answers,
+        // Use columns directly instead of high_signal_answers JSON
+        would_work_again: answers.work_again,      // 1-5 scale
+        would_promote: answers.startup_hire,        // 1-3 scale (startup_hire question)
         strength_tags: selectedTags,
         optional_comment: freeText.trim() || null,
         never_worry_about: neverWorryText,
