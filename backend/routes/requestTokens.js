@@ -211,6 +211,8 @@ router.post('/create-request', async (req, res) => {
     const connection = await pool.getConnection();
 
     try {
+      await connection.beginTransaction();
+
       // Check token balance
       const [tokenRecord] = await connection.query(
         'SELECT tokens_available FROM request_tokens WHERE user_id = ?',
@@ -218,6 +220,7 @@ router.post('/create-request', async (req, res) => {
       );
 
       if (tokenRecord.length === 0 || tokenRecord[0].tokens_available < 1) {
+        await connection.rollback();
         return res.status(400).json({ 
           success: false, 
           error: 'No tokens available. Complete more reviews to earn tokens!' 
@@ -232,6 +235,7 @@ router.post('/create-request', async (req, res) => {
       );
 
       if (pendingCount[0].count >= MAX_PENDING_REQUESTS) {
+        await connection.rollback();
         return res.status(400).json({ 
           success: false, 
           error: `Maximum ${MAX_PENDING_REQUESTS} pending requests allowed. Wait for existing requests to be completed or expire.` 
@@ -259,6 +263,8 @@ router.post('/create-request', async (req, res) => {
          WHERE user_id = ?`,
         [user_id]
       );
+
+      await connection.commit();
 
       // Get requester info for the invite message
       const [requesterInfo] = await connection.query(
@@ -290,6 +296,9 @@ router.post('/create-request', async (req, res) => {
         tokens_remaining: tokenRecord[0].tokens_available - 1
       });
 
+    } catch (error) {
+      await connection.rollback();
+      throw error;
     } finally {
       connection.release();
     }

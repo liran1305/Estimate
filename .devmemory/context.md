@@ -1,13 +1,15 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-29T11:15:57.954Z
+> Last updated: 2026-01-30T15:07:47.391Z
 
 ## Project Stats
-- Total memories: 233
-- Commits tracked: 233
+- Total memories: 234
+- Commits tracked: 234
 - Decisions recorded: 0
 
 ## Recent Changes
+- `18faa5c` 1/29/2026: Replace with 9MB video for better performance
+  Files: public/videos/new_estimate_video 2.mp4, public/videos/new_estimate_video_1.mp4, src/components/landing/VideoDemo.jsx
 - `377378e` 1/29/2026: Update LP and quiz videos to new_estimate_video 2.mp4
   Files: public/videos/new_estimate_video 2.mp4, src/components/landing/VideoDemo.jsx, src/pages/FutureFitQuiz.jsx
 - `40d6f01` 1/29/2026: Simplify review data: remove high_signal_answers JSON, use only columns (would_work_again, would_promote)
@@ -35,8 +37,6 @@
 - `97bf0da` 1/28/2026: Fix React hooks error #310 - move useMemo before early return
   Files: src/pages/ProfileLinkedIn.jsx
 - `aca8e43` 1/28/2026: Fix React hooks error - move roleConfig inside useMemo
-  Files: src/pages/ProfileLinkedIn.jsx
-- `359a75b` 1/28/2026: Fix skills comparison using useMemo to handle state timing
   Files: src/pages/ProfileLinkedIn.jsx
 
 ## Do Not Repeat
