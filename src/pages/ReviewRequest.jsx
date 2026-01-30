@@ -27,6 +27,18 @@ export default function ReviewRequest() {
 
   useEffect(() => {
     const fetchRequestData = async () => {
+      // If user is not logged in, redirect to auth with return URL
+      if (!user) {
+        localStorage.setItem('pendingReviewRequest', JSON.stringify({ linkId }));
+        navigate('/auth', { 
+          state: { 
+            returnTo: `/review-request/${linkId}`,
+            message: 'Please sign in to review your colleague'
+          }
+        });
+        return;
+      }
+
       try {
         const response = await fetch(`${API_URL}/api/tokens/request/${linkId}`);
         const data = await response.json();
@@ -52,40 +64,69 @@ export default function ReviewRequest() {
     if (linkId) {
       fetchRequestData();
     }
-  }, [linkId]);
+  }, [linkId, user, navigate]);
 
-  const handleStartReview = () => {
-    // Store the request context for after login/signup
-    localStorage.setItem('pendingReviewRequest', JSON.stringify({
-      linkId,
-      requestId: requestData?.id,
-      requesterName: requestData?.requester_name
-    }));
+  const [isValidating, setIsValidating] = useState(false);
+  const [validationError, setValidationError] = useState(null);
 
-    if (user) {
-      // User is logged in - go directly to review flow
+  const handleStartReview = async () => {
+    if (!user) {
+      // User needs to sign up/login first
+      localStorage.setItem('pendingReviewRequest', JSON.stringify({ linkId }));
+      navigate('/auth', { 
+        state: { 
+          returnTo: `/review-request/${linkId}`,
+          message: 'Please sign in to review your colleague'
+        }
+      });
+      return;
+    }
+
+    // Validate that user can review this person (same company, time overlap)
+    setIsValidating(true);
+    setValidationError(null);
+
+    try {
+      const response = await fetch(`${API_URL}/api/tokens/request/${linkId}/colleague?user_id=${user.id}`);
+      const data = await response.json();
+
+      if (!data.success) {
+        // Show specific error message based on error code
+        let errorMessage = data.error;
+        if (data.error_code === 'NO_SHARED_COMPANY') {
+          errorMessage = "You can only review colleagues you've worked with at the same company.";
+        } else if (data.error_code === 'INSUFFICIENT_OVERLAP') {
+          errorMessage = "You need at least 3 months of work overlap with this person to review them.";
+        } else if (data.error_code === 'SELF_REVIEW') {
+          errorMessage = "You cannot review yourself.";
+        }
+        setValidationError(errorMessage);
+        setIsValidating(false);
+        return;
+      }
+
+      // Validation passed - proceed to review
+      localStorage.setItem('pendingReviewRequest', JSON.stringify({
+        linkId,
+        requestId: requestData?.id,
+        requesterName: requestData?.requester_name
+      }));
+
       navigate('/review', { 
         state: { 
           reviewRequest: {
             linkId,
             id: requestData?.id,
             requesterName: requestData?.requester_name,
-            isRequested: true
+            isRequested: true,
+            colleague: data.colleague
           }
         }
       });
-    } else {
-      // User needs to sign up/login first
-      navigate('/auth', { 
-        state: { 
-          returnTo: '/review',
-          reviewRequest: {
-            linkId,
-            requestId: requestData?.id,
-            requesterName: requestData?.requester_name
-          }
-        }
-      });
+    } catch (err) {
+      setValidationError('Failed to validate. Please try again.');
+    } finally {
+      setIsValidating(false);
     }
   };
 
@@ -213,13 +254,33 @@ export default function ReviewRequest() {
           </div>
         )}
 
+        {/* Validation Error */}
+        {validationError && (
+          <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-4">
+            <div className="flex items-center gap-2 text-red-700">
+              <AlertCircle className="w-5 h-5 flex-shrink-0" />
+              <p className="text-sm font-medium">{validationError}</p>
+            </div>
+          </div>
+        )}
+
         {/* CTA Button */}
         <button
           onClick={handleStartReview}
-          className="w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+          disabled={isValidating}
+          className="w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {user ? 'Start Review' : 'Sign Up & Review'}
-          <ArrowRight className="w-5 h-5" />
+          {isValidating ? (
+            <>
+              <Loader2 className="w-5 h-5 animate-spin" />
+              Validating...
+            </>
+          ) : (
+            <>
+              {user ? 'Start Review' : 'Sign Up & Review'}
+              <ArrowRight className="w-5 h-5" />
+            </>
+          )}
         </button>
 
         {user && (

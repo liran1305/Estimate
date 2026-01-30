@@ -388,14 +388,20 @@ router.get('/request/:link', async (req, res) => {
 // ============================================================================
 // 4b. GET /api/tokens/request/:link/colleague - Get requester as colleague to review
 // Returns the person who sent the review request as a colleague object
+// VALIDATION: Reviewer must be logged in, from same company, and connected to requester
 // ============================================================================
 router.get('/request/:link/colleague', async (req, res) => {
   try {
     const { link } = req.params;
     const { user_id } = req.query;
 
+    // VALIDATION 1: User must be logged in
     if (!user_id) {
-      return res.status(400).json({ success: false, error: 'user_id is required' });
+      return res.status(401).json({ 
+        success: false, 
+        error: 'You must be logged in to review',
+        error_code: 'LOGIN_REQUIRED'
+      });
     }
 
     const pool = await getPool();
@@ -422,8 +428,77 @@ router.get('/request/:link/colleague', async (req, res) => {
         return res.status(400).json({ success: false, error: 'Request has expired' });
       }
 
+      // Get reviewer's linkedin_profile_id
+      const [reviewerUser] = await connection.query(
+        'SELECT linkedin_profile_id FROM users WHERE id = ?',
+        [user_id]
+      );
+
+      if (reviewerUser.length === 0) {
+        return res.status(401).json({ 
+          success: false, 
+          error: 'User not found. Please log in again.',
+          error_code: 'USER_NOT_FOUND'
+        });
+      }
+
+      const reviewerLinkedInId = reviewerUser[0].linkedin_profile_id;
+
+      // Prevent self-review
+      if (reviewerLinkedInId === req_data.requester_linkedin_id) {
+        return res.status(400).json({ 
+          success: false, 
+          error: 'You cannot review yourself',
+          error_code: 'SELF_REVIEW'
+        });
+      }
+
+      // VALIDATION 2: Check if reviewer worked at same company as requester
+      const [sharedCompanies] = await connection.query(
+        `SELECT DISTINCT cc1.company_name
+         FROM company_connections cc1
+         JOIN company_connections cc2 ON cc1.company_name = cc2.company_name
+         WHERE cc1.profile_id = ? 
+           AND cc2.profile_id = ?
+           AND cc1.is_excluded = 0 
+           AND cc2.is_excluded = 0`,
+        [reviewerLinkedInId, req_data.requester_linkedin_id]
+      );
+
+      if (sharedCompanies.length === 0) {
+        return res.status(403).json({ 
+          success: false, 
+          error: 'You can only review colleagues you have worked with at the same company',
+          error_code: 'NO_SHARED_COMPANY'
+        });
+      }
+
+      // VALIDATION 3: Check time overlap (at least 3 months together)
+      const [timeOverlap] = await connection.query(
+        `SELECT cc1.company_name,
+                GREATEST(cc1.worked_from, cc2.worked_from) as overlap_start,
+                LEAST(COALESCE(cc1.worked_to, CURDATE()), COALESCE(cc2.worked_to, CURDATE())) as overlap_end
+         FROM company_connections cc1
+         JOIN company_connections cc2 ON cc1.company_name = cc2.company_name
+         WHERE cc1.profile_id = ? 
+           AND cc2.profile_id = ?
+           AND cc1.is_excluded = 0 
+           AND cc2.is_excluded = 0
+           AND GREATEST(cc1.worked_from, cc2.worked_from) <= LEAST(COALESCE(cc1.worked_to, CURDATE()), COALESCE(cc2.worked_to, CURDATE()))
+         HAVING TIMESTAMPDIFF(MONTH, overlap_start, overlap_end) >= 3
+         LIMIT 1`,
+        [reviewerLinkedInId, req_data.requester_linkedin_id]
+      );
+
+      if (timeOverlap.length === 0) {
+        return res.status(403).json({ 
+          success: false, 
+          error: 'You need at least 3 months of work overlap with this person to review them',
+          error_code: 'INSUFFICIENT_OVERLAP'
+        });
+      }
+
       // Get the requester's LinkedIn profile as a colleague
-      // Also get avatar from users table as it may be fresher from OAuth
       const [colleague] = await connection.query(
         `SELECT 
           lp.id,
@@ -442,14 +517,15 @@ router.get('/request/:link/colleague', async (req, res) => {
       }
 
       // Return the requester as a colleague object with request context
+      // Use the shared company from validation as the context
       res.json({
         success: true,
         colleague: {
           id: colleague[0].id,
           name: colleague[0].name,
           avatar: colleague[0].avatar,
-          company_name: req_data.company_context || colleague[0].current_company_name,
-          company_context: req_data.company_context || 'current',
+          company_name: timeOverlap[0].company_name || req_data.company_context || colleague[0].current_company_name,
+          company_context: timeOverlap[0].company_name || req_data.company_context || 'current',
           position: colleague[0].position,
           is_from_request: true,
           request_id: req_data.id

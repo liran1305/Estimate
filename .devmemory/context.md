@@ -1,13 +1,15 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-01-30T15:07:47.391Z
+> Last updated: 2026-01-30T15:21:42.785Z
 
 ## Project Stats
-- Total memories: 234
-- Commits tracked: 234
+- Total memories: 235
+- Commits tracked: 235
 - Decisions recorded: 0
 
 ## Recent Changes
+- `b6546cd` 1/30/2026: Fix token request: add transaction to prevent token loss if INSERT fails
+  Files: backend/routes/requestTokens.js
 - `18faa5c` 1/29/2026: Replace with 9MB video for better performance
   Files: public/videos/new_estimate_video 2.mp4, public/videos/new_estimate_video_1.mp4, src/components/landing/VideoDemo.jsx
 - `377378e` 1/29/2026: Update LP and quiz videos to new_estimate_video 2.mp4
@@ -36,13 +38,11 @@
   Files: backend/routes/requestTokens.js
 - `97bf0da` 1/28/2026: Fix React hooks error #310 - move useMemo before early return
   Files: src/pages/ProfileLinkedIn.jsx
-- `aca8e43` 1/28/2026: Fix React hooks error - move roleConfig inside useMemo
-  Files: src/pages/ProfileLinkedIn.jsx
 
 ## Do Not Repeat
 These issues have already been solved:
+- Fix token request: add transaction to prevent token loss if INSERT fails
 - Fix colleague endorsement percentages and dimension score calculations
 - Fix dimension scoring to include would_work_again and would_promote in query
 - Fix would_promote scale from 0-2 to 1-4
 - Fix colleague endorsement percentages to use average scores
-- Fix review request avatar - use fresher avatar from users table
