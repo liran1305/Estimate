@@ -62,19 +62,11 @@ export default function LinkedInCallback() {
         
         if (user.isOnboarded) {
           if (pendingRequest) {
-            // User came from an invite link - go to review with request context
+            // User came from an invite link - go back to review-request page to validate connection
             const requestData = JSON.parse(pendingRequest);
-            localStorage.removeItem('pendingReviewRequest'); // Clear it
-            navigate('/Review', { 
-              state: { 
-                reviewRequest: {
-                  linkId: requestData.linkId,
-                  id: requestData.requestId,
-                  requesterName: requestData.requesterName,
-                  isRequested: true
-                }
-              }
-            });
+            // Don't clear pendingReviewRequest yet - let ReviewRequest page handle it
+            // Redirect to review-request page which will validate same company + time overlap
+            navigate(`/review-request/${requestData.linkId}`);
           } else {
             navigate(createPageUrl("Review"));
           }

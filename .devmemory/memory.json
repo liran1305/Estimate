@@ -3371,7 +3371,22 @@
       "tags": [],
       "commit_hash": "b6546cd7ab27e12a6f8d451f86994692915fd3a0",
       "created_at": "2026-01-30T15:08:18.000Z"
+    },
+    {
+      "id": 236,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add review request validation: require login, same company, 3+ months overlap",
+      "files": [
+        "backend/routes/requestTokens.js",
+        "src/pages/ReviewRequest.jsx"
+      ],
+      "tags": [
+        "ui"
+      ],
+      "commit_hash": "72fb26ecf5b4228e55e21d34f37a522ec8ee162c",
+      "created_at": "2026-01-30T15:21:57.000Z"
     }
   ],
-  "nextId": 236
+  "nextId": 237
 }

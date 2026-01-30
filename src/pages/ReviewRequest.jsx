@@ -105,12 +105,8 @@ export default function ReviewRequest() {
         return;
       }
 
-      // Validation passed - proceed to review
-      localStorage.setItem('pendingReviewRequest', JSON.stringify({
-        linkId,
-        requestId: requestData?.id,
-        requesterName: requestData?.requester_name
-      }));
+      // Validation passed - clear pending request and proceed to review
+      localStorage.removeItem('pendingReviewRequest');
 
       navigate('/review', { 
         state: { 

@@ -67,17 +67,9 @@ export default function Onboarding() {
     const pendingRequest = localStorage.getItem('pendingReviewRequest');
     if (pendingRequest) {
       const requestData = JSON.parse(pendingRequest);
-      localStorage.removeItem('pendingReviewRequest'); // Clear it
-      navigate('/Review', { 
-        state: { 
-          reviewRequest: {
-            linkId: requestData.linkId,
-            id: requestData.requestId,
-            requesterName: requestData.requesterName,
-            isRequested: true
-          }
-        }
-      });
+      // Don't clear pendingReviewRequest yet - let ReviewRequest page handle it
+      // Redirect to review-request page which will validate same company + time overlap
+      navigate(`/review-request/${requestData.linkId}`);
     } else {
       navigate(createPageUrl("Review"));
     }
