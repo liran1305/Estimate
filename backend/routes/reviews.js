@@ -1015,6 +1015,13 @@ router.post('/colleague/skip', async (req, res) => {
         WHERE user_id = ? AND company_name = ?
       `, [user_id, companyName]);
 
+      // Increment session-level skip counter
+      await connection.query(`
+        UPDATE review_sessions 
+        SET skips_used = skips_used + 1
+        WHERE id = ? AND user_id = ?
+      `, [session_id, user_id]);
+
       res.json({
         success: true,
         message: 'Colleague skipped',

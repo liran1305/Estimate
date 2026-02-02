@@ -3480,7 +3480,19 @@
       "tags": [],
       "commit_hash": "9ad0f7885e6c9491d22a4d4c597637347e04b33d",
       "created_at": "2026-02-02T15:15:19.000Z"
+    },
+    {
+      "id": 244,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix rewards modal: show generated link even when availableRequests becomes 0",
+      "files": [
+        "src/components/RewardsModal.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "c7104e69896141d16b1e725fd1920ae0b1eb3746",
+      "created_at": "2026-02-02T15:27:24.000Z"
     }
   ],
-  "nextId": 244
+  "nextId": 245
 }

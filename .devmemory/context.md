@@ -1,13 +1,15 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-02-02T15:26:49.526Z
+> Last updated: 2026-02-02T16:13:41.580Z
 
 ## Project Stats
-- Total memories: 243
-- Commits tracked: 243
+- Total memories: 244
+- Commits tracked: 244
 - Decisions recorded: 0
 
 ## Recent Changes
+- `c7104e6` 2/2/2026: Fix rewards modal: show generated link even when availableRequests becomes 0
+  Files: src/components/RewardsModal.jsx
 - `9ad0f78` 2/2/2026: Fix leaderboard visibility: check dimension_scores instead of reviews_received
   Files: src/pages/Layout.jsx
 - `5341be0` 2/2/2026: Fix profile display: use dimension_scores to detect reviews instead of reviews_received count
@@ -36,13 +38,11 @@
   Files: src/pages/ProfileLinkedIn.jsx
 - `f412017` 1/28/2026: Add location-based colleague matching for large companies with multiple branches
   Files: DATABASE_SCHEMA.md, backend/routes/colleagues.js, backend/scripts/check-alex-location.js
-- `aadf91e` 1/28/2026: Add Future-Fit Quiz to sitemap with SEO meta tags for Google indexing
-  Files: public/sitemap.xml, src/pages/FutureFitQuiz.jsx
 
 ## Do Not Repeat
 These issues have already been solved:
+- Fix rewards modal: show generated link even when availableRequests becomes 0
 - Fix leaderboard visibility: check dimension_scores instead of reviews_received
 - Fix profile display: use dimension_scores to detect reviews instead of reviews_received count
 - define getPool locally in profileEditRequests.js
 - Fix db import path in profileEditRequests.js
-- redirect new users back to review-request page for validation after signup/onboarding
