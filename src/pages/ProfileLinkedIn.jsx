@@ -115,7 +115,9 @@ export default function ProfileLinkedIn() {
     );
   }
 
-  const hasAnyReviews = (scoreData?.reviews_received || 0) > 0;
+  // Check if user has reviews by looking at dimension_scores (more reliable than reviews_received count)
+  const hasDimensionScores = scoreData?.dimension_scores && Object.keys(scoreData.dimension_scores).length > 0;
+  const hasAnyReviews = hasDimensionScores || (scoreData?.reviews_received || 0) > 0;
   const hasEnoughForRecruiters = (scoreData?.reviews_received || 0) >= 3;
   const firstName = user?.name?.split(' ')[0] || 'User';
   const initials = user?.name?.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'U';
