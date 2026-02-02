@@ -154,7 +154,7 @@ export default function RewardsModal({ isOpen, onClose, user }) {
                 </div>
 
                 {/* Request Link Section */}
-                {availableRequests > 0 ? (
+                {availableRequests > 0 || requestLink ? (
                   <div className="space-y-4">
                     {requestLink ? (
                       /* Show generated link */
