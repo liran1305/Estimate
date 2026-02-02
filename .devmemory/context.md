@@ -1,13 +1,15 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-02-02T14:31:24.717Z
+> Last updated: 2026-02-02T15:11:56.716Z
 
 ## Project Stats
-- Total memories: 241
-- Commits tracked: 241
+- Total memories: 242
+- Commits tracked: 242
 - Decisions recorded: 0
 
 ## Recent Changes
+- `5341be0` 2/2/2026: Fix profile display: use dimension_scores to detect reviews instead of reviews_received count
+  Files: src/pages/ProfileLinkedIn.jsx
 - `c2a7d89` 2/2/2026: Add nodemailer dependency to package.json
   Files: backend/package.json
 - `9eb3019` 2/2/2026: Fix: define getPool locally in profileEditRequests.js
@@ -36,13 +38,11 @@
   Files: public/sitemap.xml, src/pages/FutureFitQuiz.jsx
 - `49301e5` 1/28/2026: Add Future-Fit Quiz: gamified soft skills assessment with instant feedback, demo video, and Estimate CTA
   Files: src/App.css, src/pages/FutureFitQuiz.jsx, src/pages/index.jsx
-- `4d91ebf` 1/28/2026: Fix colleague endorsement percentages and dimension score calculations
-  Files: backend/services/dimensionScoring.js
 
 ## Do Not Repeat
 These issues have already been solved:
+- Fix profile display: use dimension_scores to detect reviews instead of reviews_received count
 - define getPool locally in profileEditRequests.js
 - Fix db import path in profileEditRequests.js
 - redirect new users back to review-request page for validation after signup/onboarding
 - Fix token request: add transaction to prevent token loss if INSERT fails
-- Fix colleague endorsement percentages and dimension score calculations

@@ -3386,7 +3386,89 @@
       ],
       "commit_hash": "72fb26ecf5b4228e55e21d34f37a522ec8ee162c",
       "created_at": "2026-01-30T15:21:57.000Z"
+    },
+    {
+      "id": 237,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix: redirect new users back to review-request page for validation after signup/onboarding",
+      "files": [
+        "src/pages/LinkedInCallback.jsx",
+        "src/pages/Onboarding.jsx",
+        "src/pages/ReviewRequest.jsx"
+      ],
+      "tags": [
+        "fix"
+      ],
+      "commit_hash": "3a05c258c65382509eb84b471deab6bcdeebb9f4",
+      "created_at": "2026-01-30T15:33:03.000Z"
+    },
+    {
+      "id": 238,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add profile edit request system with admin approval workflow",
+      "files": [
+        ".env.example",
+        "backend/routes/profileEditRequests.js",
+        "backend/server.js",
+        "src/components/EditProfileModal.jsx",
+        "src/pages/ProfileLinkedIn.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "770005dd253a60db298b020c719892e01b509729",
+      "created_at": "2026-02-02T11:26:10.000Z"
+    },
+    {
+      "id": 239,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix db import path in profileEditRequests.js",
+      "files": [
+        "backend/routes/profileEditRequests.js"
+      ],
+      "tags": [],
+      "commit_hash": "fc663a1a430f2dee2503bd2ea47a8849d842c123",
+      "created_at": "2026-02-02T11:33:05.000Z"
+    },
+    {
+      "id": 240,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix: define getPool locally in profileEditRequests.js",
+      "files": [
+        "backend/routes/profileEditRequests.js"
+      ],
+      "tags": [
+        "fix"
+      ],
+      "commit_hash": "9eb3019937546ffb71004b883f0a6446145ea268",
+      "created_at": "2026-02-02T11:36:39.000Z"
+    },
+    {
+      "id": 241,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add nodemailer dependency to package.json",
+      "files": [
+        "backend/package.json"
+      ],
+      "tags": [],
+      "commit_hash": "c2a7d899a7f7656fba1c0417b89c47ef44e0fb70",
+      "created_at": "2026-02-02T11:40:37.000Z"
+    },
+    {
+      "id": 242,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix profile display: use dimension_scores to detect reviews instead of reviews_received count",
+      "files": [
+        "src/pages/ProfileLinkedIn.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "5341be016d56a29947aba1c059de268cbb2941ef",
+      "created_at": "2026-02-02T14:32:50.000Z"
     }
   ],
-  "nextId": 237
+  "nextId": 243
 }

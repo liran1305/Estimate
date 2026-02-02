@@ -46,7 +46,9 @@ export default function Layout({ children, currentPageName }) {
         try {
           const response = await fetch(`${BACKEND_API_URL}/api/score/me?user_id=${currentUser.id}`);
           const data = await response.json();
-          setHasReceivedReviews((data?.reviews_received || 0) > 0);
+          // Check dimension_scores as more reliable indicator than reviews_received count
+          const hasDimensionScores = data?.dimension_scores && Object.keys(data.dimension_scores).length > 0;
+          setHasReceivedReviews(hasDimensionScores || (data?.reviews_received || 0) > 0);
         } catch (error) {
           console.error('Failed to fetch review count:', error);
           setHasReceivedReviews(false);
