@@ -14,7 +14,7 @@ import {
 import { Users, User, LogOut, ChevronDown, Trophy, Gift } from "lucide-react";
 import RewardsModal from "@/components/RewardsModal";
 
-const publicPages = ['Landing', 'LinkedInAuth', 'LinkedInCallback'];
+const publicPages = ['Landing', 'LinkedInAuth', 'LinkedInCallback', 'Contact'];
 const blockedOnlyPage = 'Blocked';
 const BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:3001';
 

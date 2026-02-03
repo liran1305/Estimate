@@ -1,13 +1,15 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-02-02T16:13:41.580Z
+> Last updated: 2026-02-03T14:45:41.723Z
 
 ## Project Stats
-- Total memories: 244
-- Commits tracked: 244
+- Total memories: 245
+- Commits tracked: 245
 - Decisions recorded: 0
 
 ## Recent Changes
+- `b6fd57d` 2/2/2026: Fix skip tracking: increment review_sessions.skips_used counter
+  Files: backend/routes/reviews.js
 - `c7104e6` 2/2/2026: Fix rewards modal: show generated link even when availableRequests becomes 0
   Files: src/components/RewardsModal.jsx
 - `9ad0f78` 2/2/2026: Fix leaderboard visibility: check dimension_scores instead of reviews_received
@@ -36,13 +38,11 @@
   Files: backend/routes/anonymousReviews.js, backend/services/dimensionScoring.js, src/components/review/ReviewFormBehavioral.jsx
 - `5ad3306` 1/29/2026: Add highlighted background to KEY SKILL rows on profile page
   Files: src/pages/ProfileLinkedIn.jsx
-- `f412017` 1/28/2026: Add location-based colleague matching for large companies with multiple branches
-  Files: DATABASE_SCHEMA.md, backend/routes/colleagues.js, backend/scripts/check-alex-location.js
 
 ## Do Not Repeat
 These issues have already been solved:
+- Fix skip tracking: increment review_sessions.skips_used counter
 - Fix rewards modal: show generated link even when availableRequests becomes 0
 - Fix leaderboard visibility: check dimension_scores instead of reviews_received
 - Fix profile display: use dimension_scores to detect reviews instead of reviews_received count
 - define getPool locally in profileEditRequests.js
-- Fix db import path in profileEditRequests.js
