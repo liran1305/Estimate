@@ -1,13 +1,15 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-02-04T09:32:57.053Z
+> Last updated: 2026-02-04T09:48:37.852Z
 
 ## Project Stats
-- Total memories: 247
-- Commits tracked: 247
+- Total memories: 248
+- Commits tracked: 248
 - Decisions recorded: 0
 
 ## Recent Changes
+- `ac3415e` 2/4/2026: Add invited-only user system for users without pre-existing profile data
+  Files: COMPLETE_DATABASE_SCHEMA.md, DATABASE_SCHEMA.md, backend/migrations/add_invited_only_column.sql
 - `a9f1eb0` 2/3/2026: Add mandatory database workflow rules to schema documentation
   Files: COMPLETE_DATABASE_SCHEMA.md
 - `8d93a8b` 2/3/2026: Fix white page for incomplete OAuth users: add Contact to publicPages
@@ -36,8 +38,6 @@
   Files: backend/routes/requestTokens.js
 - `18faa5c` 1/29/2026: Replace with 9MB video for better performance
   Files: public/videos/new_estimate_video 2.mp4, public/videos/new_estimate_video_1.mp4, src/components/landing/VideoDemo.jsx
-- `377378e` 1/29/2026: Update LP and quiz videos to new_estimate_video 2.mp4
-  Files: public/videos/new_estimate_video 2.mp4, src/components/landing/VideoDemo.jsx, src/pages/FutureFitQuiz.jsx
 
 ## Do Not Repeat
 These issues have already been solved:

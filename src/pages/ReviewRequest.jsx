@@ -30,7 +30,7 @@ export default function ReviewRequest() {
       // If user is not logged in, redirect to auth with return URL
       if (!user) {
         localStorage.setItem('pendingReviewRequest', JSON.stringify({ linkId }));
-        navigate('/auth', { 
+        navigate('/LinkedInAuth', { 
           state: { 
             returnTo: `/review-request/${linkId}`,
             message: 'Please sign in to review your colleague'
@@ -73,7 +73,7 @@ export default function ReviewRequest() {
     if (!user) {
       // User needs to sign up/login first
       localStorage.setItem('pendingReviewRequest', JSON.stringify({ linkId }));
-      navigate('/auth', { 
+      navigate('/LinkedInAuth', { 
         state: { 
           returnTo: `/review-request/${linkId}`,
           message: 'Please sign in to review your colleague'
