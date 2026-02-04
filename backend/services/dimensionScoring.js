@@ -71,7 +71,9 @@ async function calculateDimensionScores(connection, linkedinProfileId) {
       scores,
       review_version,
       would_work_again,
-      would_promote
+      would_promote,
+      is_10x,
+      has_gravity
     FROM anonymous_reviews 
     WHERE reviewee_id = ?
     UNION ALL
@@ -81,7 +83,9 @@ async function calculateDimensionScores(connection, linkedinProfileId) {
       scores,
       review_version,
       would_work_again,
-      would_promote
+      would_promote,
+      is_10x,
+      has_gravity
     FROM reviews 
     WHERE reviewee_id = ?
   `, [linkedinProfileId, linkedinProfileId]);
@@ -99,6 +103,8 @@ async function calculateDimensionScores(connection, linkedinProfileId) {
   // Use only columns: would_work_again (1-5) and would_promote (1-3 for startup_hire)
   let workAgainSum = 0, workAgainCount = 0;
   let promoteSum = 0, promoteCount = 0;
+  let is10xYes = 0, is10xTotal = 0;
+  let hasGravityYes = 0, hasGravityTotal = 0;
 
   for (const review of reviews) {
     // Aggregate would_work_again (1-5 scale)
@@ -113,6 +119,18 @@ async function calculateDimensionScores(connection, linkedinProfileId) {
       const promoteValue = Math.min(parseInt(review.would_promote), 4);
       promoteSum += promoteValue;
       promoteCount++;
+    }
+    
+    // Aggregate is_10x (true/false -> percentage)
+    if (review.is_10x !== null && review.is_10x !== undefined) {
+      is10xTotal++;
+      if (review.is_10x) is10xYes++;
+    }
+    
+    // Aggregate has_gravity (true/false -> percentage)
+    if (review.has_gravity !== null && review.has_gravity !== undefined) {
+      hasGravityTotal++;
+      if (review.has_gravity) hasGravityYes++;
     }
     // Handle new behavioral reviews (version 2)
     if (review.review_version === 2 && review.behavioral_answers) {
@@ -201,6 +219,16 @@ async function calculateDimensionScores(connection, linkedinProfileId) {
     const avgScore = promoteSum / promoteCount;
     highSignalPcts.startup_hire = Math.round((avgScore / 3) * 100);
     highSignalPcts.harder_job = highSignalPcts.startup_hire; // Same metric
+  }
+  
+  // Calculate is_10x percentage (force multiplier)
+  if (is10xTotal > 0) {
+    highSignalPcts.is_10x = Math.round((is10xYes / is10xTotal) * 100);
+  }
+  
+  // Calculate has_gravity percentage (team magnet)
+  if (hasGravityTotal > 0) {
+    highSignalPcts.has_gravity = Math.round((hasGravityYes / hasGravityTotal) * 100);
   }
 
   return {

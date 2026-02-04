@@ -65,6 +65,26 @@ const QUICK_QUESTIONS = [
     ]
   },
   {
+    id: 'is_10x',
+    question: '10X: Does {name} make the people around them better?',
+    subtitle: 'A force multiplier who elevates the whole team',
+    type: 'yesno',
+    options: [
+      { value: true, emoji: '⚡', label: 'Yes' },
+      { value: false, emoji: '➖', label: 'No' }
+    ]
+  },
+  {
+    id: 'has_gravity',
+    question: 'Gravity: Do people naturally want to work with {name}?',
+    subtitle: 'Someone others are drawn to collaborate with',
+    type: 'yesno',
+    options: [
+      { value: true, emoji: '🧲', label: 'Yes' },
+      { value: false, emoji: '➖', label: 'No' }
+    ]
+  },
+  {
     id: 'never_worry',
     question: 'With {name}, you never worry about...',
     type: 'choice',
@@ -195,6 +215,8 @@ export default function ReviewFormBehavioral({
         // Use columns directly instead of high_signal_answers JSON
         would_work_again: answers.work_again,      // 1-5 scale
         would_promote: answers.startup_hire,        // 1-3 scale (startup_hire question)
+        is_10x: answers.is_10x,                     // true/false - force multiplier
+        has_gravity: answers.has_gravity,           // true/false - team magnet
         strength_tags: selectedTags,
         optional_comment: freeText.trim() || null,
         never_worry_about: neverWorryText,
@@ -284,11 +306,15 @@ export default function ReviewFormBehavioral({
             transition={{ duration: 0.2 }}
             className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100"
           >
-            <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6 text-center leading-snug">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 text-center leading-snug">
               {formatQuestion(currentQ.question)}
             </h2>
+            {currentQ.subtitle && (
+              <p className="text-sm text-gray-500 text-center mb-4 sm:mb-6">{currentQ.subtitle}</p>
+            )}
+            {!currentQ.subtitle && <div className="mb-2 sm:mb-4" />}
             
-            <div className={`grid gap-1.5 sm:gap-2 max-w-full ${currentQ.type === 'emoji' ? 'grid-cols-' + Math.min(currentQ.options.length, 5) : 'grid-cols-1'}`}>
+            <div className={`grid gap-1.5 sm:gap-2 max-w-full ${currentQ.type === 'emoji' ? 'grid-cols-' + Math.min(currentQ.options.length, 5) : currentQ.type === 'yesno' ? 'grid-cols-2' : 'grid-cols-1'}`}>
               {currentQ.options.map((option) => (
                 <motion.button
                   key={option.value}
@@ -299,9 +325,9 @@ export default function ReviewFormBehavioral({
                     answers[currentQ.id] === option.value
                       ? 'border-amber-500 bg-amber-50'
                       : 'border-gray-200 hover:border-amber-300 hover:bg-amber-50/50'
-                  } ${currentQ.type === 'emoji' ? 'flex flex-col items-center min-h-[90px] sm:min-h-[100px]' : ''}`}
+                  } ${(currentQ.type === 'emoji' || currentQ.type === 'yesno') ? 'flex flex-col items-center min-h-[90px] sm:min-h-[100px]' : ''}`}
                 >
-                  {currentQ.type === 'emoji' && (
+                  {(currentQ.type === 'emoji' || currentQ.type === 'yesno') && (
                     <span className="text-3xl sm:text-4xl mb-1.5">{option.emoji}</span>
                   )}
                   <span className={`font-medium leading-tight text-center whitespace-pre-line w-full ${

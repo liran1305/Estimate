@@ -1,13 +1,15 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-02-04T09:48:37.852Z
+> Last updated: 2026-02-04T10:27:18.592Z
 
 ## Project Stats
-- Total memories: 248
-- Commits tracked: 248
+- Total memories: 249
+- Commits tracked: 249
 - Decisions recorded: 0
 
 ## Recent Changes
+- `18b0638` 2/4/2026: Fix: Change /auth to /LinkedInAuth in ReviewRequest.jsx
+  Files: src/pages/ReviewRequest.jsx
 - `ac3415e` 2/4/2026: Add invited-only user system for users without pre-existing profile data
   Files: COMPLETE_DATABASE_SCHEMA.md, DATABASE_SCHEMA.md, backend/migrations/add_invited_only_column.sql
 - `a9f1eb0` 2/3/2026: Add mandatory database workflow rules to schema documentation
@@ -36,13 +38,11 @@
   Files: backend/routes/requestTokens.js, src/pages/ReviewRequest.jsx
 - `b6546cd` 1/30/2026: Fix token request: add transaction to prevent token loss if INSERT fails
   Files: backend/routes/requestTokens.js
-- `18faa5c` 1/29/2026: Replace with 9MB video for better performance
-  Files: public/videos/new_estimate_video 2.mp4, public/videos/new_estimate_video_1.mp4, src/components/landing/VideoDemo.jsx
 
 ## Do Not Repeat
 These issues have already been solved:
+- Change /auth to /LinkedInAuth in ReviewRequest.jsx
 - Fix white page for incomplete OAuth users: add Contact to publicPages
 - Fix skip tracking: increment review_sessions.skips_used counter
 - Fix rewards modal: show generated link even when availableRequests becomes 0
 - Fix leaderboard visibility: check dimension_scores instead of reviews_received
-- Fix profile display: use dimension_scores to detect reviews instead of reviews_received count

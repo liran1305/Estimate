@@ -160,6 +160,8 @@ export default function ProfileLinkedIn() {
   const workAgainPct = scoreData?.work_again_absolutely_pct || scoreData?.would_work_again?.percent;
   const startupHirePct = scoreData?.startup_hire_pct;
   const harderJobPct = scoreData?.harder_job_pct;
+  const is10xPct = scoreData?.is_10x_pct;
+  const hasGravityPct = scoreData?.has_gravity_pct;
   
   // Recruiter-focused data
   const reviewerBreakdown = scoreData?.reviewer_breakdown || {};
@@ -357,7 +359,7 @@ export default function ProfileLinkedIn() {
         </div>
 
         {/* Key Metrics Card */}
-        {(workAgainPct || startupHirePct || harderJobPct) && (
+        {(workAgainPct || startupHirePct || harderJobPct || is10xPct || hasGravityPct) && (
           <div className="bg-white rounded-lg p-4 sm:p-5 md:p-6 shadow-[0_0_0_1px_rgba(0,0,0,0.08)]">
             <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4 md:mb-5">Colleague Endorsements</h2>
             <div className="grid grid-cols-3 gap-2 sm:gap-4 md:gap-6">
@@ -376,6 +378,29 @@ export default function ProfileLinkedIn() {
                 </div>
               ))}
             </div>
+            
+            {/* 10X and Gravity Metrics */}
+            {(is10xPct !== undefined || hasGravityPct !== undefined) && (
+              <div className="grid grid-cols-2 gap-2 sm:gap-4 md:gap-6 mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-100">
+                {[
+                  { value: is10xPct, label: '10X', subtitle: 'Force Multiplier', emoji: '⚡', description: 'Makes people around them better' },
+                  { value: hasGravityPct, label: 'Gravity', subtitle: 'Team Magnet', emoji: '🧲', description: 'People want to work with them' }
+                ].filter(m => m.value !== undefined).map((metric, idx) => (
+                  <div key={idx} className="text-center p-3 sm:p-4 md:p-5 bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg border border-amber-100">
+                    <div className="text-2xl mb-1">{metric.emoji}</div>
+                    <div className="text-xl sm:text-2xl md:text-3xl font-bold text-amber-600">
+                      {metric.value}%
+                    </div>
+                    <div className="text-xs sm:text-sm font-semibold text-gray-800 mt-1">
+                      {metric.label}
+                    </div>
+                    <div className="text-[10px] sm:text-xs text-gray-500 mt-0.5">
+                      {metric.description}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 

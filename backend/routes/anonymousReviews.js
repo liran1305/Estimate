@@ -167,6 +167,8 @@ router.post('/review/submit', async (req, res) => {
       strength_tags,
       would_work_again,
       would_promote,
+      is_10x,           // true/false - force multiplier
+      has_gravity,      // true/false - team magnet
       optional_comment,
       time_spent_seconds,
       review_type,      // 'organic' or 'requested'
@@ -293,10 +295,10 @@ router.post('/review/submit', async (req, res) => {
       await connection.query(`
         INSERT INTO anonymous_reviews 
         (id, reviewee_id, company_name, company_context, interaction_type,
-         scores, strength_tags, would_work_again, would_promote, optional_comment,
-         overall_score, review_weight, review_type, request_id, created_date,
+         scores, strength_tags, would_work_again, would_promote, is_10x, has_gravity,
+         optional_comment, overall_score, review_weight, review_type, request_id, created_date,
          behavioral_answers, never_worry_about, room_to_grow, review_version)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURDATE(), ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURDATE(), ?, ?, ?, ?)
       `, [
         reviewId,
         reviewee_id,
@@ -307,6 +309,8 @@ router.post('/review/submit', async (req, res) => {
         JSON.stringify(strength_tags || []),
         finalWouldWorkAgain,
         finalWouldPromote,
+        is_10x !== undefined ? (is_10x ? 1 : 0) : null,
+        has_gravity !== undefined ? (has_gravity ? 1 : 0) : null,
         optional_comment || null,
         overallScore,
         reviewWeight,

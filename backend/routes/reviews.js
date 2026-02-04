@@ -1729,11 +1729,15 @@ router.get('/score/me', async (req, res) => {
         startup_hire_pct: scoreData.startup_hire_pct,
         harder_job_pct: scoreData.harder_job_pct,
         work_again_absolutely_pct: scoreData.work_again_absolutely_pct,
+        is_10x_pct: scoreData.is_10x_pct,
+        has_gravity_pct: scoreData.has_gravity_pct,
         // V2: High signal metrics grouped for easy frontend use
         high_signal_metrics: {
           startup_hire_pct: scoreData.startup_hire_pct,
           harder_job_pct: scoreData.harder_job_pct,
-          work_again_absolutely_pct: scoreData.work_again_absolutely_pct
+          work_again_absolutely_pct: scoreData.work_again_absolutely_pct,
+          is_10x_pct: scoreData.is_10x_pct,
+          has_gravity_pct: scoreData.has_gravity_pct
         }
       });
 
