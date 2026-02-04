@@ -444,12 +444,57 @@ router.get('/request/:link/colleague', async (req, res) => {
 
       const reviewerLinkedInId = reviewerUser[0].linkedin_profile_id;
 
-      // Prevent self-review
-      if (reviewerLinkedInId === req_data.requester_linkedin_id) {
+      // Check if reviewer is an invited-only user (no linkedin profile in our DB)
+      const [reviewerDetails] = await connection.query(
+        'SELECT invited_only FROM users WHERE id = ?',
+        [user_id]
+      );
+      const isInvitedOnly = reviewerDetails.length > 0 && reviewerDetails[0].invited_only;
+
+      // Prevent self-review (only if reviewer has a linkedin profile)
+      if (reviewerLinkedInId && reviewerLinkedInId === req_data.requester_linkedin_id) {
         return res.status(400).json({ 
           success: false, 
           error: 'You cannot review yourself',
           error_code: 'SELF_REVIEW'
+        });
+      }
+
+      // For invited-only users, skip company/overlap validation
+      // They can only review via direct links anyway, so we trust the requester's judgment
+      if (isInvitedOnly) {
+        // Get the requester's LinkedIn profile as a colleague
+        const [colleague] = await connection.query(
+          `SELECT 
+            lp.id,
+            lp.name,
+            COALESCE(u.avatar, lp.avatar) as avatar,
+            lp.current_company_name,
+            lp.position
+           FROM linkedin_profiles lp
+           LEFT JOIN users u ON u.linkedin_profile_id = lp.id
+           WHERE lp.id = ?`,
+          [req_data.requester_linkedin_id]
+        );
+
+        if (colleague.length === 0) {
+          return res.status(404).json({ success: false, error: 'Requester profile not found' });
+        }
+
+        // Return the requester as a colleague object for invited-only users
+        return res.json({
+          success: true,
+          colleague: {
+            id: colleague[0].id,
+            name: colleague[0].name,
+            avatar: colleague[0].avatar,
+            company_name: req_data.company_context || colleague[0].current_company_name,
+            company_context: req_data.company_context || 'invited',
+            position: colleague[0].position,
+            is_from_request: true,
+            request_id: req_data.id,
+            reviewer_is_invited_only: true
+          }
         });
       }
 

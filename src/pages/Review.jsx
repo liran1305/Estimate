@@ -37,11 +37,22 @@ export default function Review() {
           navigate(createPageUrl("Login"));
           return;
         }
-        setUser(currentUser);
 
         // Check for review request context (from ReviewRequest page or localStorage)
         const reviewRequest = location.state?.reviewRequest || 
           JSON.parse(localStorage.getItem('pendingReviewRequest') || 'null');
+        
+        // Invited-only users can ONLY access review flow via direct review request links
+        if (currentUser.invitedOnly && !reviewRequest?.linkId) {
+          navigate('/contact', { 
+            state: { 
+              message: 'You can only review colleagues who have invited you directly. Please use the review link you received.'
+            }
+          });
+          return;
+        }
+
+        setUser(currentUser);
         
         // Clear pending review request from localStorage after reading
         if (reviewRequest) {

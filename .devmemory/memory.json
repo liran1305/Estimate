@@ -3504,7 +3504,35 @@
       "tags": [],
       "commit_hash": "b6fd57d8bc1c293ea7c99bd98b78be15cd92212a",
       "created_at": "2026-02-02T16:14:40.000Z"
+    },
+    {
+      "id": 246,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Fix white page for incomplete OAuth users: add Contact to publicPages",
+      "files": [
+        "src/pages/Layout.jsx"
+      ],
+      "tags": [
+        "auth"
+      ],
+      "commit_hash": "8d93a8b37acaeedff1462778815e1e0d40b0f901",
+      "created_at": "2026-02-03T14:46:07.000Z"
+    },
+    {
+      "id": 247,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add mandatory database workflow rules to schema documentation",
+      "files": [
+        "COMPLETE_DATABASE_SCHEMA.md"
+      ],
+      "tags": [
+        "database"
+      ],
+      "commit_hash": "a9f1eb0341273cce3a370a46bd0d5538330e9838",
+      "created_at": "2026-02-03T15:09:51.000Z"
     }
   ],
-  "nextId": 246
+  "nextId": 248
 }

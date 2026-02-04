@@ -82,6 +82,7 @@ Users who authenticated via LinkedIn OAuth but couldn't be matched to existing p
 **Critical Fields:**
 - `linkedin_profile_id` (varchar(255)) - FK to linkedin_profiles.id
 - `can_use_platform` (tinyint(1)) - Must be 1 for platform access
+- `invited_only` (tinyint(1)) - If 1, user can only review via direct invitation links (no profile in our DB)
 - `profile_match_confidence` (decimal(3,2)) - 0.00 to 1.00
 
 ### linkedin_profiles

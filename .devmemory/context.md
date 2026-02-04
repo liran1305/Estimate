@@ -1,13 +1,17 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-02-03T14:45:41.723Z
+> Last updated: 2026-02-04T09:32:57.053Z
 
 ## Project Stats
-- Total memories: 245
-- Commits tracked: 245
+- Total memories: 247
+- Commits tracked: 247
 - Decisions recorded: 0
 
 ## Recent Changes
+- `a9f1eb0` 2/3/2026: Add mandatory database workflow rules to schema documentation
+  Files: COMPLETE_DATABASE_SCHEMA.md
+- `8d93a8b` 2/3/2026: Fix white page for incomplete OAuth users: add Contact to publicPages
+  Files: src/pages/Layout.jsx
 - `b6fd57d` 2/2/2026: Fix skip tracking: increment review_sessions.skips_used counter
   Files: backend/routes/reviews.js
 - `c7104e6` 2/2/2026: Fix rewards modal: show generated link even when availableRequests becomes 0
@@ -34,15 +38,11 @@
   Files: public/videos/new_estimate_video 2.mp4, public/videos/new_estimate_video_1.mp4, src/components/landing/VideoDemo.jsx
 - `377378e` 1/29/2026: Update LP and quiz videos to new_estimate_video 2.mp4
   Files: public/videos/new_estimate_video 2.mp4, src/components/landing/VideoDemo.jsx, src/pages/FutureFitQuiz.jsx
-- `40d6f01` 1/29/2026: Simplify review data: remove high_signal_answers JSON, use only columns (would_work_again, would_promote)
-  Files: backend/routes/anonymousReviews.js, backend/services/dimensionScoring.js, src/components/review/ReviewFormBehavioral.jsx
-- `5ad3306` 1/29/2026: Add highlighted background to KEY SKILL rows on profile page
-  Files: src/pages/ProfileLinkedIn.jsx
 
 ## Do Not Repeat
 These issues have already been solved:
+- Fix white page for incomplete OAuth users: add Contact to publicPages
 - Fix skip tracking: increment review_sessions.skips_used counter
 - Fix rewards modal: show generated link even when availableRequests becomes 0
 - Fix leaderboard visibility: check dimension_scores instead of reviews_received
 - Fix profile display: use dimension_scores to detect reviews instead of reviews_received count
-- define getPool locally in profileEditRequests.js

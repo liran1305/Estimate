@@ -96,6 +96,7 @@ export const linkedinAuth = {
         picture: authData.user.picture,
         accessToken: authData.access_token,
         canUsePlatform: authData.user.can_use_platform,
+        invitedOnly: authData.user.invited_only || false, // Restricted users can only review via direct links
         matchMethod: authData.user.match_method,
         matchConfidence: authData.user.match_confidence,
         isOnboarded: false

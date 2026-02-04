@@ -42,16 +42,19 @@ export default function Layout({ children, currentPageName }) {
           return;
         }
 
-        // Check if user has received reviews to enable Leaderboard access
-        try {
-          const response = await fetch(`${BACKEND_API_URL}/api/score/me?user_id=${currentUser.id}`);
-          const data = await response.json();
-          // Check dimension_scores as more reliable indicator than reviews_received count
-          const hasDimensionScores = data?.dimension_scores && Object.keys(data.dimension_scores).length > 0;
-          setHasReceivedReviews(hasDimensionScores || (data?.reviews_received || 0) > 0);
-        } catch (error) {
-          console.error('Failed to fetch review count:', error);
-          setHasReceivedReviews(false);
+        // Skip score API call for invited-only users (they don't have profiles)
+        if (!currentUser.invitedOnly) {
+          // Check if user has received reviews to enable Leaderboard access
+          try {
+            const response = await fetch(`${BACKEND_API_URL}/api/score/me?user_id=${currentUser.id}`);
+            const data = await response.json();
+            // Check dimension_scores as more reliable indicator than reviews_received count
+            const hasDimensionScores = data?.dimension_scores && Object.keys(data.dimension_scores).length > 0;
+            setHasReceivedReviews(hasDimensionScores || (data?.reviews_received || 0) > 0);
+          } catch (error) {
+            console.error('Failed to fetch review count:', error);
+            setHasReceivedReviews(false);
+          }
         }
       }
       setIsLoading(false);
@@ -114,13 +117,17 @@ export default function Layout({ children, currentPageName }) {
                       Review
                     </DropdownMenuItem>
                   </Link>
-                  <Link to={createPageUrl("Profile")}>
-                    <DropdownMenuItem className={currentPageName === 'Profile' ? 'bg-gray-100' : ''}>
-                      <User className="w-4 h-4 mr-2" />
-                      Profile
-                    </DropdownMenuItem>
-                  </Link>
-                  {hasReceivedReviews && (
+                  {/* Hide Profile for invited-only users */}
+                  {!user.invitedOnly && (
+                    <Link to={createPageUrl("Profile")}>
+                      <DropdownMenuItem className={currentPageName === 'Profile' ? 'bg-gray-100' : ''}>
+                        <User className="w-4 h-4 mr-2" />
+                        Profile
+                      </DropdownMenuItem>
+                    </Link>
+                  )}
+                  {/* Hide Leaderboard for invited-only users */}
+                  {hasReceivedReviews && !user.invitedOnly && (
                     <Link to={createPageUrl("Leaderboard")}>
                       <DropdownMenuItem className={currentPageName === 'Leaderboard' ? 'bg-gray-100' : ''}>
                         <Trophy className="w-4 h-4 mr-2" />
@@ -143,10 +150,13 @@ export default function Layout({ children, currentPageName }) {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuItem onClick={() => setShowRewardsModal(true)}>
-                    <Gift className="w-4 h-4 mr-2 text-amber-500" />
-                    Rewards
-                  </DropdownMenuItem>
+                  {/* Hide Rewards for invited-only users */}
+                  {!user.invitedOnly && (
+                    <DropdownMenuItem onClick={() => setShowRewardsModal(true)}>
+                      <Gift className="w-4 h-4 mr-2 text-amber-500" />
+                      Rewards
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem onClick={handleLogout} className="text-red-600">
                     <LogOut className="w-4 h-4 mr-2" />
                     Sign Out

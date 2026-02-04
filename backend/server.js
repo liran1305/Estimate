@@ -428,9 +428,13 @@ app.post('/api/auth/linkedin/callback', async (req, res) => {
       const crypto = require('crypto');
       const unsubscribeToken = crypto.createHash('md5').update(userId + profile.email + Date.now()).digest('hex');
       
+      // For users without linkedin_profile_id, set invited_only=true
+      // They can still use the platform but only via direct review request links
+      const isInvitedOnly = !linkedinProfileId;
+      
       await connection.query(`
-        INSERT INTO users (id, linkedin_profile_id, email, name, avatar, profile_match_method, profile_match_confidence, can_use_platform, unsubscribe_token, email_notifications, email_new_reviews, email_score_unlocked, email_marketing)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, TRUE, TRUE, TRUE, FALSE)
+        INSERT INTO users (id, linkedin_profile_id, email, name, avatar, profile_match_method, profile_match_confidence, can_use_platform, invited_only, unsubscribe_token, email_notifications, email_new_reviews, email_score_unlocked, email_marketing)
+        VALUES (?, ?, ?, ?, ?, ?, ?, TRUE, ?, ?, TRUE, TRUE, TRUE, FALSE)
       `, [
         userId,
         linkedinProfileId,
@@ -439,7 +443,7 @@ app.post('/api/auth/linkedin/callback', async (req, res) => {
         profile.picture,
         matchMethod,
         matchConfidence,
-        linkedinProfileId ? true : false,
+        isInvitedOnly,
         unsubscribeToken
       ]);
       
@@ -500,12 +504,13 @@ app.post('/api/auth/linkedin/callback', async (req, res) => {
       console.log(`⚠️ Incomplete OAuth user tracked: ${profile.email} (${profile.name})`);
     }
 
-    // Get is_blocked status before closing connection
+    // Get is_blocked and invited_only status before closing connection
     const [userStatus] = await connection.query(
-      'SELECT is_blocked FROM users WHERE id = ?',
+      'SELECT is_blocked, invited_only FROM users WHERE id = ?',
       [userId]
     );
     const isBlocked = userStatus.length > 0 ? userStatus[0].is_blocked : false;
+    const isInvitedOnly = userStatus.length > 0 ? userStatus[0].invited_only : !linkedinProfileId;
 
     await connection.end();
     timings.total = Date.now() - startTime;
@@ -524,7 +529,8 @@ app.post('/api/auth/linkedin/callback', async (req, res) => {
         name: profile.name,
         email: profile.email,
         picture: profile.picture,
-        can_use_platform: !!linkedinProfileId,
+        can_use_platform: true, // Always allow platform access
+        invited_only: isInvitedOnly, // New flag for restricted users
         match_method: matchMethod,
         match_confidence: matchConfidence,
         is_blocked: isBlocked

@@ -3,7 +3,9 @@
 ## Overview
 This document is the **single source of truth** for all database tables, fields, and data structures.
 
-**Last Updated:** January 28, 2026
+**Last Updated:** February 3, 2026
+
+**IMPORTANT:** Always run `DESCRIBE table_name` before writing INSERT/UPDATE queries to verify exact field names.
 
 ---
 
@@ -265,6 +267,26 @@ Company metadata.
 | name | varchar(255) | Company name |
 | industry | varchar(255) | Industry category |
 | employee_count | int | Employee count |
+
+### 14. `incomplete_oauth_users`
+Users who authenticated via LinkedIn OAuth but couldn't be matched to existing profiles.
+
+| Column | Type | Description |
+|--------|------|-------------|
+| id | int PK | Auto-increment |
+| user_id | varchar(36) | FK to users.id |
+| email | varchar(255) | User email |
+| name | varchar(255) | Display name |
+| linkedin_num_id | varchar(100) | LinkedIn numeric ID from OAuth |
+| avatar | text | Profile photo URL |
+| match_method | varchar(50) | How matching was attempted |
+| reason | varchar(100) | Why matching failed |
+| first_seen_at | timestamp | First OAuth attempt |
+| last_seen_at | timestamp | Most recent OAuth attempt |
+| attempt_count | int | Number of login attempts |
+| resolved | tinyint(1) | Whether manually onboarded |
+| resolved_at | timestamp | When resolved |
+| notes | text | Admin notes |
 
 ---
 
