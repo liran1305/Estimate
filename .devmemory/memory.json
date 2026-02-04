@@ -3566,7 +3566,25 @@
       ],
       "commit_hash": "18b0638963f5ab46ef5830cfb921f02d3b1f1634",
       "created_at": "2026-02-04T09:48:52.000Z"
+    },
+    {
+      "id": 250,
+      "project_id": "5c220e985e92fa63",
+      "type": "commit",
+      "content": "Add 10X and Gravity personality questions to review system",
+      "files": [
+        "COMPLETE_DATABASE_SCHEMA.md",
+        "backend/migrations/add_10x_gravity_columns.sql",
+        "backend/routes/anonymousReviews.js",
+        "backend/routes/reviews.js",
+        "backend/services/dimensionScoring.js",
+        "src/components/review/ReviewFormBehavioral.jsx",
+        "src/pages/ProfileLinkedIn.jsx"
+      ],
+      "tags": [],
+      "commit_hash": "547eae017fa04cd83335bc4e959cc1259ecab2bf",
+      "created_at": "2026-02-04T10:27:43.000Z"
     }
   ],
-  "nextId": 250
+  "nextId": 251
 }

@@ -379,22 +379,21 @@ export default function ProfileLinkedIn() {
               ))}
             </div>
             
-            {/* 10X and Gravity Metrics */}
+            {/* 10X and Gravity Metrics - same style as above */}
             {(is10xPct !== undefined || hasGravityPct !== undefined) && (
-              <div className="grid grid-cols-2 gap-2 sm:gap-4 md:gap-6 mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-100">
+              <div className="grid grid-cols-2 gap-2 sm:gap-4 md:gap-6 mt-3 sm:mt-4">
                 {[
-                  { value: is10xPct, label: '10X', subtitle: 'Force Multiplier', emoji: '⚡', description: 'Makes people around them better' },
-                  { value: hasGravityPct, label: 'Gravity', subtitle: 'Team Magnet', emoji: '🧲', description: 'People want to work with them' }
+                  { value: is10xPct, label: '10X', description: 'Makes people around them better' },
+                  { value: hasGravityPct, label: 'Gravity', description: 'People want to work with them' }
                 ].filter(m => m.value !== undefined).map((metric, idx) => (
-                  <div key={idx} className="text-center p-3 sm:p-4 md:p-5 bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg border border-amber-100">
-                    <div className="text-2xl mb-1">{metric.emoji}</div>
-                    <div className="text-xl sm:text-2xl md:text-3xl font-bold text-amber-600">
+                  <div key={idx} className="text-center p-2 sm:p-4 md:p-5 bg-gray-50 rounded-lg">
+                    <div className="text-xl sm:text-2xl md:text-4xl font-semibold text-[#0a66c2]">
                       {metric.value}%
                     </div>
-                    <div className="text-xs sm:text-sm font-semibold text-gray-800 mt-1">
+                    <div className="text-[10px] sm:text-xs md:text-sm text-gray-500 mt-1 sm:mt-2 leading-tight">
                       {metric.label}
                     </div>
-                    <div className="text-[10px] sm:text-xs text-gray-500 mt-0.5">
+                    <div className="text-[9px] sm:text-[10px] text-gray-400 mt-0.5 leading-tight">
                       {metric.description}
                     </div>
                   </div>

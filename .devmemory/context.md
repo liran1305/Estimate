@@ -1,13 +1,15 @@
 # DevMemory - AI Context
 > Auto-generated. AI: Read this to understand project history.
-> Last updated: 2026-02-04T10:27:18.592Z
+> Last updated: 2026-02-04T10:36:34.320Z
 
 ## Project Stats
-- Total memories: 249
-- Commits tracked: 249
+- Total memories: 250
+- Commits tracked: 250
 - Decisions recorded: 0
 
 ## Recent Changes
+- `547eae0` 2/4/2026: Add 10X and Gravity personality questions to review system
+  Files: COMPLETE_DATABASE_SCHEMA.md, backend/migrations/add_10x_gravity_columns.sql, backend/routes/anonymousReviews.js
 - `18b0638` 2/4/2026: Fix: Change /auth to /LinkedInAuth in ReviewRequest.jsx
   Files: src/pages/ReviewRequest.jsx
 - `ac3415e` 2/4/2026: Add invited-only user system for users without pre-existing profile data
@@ -36,8 +38,6 @@
   Files: src/pages/LinkedInCallback.jsx, src/pages/Onboarding.jsx, src/pages/ReviewRequest.jsx
 - `72fb26e` 1/30/2026: Add review request validation: require login, same company, 3+ months overlap
   Files: backend/routes/requestTokens.js, src/pages/ReviewRequest.jsx
-- `b6546cd` 1/30/2026: Fix token request: add transaction to prevent token loss if INSERT fails
-  Files: backend/routes/requestTokens.js
 
 ## Do Not Repeat
 These issues have already been solved:
