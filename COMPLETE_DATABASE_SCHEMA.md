@@ -1,6 +1,6 @@
 # Complete Database Schema - All 29 Tables
 
-**Last Updated:** February 4, 2026  
+**Last Updated:** February 4, 2026 (added profile_edit_requests table)  
 **Source:** Exported from INFORMATION_SCHEMA.COLUMNS  
 **Database:** MySQL (Google Cloud SQL)
 

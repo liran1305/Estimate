@@ -56,6 +56,7 @@ const leaderboardRouter = require('./routes/leaderboard');
 const dataValidationRouter = require('./routes/dataValidation');
 const profilePhotoRouter = require('./routes/profilePhoto');
 const requestTokensRouter = require('./routes/requestTokens');
+const profileEditRequestsRouter = require('./routes/profileEditRequests');
 app.use('/api/colleagues', colleaguesRouter);
 app.use('/api', reviewsRouter);
 app.use('/api/admin', adminRouter);
@@ -66,6 +67,7 @@ app.use('/api/leaderboard', leaderboardRouter);
 app.use('/api/data-validation', dataValidationRouter);
 app.use('/api/profile-photo', profilePhotoRouter);
 app.use('/api/tokens', requestTokensRouter);
+app.use('/api/profile', profileEditRequestsRouter);
 
 // Serve uploaded profile photos
 app.use('/uploads', express.static('uploads'));

@@ -20,6 +20,7 @@ const Contact = React.lazy(() => import("./Contact"));
 const BadgeCreator = React.lazy(() => import("./BadgeCreator"));
 const ReviewRequest = React.lazy(() => import("./ReviewRequest"));
 const FutureFitQuiz = React.lazy(() => import("./FutureFitQuiz"));
+const InfoPanel = React.lazy(() => import("./InfoPanel"));
 
 // Minimal loading fallback
 const PageLoader = () => (
@@ -53,6 +54,8 @@ const PAGES = {
     Leaderboard: Leaderboard,
     
     Contact: Contact,
+    
+    InfoPanel: InfoPanel,
     
 }
 
@@ -109,6 +112,8 @@ function PagesContent() {
                     <Route path="/Contact" element={<Contact />} />
                     <Route path="/badge-creator" element={<BadgeCreator />} />
                     <Route path="/review-request/:linkId" element={<ReviewRequest />} />
+                    <Route path="/InfoPanel" element={<InfoPanel />} />
+                    <Route path="/info" element={<InfoPanel />} />
                 </Routes>
             </Suspense>
         </Layout>

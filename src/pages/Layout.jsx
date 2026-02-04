@@ -157,6 +157,15 @@ export default function Layout({ children, currentPageName }) {
                       Rewards
                     </DropdownMenuItem>
                   )}
+                  {/* Info Panel - view/edit profile data */}
+                  {!user.invitedOnly && (
+                    <Link to={createPageUrl("InfoPanel")}>
+                      <DropdownMenuItem>
+                        <User className="w-4 h-4 mr-2 text-gray-500" />
+                        My Info
+                      </DropdownMenuItem>
+                    </Link>
+                  )}
                   <DropdownMenuItem onClick={handleLogout} className="text-red-600">
                     <LogOut className="w-4 h-4 mr-2" />
                     Sign Out
