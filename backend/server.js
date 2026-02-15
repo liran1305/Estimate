@@ -280,17 +280,10 @@ app.post('/api/auth/linkedin/callback', async (req, res) => {
     console.log('======================================');
 
     // Match user to Bright Data LinkedIn profile and create user
-    const mysql = require('mysql2/promise');
+    const { createConnection } = require('./config/database');
     const { v4: uuidv4 } = require('uuid');
     
-    const connection = await mysql.createConnection({
-      host: process.env.CLOUD_SQL_HOST,
-      user: process.env.CLOUD_SQL_USER,
-      password: process.env.CLOUD_SQL_PASSWORD,
-      database: process.env.CLOUD_SQL_DATABASE,
-      port: process.env.CLOUD_SQL_PORT || 3306,
-      ssl: { rejectUnauthorized: false }
-    });
+    const connection = await createConnection();
     timings.dbConnection = Date.now() - startTime;
 
     // Try to match by image, LinkedIn profile URL/ID, numeric ID, then by name
